@@ -19,7 +19,7 @@ The following types of consumption data are available:
 The **Veolia Téléo** plugin retrieves the information using a Python script (one for the Veolia Ile de France site and one for the other sites). Each script requires the installation of specific components:
 
 ### For the Veolia Ile de France script
-***Python version 3.7.x is required *** (*python3 --version*)
+***Python version 3.7.x is required*** (*python3 --version*)
 ```bash
 sudo apt-get update
 sudo apt-get install python3 xvfb iceweasel
