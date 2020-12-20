@@ -18,13 +18,13 @@ Les types de données de consommation suivants sont accessibles :
 
 Le plugin **Veolia Téléo** récupère les informations en utilisant un script Python (un pour le site Veolia Ile de France et un pour les autres sites). Chaque script nécessite l'installation de composants spécifiques :
 
-> Pour le script Veolia Ile de France
-*** la version de Python 3.7.x est indispensable *** (*python3 --version*)
+### Pour le script Veolia Ile de France
+***la version de Python 3.7.x est indispensable*** (*python3 --version*)
 code`sudo apt-get update
 code`sudo apt-get install python3 xvfb iceweasel
 code`sudo pip3 install selenium pyvirtualdisplay urllib3
 
-** Pour la version du driver geckodriver, elle dépend de votre architecture
+**Pour la version du driver geckodriver, elle dépend de votre architecture**
 si la commande *uname -m* retourne **armv7l** (cas d'un Raspberry PI) alors :
 code`sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckodriver-v0.23.0-arm7hf.tar.gz && sudo tar xzfz geckodriver-v0.23.0-arm7hf.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.23.0-arm7hf.tar.gz
 sinon
