@@ -20,19 +20,20 @@ Le plugin **Veolia Téléo** récupère les informations en utilisant un script 
 
 ### Pour le script Veolia Ile de France
 ***la version de Python 3.7.x est indispensable*** (*python3 --version*)
-code`sudo apt-get update
-code`sudo apt-get install python3 xvfb iceweasel
-code`sudo pip3 install selenium pyvirtualdisplay urllib3
+`sudo apt-get update
+`sudo apt-get install python3 xvfb iceweasel
+`sudo pip3 install selenium pyvirtualdisplay urllib3
 
 **Pour la version du driver geckodriver, elle dépend de votre architecture**
 si la commande *uname -m* retourne **armv7l** (cas d'un Raspberry PI) alors :
-code`sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckodriver-v0.23.0-arm7hf.tar.gz && sudo tar xzfz geckodriver-v0.23.0-arm7hf.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.23.0-arm7hf.tar.gz
-sinon
-code`sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux32.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux32.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux32.tar.gz
+`sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckodriver-v0.23.0-arm7hf.tar.gz && sudo tar xzfz geckodriver-v0.23.0-arm7hf.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.23.0-arm7hf.tar.gz
 
-> Pour les autres sites Veolia
-** la version de Python 3.x est indispensable **
-code`sudo pip install requests lxml xlrd
+sinon :
+`sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux32.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux32.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux32.tar.gz
+
+### Pour les autres sites Veolia
+**la version de Python 3.x est indispensable**
+`sudo pip install requests lxml xlrd
 
 
 Les données sont vérifiées toutes les heures entre 4h et 22h et mises à jour uniquement si non disponibles dans Jeedom.
