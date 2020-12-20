@@ -84,7 +84,7 @@ class teleo extends eqLogic {
       {
         sleep(rand(5,50));
 
-		$result = $this->connectTeleo();
+	$result = $this->connectTeleo();
 
         if (!is_null($result)) {
            $this->getTeleoData();
