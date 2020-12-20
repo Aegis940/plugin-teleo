@@ -1,6 +1,6 @@
 # script get_veolia_idf_consommation.py
 
-Dans le cas où le script *get_veolia_idf_consommation.py* ne peut être installé sur la machine hébergeant Jeedom et dionc que le script soit exécuté sur un autre machine
+Dans le cas où le script *get_veolia_idf_consommation.py* ne peut être installé sur la machine hébergeant Jeedom et donc que le script soit exécuté sur une autre machine
 
 ## Installation prérequis
 
