@@ -57,7 +57,7 @@ Sur la page de l'équipement, renseignez :
 
 Puis cliquez sur le bouton **Sauvegarder**.
 
-Décohcer l'option **Connexion au site Veolia** permet de ne pas lancer le script Python pour récupérer les données mais l'exploiter un fichier résultat déposé dans le **Répertoire d'export des données du site Veolia** (à utiliser dans le cas où les prérequis pour le script pyhton ne peuvent être satisfait sur la machine hébergeant Jeedom).
+Décocher l'option **Connexion au site Veolia** permet de ne pas lancer le script Python pour récupérer les données mais l'exploiter un fichier résultat déposé dans le **Répertoire d'export des données du site Veolia** (à utiliser dans le cas où les prérequis pour le script pyhton ne peuvent être satisfait sur la machine hébergeant Jeedom).
 L'option **Forcer la récupération des données** permet de récupérer les informations de consommation même si elles ont déjà été récupérées pour la période concernée.
 L'option **Template de widget** permet d'utiliser le widget au couleur du compteur Téléo.
 
@@ -99,4 +99,4 @@ Ce plugin s'est inspiré des travaux suivants :
 -   Ce plugin vous est fourni sans aucune garantie. Bien que peu probable, si il venait à corrompre votre installation Jeedom,l'auteur ne pourrait en être tenu pour responsable.
 
 # ChangeLog
-Disponible [ici](./changelog.md).
+Disponible [ici](./changelog.html).
