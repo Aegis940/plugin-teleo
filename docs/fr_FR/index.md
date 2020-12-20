@@ -99,4 +99,4 @@ Ce plugin s'est inspiré des travaux suivants :
 -   Ce plugin vous est fourni sans aucune garantie. Bien que peu probable, si il venait à corrompre votre installation Jeedom,l'auteur ne pourrait en être tenu pour responsable.
 
 # ChangeLog
-Disponible [ici](./changelog.html).
+Disponible [ici](./changelog.md).
