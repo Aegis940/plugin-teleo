@@ -18,15 +18,16 @@ The following types of consumption data are available:
 
 The **Veolia Téléo** plugin retrieves the information using a Python script (one for the Veolia Ile de France site and one for the other sites). Each script requires the installation of specific components:
 
-> For the Veolia Ile de France script
-*** Python version 3.7.x is required *** (*python3 --version*)
+### For the Veolia Ile de France script
+***Python version 3.7.x is required *** (*python3 --version*)***
 code`sudo apt-get update
 code`sudo apt-get install python3 xvfb iceweasel
 code`sudo pip3 install selenium pyvirtualdisplay urllib3
 
-** For the geckodriver version, it depends on your architecture.
+**For the geckodriver version, it depends on your architecture**.
 if the command *uname -m* returns **armv7l** (case of a Raspberry PI) then:
 code`sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckodriver-v0.23.0-arm7hf.tar.gz && sudo tar xzfz geckodriver-v0.23.0-arm7hf.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.23.0-arm7hf.tar.gz
+
 otherwise:
 code`sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux32.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux32.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux32.tar.gz
 
