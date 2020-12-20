@@ -1,7 +1,7 @@
 # plugin-teleo
 This is a plugin for Jeedom aimed at retrieveing water consumptions metrics from Veolia. 
 
-This implies to have a communicating water meter provided by Veolia called Téléo and a proper local Jeedom installation.
+This implies to have a communicating water meter provided by Veolia called **Téléo** and a proper local Jeedom installation.
 
 # Credits
 This plugin has been inspired by the work done by:
