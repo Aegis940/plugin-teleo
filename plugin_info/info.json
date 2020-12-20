@@ -1,0 +1,30 @@
+{
+    "id": "teleo",
+    "name": "Veolia Téléo",
+    "description": {
+        "fr_FR": "Récupérer les informations du compteur communicant Téléo à partir de son compte-client Veolia.",
+        "en_US": "Retrieve the information of the Téléo smart meter from their Veolia customer account."
+    },
+    "utilization": "Sur la page de l'équipement renseignez l'identifiant ainsi que le mot de passe de votre compte-client Veolia puis cliquez sur le bouton Sauvegarder.",
+    "licence": "AGPL",
+    "author": "Aegis",
+    "require": "4.0.61",
+    "category": "energy",
+    "hasDependency": false,
+    "hasOwnDeamon": false,
+    "maxDependancyInstallTime": 0,
+    "changelog": "https:\/\/aegis.github.io\/plugin-teleo\/#language#\/changelog",
+    "documentation": "https:\/\/Aegis940.github.io\/plugin-teleo\/#language#\/",
+    "language": [
+        "fr_FR",
+        "en_US"
+    ],
+    "compatibility": [
+        "miniplus",
+        "smart",
+        "rpi",
+        "docker",
+        "diy",
+        "v4"
+    ]
+}
