@@ -20,23 +20,28 @@ Le plugin **Veolia Téléo** récupère les informations en utilisant un script 
 
 ### Pour le script Veolia Ile de France
 ***la version de Python 3.7.x est indispensable*** (*python3 --version*)
-`sudo apt-get update
-`sudo apt-get install python3 xvfb iceweasel
-`sudo pip3 install selenium pyvirtualdisplay urllib3
+```bash
+sudo apt-get update
+sudo apt-get install python3 xvfb iceweasel
+sudo pip3 install selenium pyvirtualdisplay urllib3
+```
 
 **Pour la version du driver geckodriver, elle dépend de votre architecture**
 si la commande *uname -m* retourne **armv7l** (cas d'un Raspberry PI) alors :
-`sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckodriver-v0.23.0-arm7hf.tar.gz && sudo tar xzfz geckodriver-v0.23.0-arm7hf.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.23.0-arm7hf.tar.gz
-
+```bash
+sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckodriver-v0.23.0-arm7hf.tar.gz && sudo tar xzfz geckodriver-v0.23.0-arm7hf.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.23.0-arm7hf.tar.gz
+```
 sinon :
-`sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux32.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux32.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux32.tar.gz
-
+```bash
+sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux32.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux32.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux32.tar.gz
+```
 ### Pour les autres sites Veolia
 **la version de Python 3.x est indispensable**
-`sudo pip install requests lxml xlrd
+```bash
+sudo pip install requests lxml xlrd
+```
 
-
-Les données sont vérifiées toutes les heures entre 4h et 22h et mises à jour uniquement si non disponibles dans Jeedom.
+>Les données sont vérifiées toutes les heures entre 4h et 22h et mises à jour uniquement si non disponibles dans Jeedom.
 
 ## Configuration des équipements
 
@@ -65,7 +70,7 @@ Le plugin va alors vérifier la bonne connexion au site *Veolia* et récupérer 
 - **consommation annuelle** : en Litres, basé sur l'index,
 
 Le calcul de consommation se faisant sur l'index, il est nécessaire de conserver son historique au moins sur 1 à 2 ans. 
-**Le premier jour d'installation de l'équipement, les valeurs seront à 0** et c'est seulement au second jour que les données de consommation seront visibles.
+>**Le premier jour d'installation de l'équipement, les valeurs seront à 0** et c'est seulement au second jour que les données de consommation seront visibles.
 
 
 # Remarques
