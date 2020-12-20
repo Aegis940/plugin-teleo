@@ -1,0 +1,57 @@
+{
+    "plugins\/teleo\/plugin_info\/configuration.php": {
+        "401 - Accès non autorisé": "401 - Unauthorized access",
+        "Récupération des données à la minute": "Data recovery by the minute"
+    },
+    "plugins\/teleo\/desktop\/php\/teleo.php": {
+        "401 - Accès non autorisé": "401 - Unauthorized access",
+        "Gestion": "Management",
+        "Ajouter": "Add",
+        "Configuration": "Configuration",
+        "Mes comptes Veolia": "My Veolia accounts",
+        "Rechercher": "Search",
+        "Configuration avancée": "Advanced configuration",
+        "Dupliquer": "Duplicate",
+        "Sauvegarder": "Save",
+        "Supprimer": "Delete",
+        "Equipement": "Equipment",
+        "Commandes": "Commands",
+        "Nom de l'équipement Veolia": "Name of the Veolia equipment",
+        "Objet parent": "Parent object",
+        "Aucun": "None",
+        "Catégorie": "Category",
+        "Options": "Options",
+        "Activer": "Activate",
+        "Visible": "Visible",
+        "Identifiant Veolia": "Veolia ID",
+        "Mot de passe Veolia": "Veolia password",
+        "Forcer la répcupération des données": "Force data retrieval",
+		"Répertoire d\\'export des données": "Output data directory",
+		"Cocher la case si la connexion au site Veolia est faite depuis cette machine": "Check this optionif the connection to the Veolia site is made from this machine",		
+        "Cocher la case pour forcer la récupération des données même si déjà présentes": "Check this option to force data retrieval even if data already present for concerned periods",
+        "Cocher la case pour utiliser le template de widget aux couleurs du compteur Téléo": "Check this option to use widget's template with Téléo colors",
+		"Veolia Ile de France": "Veolia Ile de France website",
+		"Autre site Veolia": "Other Veolia website",		
+        "Id": "ID",
+        "Nom": "Name",
+        "Type": "Type",
+        "Action": "Action"
+    },
+    "plugins\/teleo\/desktop\/js\/teleo.js": {
+        "Min": "Min",
+        "Max": "Max",
+        "Unité": "Unit",
+        "Afficher": "Show",
+        "Historiser": "Historize",
+        "Tester": "Test"
+    },
+    "plugins\/teleo\/core\/class\/teleo.class.php": {
+        "Erreur d\\'authentification : vérifier la validité de l\\'identifiant et du mot de passe": "Authentication error: check the validity of the username and password",
+        "L\\'identifiant du compte Veolia doit être renseigné": "The identifier of the Veolia account must be entered",
+        "Le mot de passe du compte Veolia doit être renseigné": "The password for the Veolia account must be entered",
+		"Impossible de créer le répertoire destination": "Unable to create destination directory"
+    },
+    "info.json": {
+        "Récupérer les informations du compteur communicant Teleo à partir de son compte-client Veolia.": "Retrieve the information of the Teleo smart meter from their Veolia customer account."
+    }
+}

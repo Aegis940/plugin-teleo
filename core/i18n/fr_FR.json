@@ -1,0 +1,58 @@
+{
+    "plugins\/teleo\/plugin_info\/configuration.php": {
+        "401 - Accès non autorisé": "401 - Accès non autorisé",
+        "Récupération des données à la minute": "Récupération des données à la minute"
+    },
+    "plugins\/teleo\/desktop\/php\/teleo.php": {
+        "401 - Accès non autorisé": "401 - Accès non autorisé",
+        "Gestion": "Gestion",
+        "Ajouter": "Ajouter",
+        "Configuration": "Configuration",
+        "Mes comptes Veolia": "Mes comptes Veolia",
+        "Rechercher": "Rechercher",
+        "Configuration avancée": "Configuration avancée",
+        "Dupliquer": "Dupliquer",
+        "Sauvegarder": "Sauvegarder",
+        "Supprimer": "Supprimer",
+        "Equipement": "Equipement",
+        "Commandes": "Commandes",
+        "Nom de l'équipement Veolia": "Nom de l'équipement Veolia",
+        "Objet parent": "Objet parent",
+        "Aucun": "Aucun",
+        "Catégorie": "Catégorie",
+        "Options": "Options",
+        "Activer": "Activer",
+        "Visible": "Visible",
+        "Identifiant Veolia": "Identifiant Veolia",
+        "Mot de passe Veolia": "Mot de passe Veolia",
+        "Forcer la récupération des données": "Forcer la récupération des données",
+		"Connexion au site Veolia": "Connexion au site Veolia",
+		"Répertoire d\\'export des données": "Répertoire d\\'export des données",
+		"Cocher la case si la connexion au site Veolia est faite depuis cette machine": "Cocher la case si la connexion au site Veolia est faite depuis cette machine",
+        "Cocher la case pour forcer la récupération des données même si déjà présentes": "Cocher la case pour forcer la récupération des données même si déjà présentes",
+        "Cocher la case pour utiliser le template de widget aux couleurs du compteur Téléo": "Cocher la case pour utiliser le template de widget aux couleurs du compteur Téléo",
+		"Veolia Ile de France": "Veolia Ile de France",
+		"Autre site Veolia": "Autre site Veolia",
+        "Id": "Id",
+        "Nom": "Nom",
+        "Type": "Type",
+        "Action": "Action"
+    },
+    "plugins\/teleo\/desktop\/js\/teleo.js": {
+        "Min": "Min",
+        "Max": "Max",
+        "Unité": "Unité",
+        "Afficher": "Afficher",
+        "Historiser": "Historiser",
+        "Tester": "Tester"
+    },
+    "plugins\/teleo\/core\/class\/teleo.class.php": {
+        "Erreur d\\'authentification : vérifier la validité de l\\'identifiant et du mot de passe": "Erreur d\\'authentification : vérifier la validité de l\\'identifiant et du mot de passe",
+        "L\\'identifiant du compte Veolia doit être renseigné": "L\\'identifiant du compte Veolia doit être renseigné",
+        "Le mot de passe du compte Veolia doit être renseigné": "Le mot de passe du compte Veolia doit être renseigné",
+		"Impossible de créer le répertoire destination": "Impossible de créer le répertoire destination"
+    },
+    "info.json": {
+        "Récupérer les informations du compteur communicant Teleo à partir de son compte-client Veolia.": "Récupérer les informations du compteur communicant Teleo à partir de son compte-client Veolia."
+    }
+}
