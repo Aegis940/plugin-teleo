@@ -69,7 +69,7 @@ Le plugin va alors vérifier la bonne connexion au site *Veolia* et récupérer 
 - **consommation mensuelle** : en Litres, basé sur l'index,
 - **consommation annuelle** : en Litres, basé sur l'index,
 
-Le calcul de consommation se faisant sur l'index, il est nécessaire de conserver son historique au moins sur 1 à 2 ans. 
+>Le calcul de consommation se faisant sur l'index, il est nécessaire de conserver son historique au moins sur 1 à 2 ans. 
 >**Le premier jour d'installation de l'équipement, les valeurs seront à 0** et c'est seulement au second jour que les données de consommation seront visibles.
 
 
@@ -87,14 +87,13 @@ Ce plugin gratuit est ouvert à contributions (améliorations et/ou corrections)
 
 Ce plugin s'est inspiré des travaux suivants :
 
--   [Jeedom](https://github.com/jeedom) via leur plugin Enedis :  [plugin-enedis](https://github.com/jeedom/plugin-enedis)
-- 	[hugoKs3](https://github.com/hugoKs3/plugin-jazpar) pour son plugin jazpar
-- 	[Flobul](https://github.com/Flobul/conso_veolia) pour son script Python pour récupérer les données du site Veolia IdF
--	[doyenc] (https://community.jeedom.com/t/plugin-veolia-eau-plugin-veolia-eau-narrive-pas-a-se-connecter/17839/38) pour son script Python pour récupérer les données du site Veolia
+- [Jeedom](https://github.com/jeedom) via leur plugin Enedis :  [plugin-enedis](https://github.com/jeedom/plugin-enedis)
+- [hugoKs3](https://github.com/hugoKs3/plugin-jazpar) pour son plugin jazpar
+- [Flobul](https://github.com/Flobul/conso_veolia) pour son script Python pour récupérer les données du site Veolia IdF
+- [doyenc](https://community.jeedom.com/t/plugin-veolia-eau-plugin-veolia-eau-narrive-pas-a-se-connecter/17839/38) pour son script Python pour récupérer les données du site Veolia
  
 
 # Disclaimer
-
 -   Ce plugin ne prétend pas être exempt de bugs.
 -   Ce plugin vous est fourni sans aucune garantie. Bien que peu probable, si il venait à corrompre votre installation Jeedom,l'auteur ne pourrait en être tenu pour responsable.
 
