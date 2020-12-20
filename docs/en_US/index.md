@@ -3,11 +3,11 @@
 Plugin allowing the recovery of consumption from the *Teleo* communicating meter by querying the *Veolia* customer account. As the data is not made available in real time, the plugin recovers the water consumption data of the previous day every day. 
 
 The following types of consumption data are available:
-- The **consumption index** (in L)*.
-- the **daily consumption** *(in L)*.
-- the **weekly consumption** *(in L)*.
-- the **monthly consumption** *(in L)*.
-- the **annual consumption** *(in L)*.
+- The **consumption index** (in L).
+- the **daily consumption** *(in L).
+- the **weekly consumption** *(in L).
+- the **monthly consumption** *(in L).
+- the **annual consumption** *(in L).
 
 >**Important**      
 > It is necessary to have a communicating water meter **Téléo** and a Veolia customer account. The plugin retrieves the information, according to the configuration chosen in the plugin, from the *my space* <a href="https://www.vedif.eau.veolia.fr/" target="_blank">part of the Veolia Ile de France website for Ile de France customers or from the *my personal space* <a href="https://www.service.eau.veolia.fr/" target="_blank">part of the Veolia website for others. You must therefore check that you have access to it with your usual identifiers and that the data is visible. If not, the plugin will not work.
