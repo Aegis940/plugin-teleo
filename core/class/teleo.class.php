@@ -38,16 +38,16 @@ class teleo extends eqLogic {
 	$startCheckHour = config::byKey('startCheckHour', __CLASS__);
 	if (empty($startCheckHour)) {
 		$startCheckHour = 4;
-		config::save('startCheckHour', $startCheckHour, 'teleo');
+		config::save('startCheckHour', $startCheckHour, __CLASS__);
 	}
 	
     if ($startCheckHour < 1) {
        $startCheckHour = 1;
-	   config::save('startCheckHour', $startCheckHour, 'teleo');
+	   config::save('startCheckHour', $startCheckHour, __CLASS__);
 	}
 	elseif ($startCheckHour > 20) {
 		$startCheckHour = 20;
-		config::save('startCheckHour', $startCheckHour, 'teleo');
+		config::save('startCheckHour', $startCheckHour, __CLASS__);
 	}
 
     $eqLogics = self::byType(__CLASS__, true);
