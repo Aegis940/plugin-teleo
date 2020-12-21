@@ -1,7 +1,8 @@
 {
     "plugins\/teleo\/plugin_info\/configuration.php": {
         "401 - Accès non autorisé": "401 - Accès non autorisé",
-        "Récupération des données à la minute": "Récupération des données à la minute"
+        "Récupération des données à la minute": "Récupération des données à la minute",
+		"Heure de début de vérification des données": "Heure de début de vérification des données"
     },
     "plugins\/teleo\/desktop\/php\/teleo.php": {
         "401 - Accès non autorisé": "401 - Accès non autorisé",

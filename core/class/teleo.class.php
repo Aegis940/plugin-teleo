@@ -35,11 +35,27 @@ class teleo extends eqLogic {
     $cronMinute = config::byKey('cronMinute', __CLASS__);
     if (!empty($cronMinute) && date('i') != $cronMinute) return;
 
+	$startCheckHour = config::byKey('startCheckHour', __CLASS__);
+	if (empty($startCheckHour)) {
+		$startCheckHour = 4;
+		config::save('startCheckHour', $startCheckHour, 'teleo');
+	}
+	
+    if ($startCheckHour < 1) {
+       $startCheckHour = 1;
+	   config::save('startCheckHour', $startCheckHour, 'teleo');
+	}
+	elseif ($startCheckHour > 20) {
+		$startCheckHour = 20;
+		config::save('startCheckHour', $startCheckHour, 'teleo');
+	}
+
     $eqLogics = self::byType(__CLASS__, true);
 
+
     foreach ($eqLogics as $eqLogic)
-    {
-      if (date('G') < 4 || date('G') >= 22)
+    { 
+      if (date('G') < $startCheckHour || date('G') >= 22)
       {
         if ($eqLogic->getCache('getTeleoData') == 'done')
     	{
@@ -84,7 +100,7 @@ class teleo extends eqLogic {
       {
         sleep(rand(5,50));
 
-	$result = $this->connectTeleo();
+		$result = $this->connectTeleo();
 
         if (!is_null($result)) {
            $this->getTeleoData();

@@ -30,4 +30,12 @@ if (!isConnect('admin')) {
    </div>
  </div>
 </fieldset>
+<fieldset>
+  	<div class="form-group">
+     <label class="col-lg-4 control-label" title="Indiquez l'heure de début de vérification des données">{{Heure de début de vérification des données}}</label>
+    <div class="col-lg-4">
+     <input class="configKey form-control" data-l1key="startCheckHour"/>
+   </div>
+ </div>  
+</fieldset>  
 </form>

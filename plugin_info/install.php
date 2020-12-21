@@ -25,6 +25,12 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
       $randMinute = rand(3, 59);
       config::save('cronMinute', $randMinute, 'teleo');
     }
+
+	$startCheckHour = config::byKey('startCheckHour', 'teleo');
+    if (empty($startCheckHour)) {
+      $startCheckHour = 4;
+      config::save('startCheckHour', $startCheckHour, 'teleo');
+    }	
   }
 
 // Fonction exécutée automatiquement après la mise à jour du plugin
@@ -33,6 +39,12 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
     if (empty($cronMinute)) {
       $randMinute = rand(3, 59);
       config::save('cronMinute', $randMinute, 'teleo');
+    }
+
+	$startCheckHour = config::byKey('startCheckHour', 'teleo');
+    if (empty($startCheckHour)) {
+      $startCheckHour = 4;
+      config::save('startCheckHour', $startCheckHour, 'teleo');
     }
 
   }
