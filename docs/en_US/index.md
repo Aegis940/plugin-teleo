@@ -17,7 +17,8 @@ The following types of consumption data are available:
 
 ## Plugin configuration
 
-The **Veolia Téléo** plugin retrieves the information using a Python script (one for the Veolia Ile de France site and one for the other sites). Each script requires the installation of specific components:
+The **Veolia Téléo** plugin retrieves the information using a Python script (one for the Veolia Ile de France site and one for the other sites). 
+Each script requires the installation of specific components:
 
 ### For the Veolia Ile de France script
 ***Python version 3.7.x is required*** (*python3 --version*)
@@ -44,7 +45,7 @@ sudo pip install requests lxml xlrd
 sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux32.tar.gz
 ```
 
-The data is checked every hour between 4 a.m. and 10 p.m. and updated only if not available in Jeedom.
+The data is checked every hour between 4 a.m. and 10 p.m. and updated only if not available in Jeedom. The start time can be set between 1 a.m. and 8 p.m.
 
 ## Equipment configuration
 
