@@ -1,5 +1,5 @@
 # Plugin Veolia Téléo
-![plugin-teleo logo][logo]
+![plugin-teleo logo](https://aegis940.github.io/plugin-teleo/assets/images/logo.png)
 
 Plugin permettant la récupération des consommations du compteur communicant *Téléo* par l'interrogation du compte-client *Veolia*. Les données n'étant pas mises à disposition en temps réel, le plugin récupère chaque jour les données de consommation d'eau de la veille. 
 
