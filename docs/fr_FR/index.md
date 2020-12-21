@@ -1,4 +1,5 @@
 # Plugin Veolia Téléo
+![plugin-teleo logo](https://aegis940.github.io/plugin-teleo/assets/images/logo.png)
 
 Plugin permettant la récupération des consommations du compteur communicant *Téléo* par l'interrogation du compte-client *Veolia*. Les données n'étant pas mises à disposition en temps réel, le plugin récupère chaque jour les données de consommation d'eau de la veille. 
 
@@ -10,7 +11,7 @@ Les types de données de consommation suivants sont accessibles :
 - la **consommation annuelle** *(en L)*.
 
 >**Important**      
-> Il est nécessaire d'être en possession d'un compteur connecté **Téléo** et d'un compte-client Veolia. Le plugin récupère les informations, en fonction de la configuration choisie dans le plugin, à partir de la partie *mon espace* <a href="https://www.vedif.eau.veolia.fr/" target="_blank">du site Veolia Ile de France</a> pour les clients d'Ile de France ou à partir de la partie *mon espace personnel* <a href="https://www.service.eau.veolia.fr/" target="_blank">du site Veolia</a> pour les autres, il faut donc vérifier que vous y avez bien accès avec vos identifiants habituels et que les données y sont visibles. Dans le cas contraire, le plugin ne fonctionnera pas.
+> Il est nécessaire d'être en possession d'un compteur connecté **Téléo** et d'un compte-client Veolia. Le plugin récupère les informations, en fonction de la configuration choisie dans le plugin, à partir de la partie *mon espace* <a href="https://www.vedif.eau.veolia.fr/" target="_blank">du site Veolia Ile de France</a> pour les clients d'Ile de France ou à partir de la partie *mon espace personnel* <a href="https://www.service.eau.veolia.fr/" target="_blank">du site Veolia</a> pour les autres, il faut donc vérifier que vous y avez bien accès avec vos identifiants habituels et que les données y sont visibles. **Dans le cas contraire, le plugin ne fonctionnera pas.**
 
 # Configuration
 

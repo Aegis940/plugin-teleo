@@ -1,5 +1,5 @@
-theme: jekyll-theme-minimal
-title: Veolia Téléo
+theme: jekyll-theme-midnight
+title: plugin-teleo
 description: Jeedom plugin to retrieve water consumption from Veolia website
 show_downloads: true
 logo: /assets/images/logo.png
