@@ -196,8 +196,8 @@ class teleo extends eqLogic {
 		$valeurMesure = $mesure[1];
 		 
 		// Check si la date de la dernière mesure est bien celle d'hier
-		$dateLastMeasure = date('Y-m-d', strtotime($dateMesure));
-		$dateYesterday = date('Y-m-d', strtotime('-1 day'));
+		$dateLastMeasure = date('Y-m-d 23:55:00', strtotime($dateMesure));
+		$dateYesterday = date('Y-m-d 23:55:00', strtotime('-1 day'));
 		
         log::add(__CLASS__, 'debug', $this->getHumanName() . ' Vérification date dernière mesure : ' . $dateLastMeasure);
 		
@@ -288,12 +288,19 @@ class teleo extends eqLogic {
 				case 'consoh':
 					log::add(__CLASS__, 'debug', $this->getHumanName() . '--------------------------');
 					
-					$dateBegin = date('Y-m-d 23:55:00', strtotime('monday this week'));
+					$dateBeginPeriod = date('Y-m-d 23:55:00', strtotime('monday this week'));
+					$dateBegin = $dateBeginPeriod;
 									
 					if ($dateLastMeasure < $dateBegin) {
-						$dateBegin = date('Y-m-d 23:55:00', strtotime('monday this week -1 week'));				
+						# Last measure of previous week
+						$dateBegin = date('Y-m-d 23:55:00', strtotime('monday this week -1 week'));	
+						$dateBeginPeriod = $dateBegin;						
 					}
-
+					elseif ($dateLastMeasure == $dateBegin) {
+						# New week
+						$dateBegin = date("Y-m-d 23:55:00", strtotime('-2 day'));
+					}
+					
 					if ($dateCollectPreviousIndex < $dateBegin) {
 	
 						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation hebomadaire pour aujourdh\'ui car la valeur est à cheval sur plusieurs semaines.');
@@ -310,12 +317,19 @@ class teleo extends eqLogic {
 				case 'consom':
 					log::add(__CLASS__, 'debug', $this->getHumanName() . '--------------------------');
 					
-					$dateBegin = date('Y-m-d 23:55:00', strtotime('first day of this month'));
+					$dateBeginPeriod = date('Y-m-d 23:55:00', strtotime('first day of this month'));
+					$dateBegin = $dateBeginPeriod;
 					
 					if ($dateLastMeasure < $dateBegin) {
-						$dateBegin = date('Y-m-d 23:55:00', strtotime('first day of this month - 1 month'));		
+						# Last measure of previous month
+						$dateBegin = date('Y-m-d 23:55:00', strtotime('first day of this month - 1 month'));
+						$dateBeginPeriod = $dateBegin;						
 					}
-
+					elseif ($dateLastMeasure == $dateBegin) {
+						# New month
+						$dateBegin = date("Y-m-d 23:55:00", strtotime('-2 day'));
+					}
+	
 					if ($dateCollectPreviousIndex < $dateBegin) {
 
 						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation mensuelle pour aujourdh\'ui car la valeur est à cheval sur plusieurs mois.');
@@ -332,11 +346,18 @@ class teleo extends eqLogic {
 				case 'consoa':
 					log::add(__CLASS__, 'debug', $this->getHumanName() . '--------------------------');
 
-					$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01'));
+					$dateBeginPeriod = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01'));
+					$dateBegin = $dateBeginPeriod;
 					
 					if ($dateLastMeasure < $dateBegin) {
-						$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -1 year'));					
+						# Last measure of previous year
+						$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -1 year'));
+						$dateBeginPeriod = $dateBegin;
 					}
+					elseif ($dateLastMeasure == $dateBegin) {
+						# New year
+						$dateBegin = date("Y-m-d 23:55:00", strtotime('-2 day'));
+					}			
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
 
@@ -361,9 +382,9 @@ class teleo extends eqLogic {
 				log::add(__CLASS__, 'debug', $this->getHumanName() . ' Mesure en historique - Aucune action : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $measure);
 			}
 			else {
-				#Pour les période Hebdo, Mois et Année on ne garde que la dernière valeur
+				# Pour les période Hebdo, Mois et Année on ne garde que la dernière valeur de la période en cours
 				if ($cmdName != 'index' && $cmdName != 'consod') {
-					log::add(__CLASS__, 'debug', $this->getHumanName() . ' Suppression historique entre le ' . $dateBegin . ' et le ' . $dateReal);
+					log::add(__CLASS__, 'debug', $this->getHumanName() . ' Suppression historique entre le ' . $dateBeginPeriod . ' et le ' . $dateReal);
 					history::removes($cmdId, $dateBegin, $dateReal);				
 				}
 				
