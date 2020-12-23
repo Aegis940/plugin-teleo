@@ -293,12 +293,12 @@ class teleo extends eqLogic {
 									
 					if ($dateLastMeasure < $dateBegin) {
 						# Last measure of previous week
-						$dateBegin = date('Y-m-d 23:55:00', strtotime('monday this week -1 week'));	
-						$dateBeginPeriod = $dateBegin;						
+						$dateBegin = date('Y-m-d 23:55:00', strtotime('monday this week -1 week -1 day'));
+						$dateBeginPeriod = date('Y-m-d 23:55:00', strtotime('monday this week -1 week'));						
 					}
-					elseif ($dateLastMeasure == $dateBegin) {
+					else {
 						# New week
-						$dateBegin = date("Y-m-d 23:55:00", strtotime('-2 day'));
+						$dateBegin = date('Y-m-d 23:55:00', strtotime('monday this week -1 day'));
 					}
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
@@ -322,14 +322,14 @@ class teleo extends eqLogic {
 					
 					if ($dateLastMeasure < $dateBegin) {
 						# Last measure of previous month
-						$dateBegin = date('Y-m-d 23:55:00', strtotime('first day of this month - 1 month'));
-						$dateBeginPeriod = $dateBegin;						
+						$dateBegin = date('Y-m-d 23:55:00', strtotime(date('Y-m-d 23:55:00', strtotime('first day of this month -1 month')) . ' -1 day'));
+						$dateBeginPeriod = date('Y-m-d 23:55:00', strtotimestrtotime('first day of this month - 1 month'));						
 					}
-					elseif ($dateLastMeasure == $dateBegin) {
+					else {
 						# New month
-						$dateBegin = date("Y-m-d 23:55:00", strtotime('-2 day'));
+						$dateBegin = date('Y-m-d 23:55:00', strtotime('first day of this month -1 day'));
 					}
-	
+					
 					if ($dateCollectPreviousIndex < $dateBegin) {
 
 						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation mensuelle pour aujourdh\'ui car la valeur est à cheval sur plusieurs mois.');
@@ -351,13 +351,13 @@ class teleo extends eqLogic {
 					
 					if ($dateLastMeasure < $dateBegin) {
 						# Last measure of previous year
-						$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -1 year'));
-						$dateBeginPeriod = $dateBegin;
+						$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -1 year -1 day'));
+						$dateBeginPeriod = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -1 year'));
 					}
-					elseif ($dateLastMeasure == $dateBegin) {
+					else {
 						# New year
-						$dateBegin = date("Y-m-d 23:55:00", strtotime('-2 day'));
-					}			
+						$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -1 day'));
+					}
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
 

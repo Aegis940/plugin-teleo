@@ -24,14 +24,15 @@ Chaque script nécessite l'installation de composants spécifiques :
 ***la version de Python 3.7.x est indispensable*** (*python3 --version*)
 ```bash
 sudo apt-get update
-sudo apt-get install python3 xvfb iceweasel
+sudo apt-get install xvfb iceweasel
 sudo pip3 install selenium pyvirtualdisplay urllib3
 ```
 
 **Pour la version du driver geckodriver, elle dépend de votre architecture**
 si la commande *uname -m* retourne **armv7l** (cas d'un Raspberry PI) alors :
 ```bash
-sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckodriver-v0.23.0-arm7hf.tar.gz && sudo tar xzfz geckodriver-v0.23.0-arm7hf.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.23.0-arm7hf.tar.gz
+32bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux32.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux32.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux32.tar.gz
+64bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux64.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux64.tar.gz
 ```
 sinon :
 ```bash
@@ -40,7 +41,7 @@ sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/gecko
 ### Pour les autres sites Veolia
 **la version de Python 3.x est indispensable**
 ```bash
-sudo pip install requests lxml xlrd
+sudo pip3 install requests lxml xlrd
 ```
 
 >Les données sont vérifiées, par défaut, toutes les heures entre 4h et 22h et mises à jour uniquement si non disponibles dans Jeedom. L'heure de début peut être réglée entre 1h et 20h.

@@ -1,4 +1,3 @@
-#! /usr/bin/env python3
 #
 #
 
@@ -63,7 +62,7 @@ profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'text/csv')
 browser = webdriver.Firefox(firefox_profile=profile, options=options, executable_path=r'/usr/local/bin/geckodriver', service_log_path='./geckodriver.log')
 
 logger.info('Page de login')
-browser.get(('https://espace-client.vedif.eau.veolia.fr/s/login/'))
+browser.get(urlHome)
 browser.implicitly_wait(10)
 
 # Recherche et remplis les champs d'identification
@@ -90,12 +89,13 @@ time.sleep(15)
 Btns=browser.find_elements_by_xpath(".//c-icl-button-stateful")
 
 for Btn in Btns:
- if (Btn.find_element_by_xpath('.//span').text=="Jours"):
-  Btn.click()
-  time.sleep(3)
- if (Btn.find_element_by_xpath('.//span').text=="Litres"):
-  Btn.click()
-  time.sleep(3)
+	print(Btn.find_element_by_xpath('.//span').text)
+	if (Btn.find_element_by_xpath('.//span').text=="Jours"):
+		Btn.click()
+		time.sleep(3)
+	if (Btn.find_element_by_xpath('.//span').text=="Litres"):
+		Btn.click()
+		time.sleep(3)
 
 logger.info('Téléchargement du fichier')
 downloadFileButton = browser.find_element_by_class_name("slds-button.slds-text-title_caps")
