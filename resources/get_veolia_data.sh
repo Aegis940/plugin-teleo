@@ -34,9 +34,10 @@ elif [ "$1" = "Other" ]; then
 	fi
 fi	
 
+ 
 # Check Firefox version
 if [ "$1" = "IDF" ]; then 
-	if [ $(firefox --version 2>&1 | sed -e "s/^Mozilla Firefox \([0-9][0-9]*\)\.[0-9][0-9]*\.[0-9][0-9]*$/\1/") -le 60 ]; then
+	if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -lt 60 ]; then
 		echo "Mozilla Firefox must be 60.x or higher"
 		exit 0
 	fi
