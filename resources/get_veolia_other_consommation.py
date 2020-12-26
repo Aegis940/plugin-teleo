@@ -10,16 +10,32 @@ from lxml import html
 import xlrd
 import datetime
 import json
+import os
 import sys
+import logging
+from logging.handlers import RotatingFileHandler
 
-# Identifiants
-if len( sys.argv ) == 4:
-	veolia_username = sys.argv[1]
-	veolia_password = sys.argv[2]
-else:
-	veolia_username = "xxxxx"
-	veolia_password = "xxxxx"
+# Configuration des logs
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
+file_handler = RotatingFileHandler('/tmp/veolia.log', 'a', 1000000, 1)
+file_handler.setLevel(logging.INFO)
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+steam_handler = logging.StreamHandler()
+steam_handler.setLevel(logging.INFO)
+steam_handler.setFormatter(formatter)
+logger.addHandler(steam_handler)
+
+if len( sys.argv ) < 4:
+	logger.error('wrong number of arg')
+	sys.exit(0)
 	
+# Identifiants
+veolia_username = sys.argv[1]
+veolia_password = sys.argv[2]
+
 # Page de login
 url = "https://www.service.eau.veolia.fr"
 url_page_login = url + "/connexion-espace-client.html"
@@ -27,58 +43,73 @@ url_action_login = url + "/home/connexion-espace-client/bloc-connexion-area/conn
 url_page_histo = url + "/home/espace-client/votre-consommation.html?vueConso=historique"
 url_fichier_histo = url + "/home/espace-client/votre-consommation.exportConsommationData.do?vueConso=historique"
 
-# Nouvelle session
-session = requests.Session()
+returnStatus = 0
+tempFile = "/tmp/temp.xls"
 
-# Récuperation du token du form de login (hidden indispensable pour la connexion)
-home = session.get(url_page_login)
-tree = html.fromstring(home.content)
-token = (tree.xpath('//input[@name="token"]')[0]).get('value')
+try:
+	# Nouvelle session
+	session = requests.Session()
+	
+	# Récuperation du token du form de login (hidden indispensable pour la connexion)
+	home = session.get(url_page_login)
+	if (home.status_code != 200): raise Exception('wrong URL') 
+	
+	tree = html.fromstring(home.content)
+	token = (tree.xpath('//input[@name="token"]')[0]).get('value')
 
-# Connexion
-data = {
-    'token': token, 
-    'veolia_username': veolia_username, 
-    'veolia_password': veolia_password
-}
-page = session.post(url_action_login, data=data)
+	# Connexion
+	logger.info('Page de login')
+	data = {
+		'token': token, 
+		'veolia_username': veolia_username, 
+		'veolia_password': veolia_password
+	}
+	page = session.post(url_action_login, data=data)
+	if (page.status_code != 200): raise Exception('wrong login') 
 
-# Page historique (il faut passer par la page obligatoirement)
-page = session.get(url_page_histo)
+	# Page historique (il faut passer par la page obligatoirement)
+	logger.info('Page de consommation')
+	page = session.get(url_page_histo)
+	if (page.status_code != 200): raise Exception('not logged or wrong URL') 
+	
+	# Recuperation du xls
+	xls = session.get(url_fichier_histo)
 
-# Recuperation du xls
-xls = session.get(url_fichier_histo)
+	# Sauvegarde du fichier temportaire
+	logger.info('Téléchargement du fichier')
+	open(tempFile, 'wb').write(xls.content)
 
-# Sauvegarde du fichier temportaire
-open('temp.xls', 'wb').write(xls.content)
+	# Ouverture du fichier temporaire
+	wb = xlrd.open_workbook(tempFile)
+	sheet = wb.sheet_by_index(0)
 
-# Ouverture du fichier temporaire
-wb = xlrd.open_workbook("temp.xls")
-sheet = wb.sheet_by_index(0)
+	# Donnees du dernier releve
+	date = datetime.datetime.strptime('1900-01-01', '%Y-%m-%d') + datetime.timedelta(sheet.cell_value(sheet.nrows - 1, 0) - 2)
+	dateF = date.strftime("%d/%m/%Y")
+	index = sheet.cell_value(sheet.nrows - 1, 1)
+	conso = sheet.cell_value(sheet.nrows - 1, 2)
+	releve = sheet.cell_value(sheet.nrows - 1, 3)
 
-# Donnees du dernier releve
-date = datetime.datetime.strptime('1900-01-01', '%Y-%m-%d') + datetime.timedelta(sheet.cell_value(sheet.nrows - 1, 0) - 2)
-dateF = date.strftime("%d/%m/%Y")
-index = sheet.cell_value(sheet.nrows - 1, 1)
-conso = sheet.cell_value(sheet.nrows - 1, 2)
-releve = sheet.cell_value(sheet.nrows - 1, 3)
-
-# Resultat si appel par plugin teleo
-if len( sys.argv ) == 4:
+	# Resultat
 	downloadPath = sys.argv[3]
 	downloadFile = downloadPath + '/historique_jours_litres.csv'
+		
+	open(downloadFile, 'w').write(date.strftime("%Y-%m-%d") + ';' + str(index) + ';' + str(conso) + ';' + str(releve) + '\n')
+
+	returnStatus = 1
+
+except Exception as e: logger.error(str(e))
 	
-	open(downloadFile, 'w').write(date.strftime("%Y-%m-%d") + ';' + str(index) + ';' + str(conso) + '\n')
-	print(1)
-	exit()
+finally:
+	# Suppression fichier temporaire
+	logger.info('Suppression fichier temporaire')
+	if os.path.exists(tempFile):
+		os.remove(tempFile)
+  
+	# Fermeture connexion
+	logger.info('Fermeture connexion. Exit code ' + str(returnStatus))
+	session.close()
 	
-# Sinon retour Jeedom
-if sys.argv[1] == 'index':
-	print(index)
-elif sys.argv[1] == 'conso':
-	print(conso)
-elif sys.argv[1] == 'date':
-	print(dateF)
-else:
-	print(-1)
+	#print(returnStatus)
+	sys.exit(returnStatus)
 

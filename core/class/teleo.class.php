@@ -73,8 +73,7 @@ class teleo extends eqLogic {
 
     /*     * *********************Méthodes d'instance************************* */
 
-    public function pullTeleo()
-    {
+    public function pullTeleo() {
       $need_refresh = false;
 
       foreach ($this->getCmd('info') as $eqLogicCmd)
@@ -119,8 +118,7 @@ class teleo extends eqLogic {
       }
     }
 
-    public function connectTeleo()
-	{
+    public function connectTeleo() {
 	  log::add(__CLASS__, 'info', $this->getHumanName() . ' Récupération des données ' . " - 1ère étape"); 
 	  
 	  $dataDirectory = $this->getConfiguration('outputData');
@@ -136,23 +134,15 @@ class teleo extends eqLogic {
 		  log::add(__CLASS__, 'info', $this->getHumanName() . ' 1ère étape d\'authentification Veolia');
 
 		  $veoliaWebsite = $this->getConfiguration('type');
-		  if ($veoliaWebsite == "IDF") {
-			  $scriptName = "get_veolia_idf_consommation.py";
-		  }
-		  else 
-		  {
-			  $scriptName = "get_veolia_other_consommation.py";
-		  }
-
 		  $login = $this->getConfiguration('login');
 		  $password = $this->getConfiguration('password');
-	 
-		  $cmdPython = 'python3 /var/www/html/plugins/teleo/resources/' . $scriptName . ' ' . $login . ' ' . $password . ' ' . $dataDirectory;
+
+		  $cmdPython = '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' ' . $login . ' ' . $password . ' ' . $dataDirectory;
 		  
 		  log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande : ' . $cmdPython);
 		  $output = shell_exec($cmdPython);
 
-		  if (is_null($output))
+		  if (is_null($output) || ($output != 1))
 		  {   
 			log::add(__CLASS__, 'error', $this->getHumanName() . ' Erreur de lancement du script python - Abandon');
 			return null;
@@ -169,8 +159,7 @@ class teleo extends eqLogic {
 	  }
    }
 
-   public function getTeleoData()
-   {
+   public function getTeleoData() {
      log::add(__CLASS__, 'info', $this->getHumanName() . ' Récupération des données ' . " - 2ème étape"); 
      
 	 $dataDirectory = $this->getConfiguration('outputData');
@@ -213,8 +202,7 @@ class teleo extends eqLogic {
 	 }
    }
 
-   public function getDateCollectPreviousIndex() 
-   {
+   public function getDateCollectPreviousIndex() {
 	   
 	    $cmd = $this->getCmd(null, 'index');
 		$cmdId = $cmd->getId();
@@ -230,8 +218,7 @@ class teleo extends eqLogic {
 		return $dateCollectPreviousIndex;			
    }
    
-   public function computeMeasure($cmdName, $dateBegin, $dateEnd) 
-   {
+   public function computeMeasure($cmdName, $dateBegin, $dateEnd) {
 		$cmdId = $this->getCmd(null, 'index')->getId();
 	   
 		$valueMin = history::getStatistique($cmdId, $dateBegin, $dateEnd)["min"];
@@ -385,7 +372,7 @@ class teleo extends eqLogic {
 				# Pour les période Hebdo, Mois et Année on ne garde que la dernière valeur de la période en cours
 				if ($cmdName != 'index' && $cmdName != 'consod') {
 					log::add(__CLASS__, 'debug', $this->getHumanName() . ' Suppression historique entre le ' . $dateBeginPeriod . ' et le ' . $dateReal);
-					history::removes($cmdId, $dateBegin, $dateReal);				
+					history::removes($cmdId, $dateBeginPeriod, $dateReal);				
 				}
 				
 				log::add(__CLASS__, 'debug', $this->getHumanName() . ' Enregistrement mesure : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $measure);

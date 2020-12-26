@@ -2,21 +2,25 @@
 #
 
 from selenium import webdriver
-import http.cookiejar
-import urllib
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0
+from selenium.webdriver.support import expected_conditions as EC
+
+from pyvirtualdisplay import Display
+
 import os
 import sys
 import time
-import csv
 import logging
 from logging.handlers import RotatingFileHandler
-from pyvirtualdisplay import Display
+
 	
 # Configuration des logs
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
-file_handler = RotatingFileHandler('veolia.log', 'a', 1000000, 1)
+file_handler = RotatingFileHandler('/tmp/veolia.log', 'a', 1000000, 1)
 file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
@@ -30,16 +34,15 @@ urlHome = 'https://espace-client.vedif.eau.veolia.fr/s/login/'
 urlConso = 'https://espace-client.vedif.eau.veolia.fr/s/historique'
 
 if len( sys.argv ) < 4:
+	logger.error('wrong number of arg')
+	sys.exit(0)
+	
 #Informations de connexion
-	veolia_login = 'mon.adresse@email.com'
-	veolia_password = 'M-eau2P@ss'
-#Emplacement de sauvegarde du fichier à télécharger	
-	downloadPath = '/home/pi/conso_veolia/'
-else:
-	veolia_login = sys.argv[1]
-	veolia_password = sys.argv[2]
-	downloadPath = sys.argv[3]
+veolia_login = sys.argv[1]
+veolia_password = sys.argv[2]
 
+#Emplacement de sauvegarde du fichier à télécharger		
+downloadPath = sys.argv[3]
 downloadFile = downloadPath + '/historique_jours_litres.csv'
 
 options = webdriver.FirefoxOptions()
@@ -50,62 +53,86 @@ options.add_argument("--no-sandbox")
 display = Display(visible=0, size=(800, 600))
 display.start()
 
-profile = webdriver.FirefoxProfile()
-options = webdriver.FirefoxOptions()
-options.headless = True
-profile.set_preference('browser.download.folderList', 2)
-profile.set_preference('browser.download.manager.showWhenStarting', False)
-profile.set_preference('browser.download.dir', downloadPath)
-profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'text/csv')
+returnStatus = 0
 
-#Bien indiquer l'emplacement de geckodriver
-browser = webdriver.Firefox(firefox_profile=profile, options=options, executable_path=r'/usr/local/bin/geckodriver', service_log_path='./geckodriver.log')
+try:
+	profile = webdriver.FirefoxProfile()
+	options = webdriver.FirefoxOptions()
+	options.headless = True
+	profile.set_preference('browser.download.folderList', 2)
+	profile.set_preference('browser.download.manager.showWhenStarting', False)
+	profile.set_preference('browser.download.dir', downloadPath)
+	profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'text/csv')
 
-logger.info('Page de login')
-browser.get(urlHome)
-browser.implicitly_wait(10)
+	# Bien indiquer l'emplacement de geckodriver
+	logger.info('Initialisation browser')
+	browser = webdriver.Firefox(firefox_profile=profile, options=options, executable_path=r'/usr/local/bin/geckodriver', service_log_path='/tmp/geckodriver.log')
 
-# Recherche et remplis les champs d'identification
-idEmail = browser.find_element_by_id('input-3')
-idPassword = browser.find_element_by_css_selector('input[type="password"]')
+	# Page de login
+	logger.info('Page de login')
+	browser.get(urlHome)
+	WebDriverWait(browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR , 'input[inputmode="email"]')))
 
-idEmail.clear()
-idEmail.send_keys(veolia_login)
-time.sleep(3)
+	nb_form = len(browser.find_elements_by_css_selector('input[inputmode="email"]'))
+	if nb_form != 2 : raise Exception('wrong login number') 
+	
+	# Recherche et remplis les champs d'identification
+	idEmail = browser.find_element_by_id('input-3')
+	idPassword = browser.find_element_by_css_selector('input[type="password"]')
 
-idPassword.clear()
-idPassword.send_keys(veolia_password)
-time.sleep(3)
+	idEmail.clear()
+	idEmail.send_keys(veolia_login)
+	time.sleep(3)
 
-loginButton = browser.find_element_by_class_name('submit-button')
-loginButton.click()
-time.sleep(2)
+	idPassword.clear()
+	idPassword.send_keys(veolia_password)
+	time.sleep(3)
 
-logger.info('Page de consommation')
-browser.get(urlConso)
-time.sleep(15)
+	loginButton = browser.find_element_by_class_name('submit-button')
+	loginButton.click()
+	time.sleep(2)
 
-# Cherche boutons  Jours et Litres
-Btns=browser.find_elements_by_xpath(".//c-icl-button-stateful")
+	# Page de consommation
+	logger.info('Page de consommation')
+	browser.get(urlConso)
+	WebDriverWait(browser, 30).until(EC.presence_of_element_located((By.NAME , 'from')))
 
-for Btn in Btns:
-	print(Btn.find_element_by_xpath('.//span').text)
-	if (Btn.find_element_by_xpath('.//span').text=="Jours"):
-		Btn.click()
-		time.sleep(3)
-	if (Btn.find_element_by_xpath('.//span').text=="Litres"):
-		Btn.click()
-		time.sleep(3)
+	# Sélection boutons
+	logger.info('Sélection boutons')
 
-logger.info('Téléchargement du fichier')
-downloadFileButton = browser.find_element_by_class_name("slds-button.slds-text-title_caps")
-downloadFileButton.click()
+	dayButton = browser.find_element_by_xpath("//span[contains(.,'Jours')]//parent::button")
+	dayButton.send_keys(Keys.RETURN)
+	time.sleep(5)
+	literButton = browser.find_element_by_xpath("//span[contains(.,'Litres')]//parent::button")
+	literButton.send_keys(Keys.RETURN)
+	time.sleep(5)		
 
-browser.close()
+	# Téléchargement du fichier
+	logger.info('Téléchargement du fichier')
+	downloadFileButton = browser.find_element_by_class_name("slds-button.slds-text-title_caps")
+	downloadFileButton.click()
 
-display.stop()
+	logger.info('Fichier:' + downloadFile)
 
-logger.info('Fichier:' + downloadFile)
+	# Resultat
+	returnStatus = 1
 
-# Resultat
-print (1)
+except Exception as e: logger.error(str(e))
+  
+finally:
+	# fermeture browser
+	logger.info('Fermeture connexion')
+	browser.close()
+
+	# Suppression fichier temporaire
+	logger.info('Suppression fichier log temporaire')
+	if os.path.exists("/tmp/geckodriver.log"):
+		os.remove("/tmp/geckodriver.log")
+			
+	# fermeture de l'affichage virtuel
+	logger.info('Fermeture display. Exit code ' + str(returnStatus))
+	display.stop()
+	
+	# print (returnStatus)
+	sys.exit(returnStatus)
+
