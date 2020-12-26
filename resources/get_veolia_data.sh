@@ -18,8 +18,8 @@ fi
 
 # Setup
 root='/var/www/html/plugins/teleo/resources'
-python="python3" 
-timeout=80
+python="python3"
+timeout=90
 
 # Check Python version
 if [ "$1" = "IDF" ]; then
@@ -32,11 +32,11 @@ elif [ "$1" = "Other" ]; then
 		echo "Python version must be 3.x"
 		exit 0
 	fi
-fi	
+fi
 
  
 # Check Firefox version
-if [ "$1" = "IDF" ]; then 
+if [ "$1" = "IDF" ]; then
 	if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -lt 60 ]; then
 		echo "Mozilla Firefox must be 60.x or higher"
 		exit 0

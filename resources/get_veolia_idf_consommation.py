@@ -102,10 +102,10 @@ try:
 
 	dayButton = browser.find_element_by_xpath("//span[contains(.,'Jours')]//parent::button")
 	dayButton.send_keys(Keys.RETURN)
-	time.sleep(5)
+	time.sleep(10)
 	literButton = browser.find_element_by_xpath("//span[contains(.,'Litres')]//parent::button")
 	literButton.send_keys(Keys.RETURN)
-	time.sleep(5)		
+	time.sleep(10)		
 
 	# Téléchargement du fichier
 	logger.info('Téléchargement du fichier')
