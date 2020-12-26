@@ -32,7 +32,7 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
       config::save('startCheckHour', $startCheckHour, 'teleo');
     }	
 	
-	chmod("/var/www/html/plugins/teleo/resources/get_veolia_data.sh", 0744);
+	chmod("/var/www/html/plugins/teleo/resources/get_veolia_data.sh", 0755);
   }
 
 // Fonction exécutée automatiquement après la mise à jour du plugin
@@ -49,7 +49,7 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
       config::save('startCheckHour', $startCheckHour, 'teleo');
     }
 
-	chmod("/var/www/html/plugins/teleo/resources/get_veolia_data.sh", 0744);
+	chmod("/var/www/html/plugins/teleo/resources/get_veolia_data.sh", 0755);
   }
 
 // Fonction exécutée automatiquement après la suppression du plugin

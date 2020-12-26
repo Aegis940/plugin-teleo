@@ -19,7 +19,7 @@ from logging.handlers import RotatingFileHandler
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
-file_handler = RotatingFileHandler('/tmp/veolia.log', 'a', 1000000, 1)
+file_handler = RotatingFileHandler('/tmp/jeedom/teleo/veolia.log', 'a', 1000000, 1)
 file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
@@ -44,7 +44,7 @@ url_page_histo = url + "/home/espace-client/votre-consommation.html?vueConso=his
 url_fichier_histo = url + "/home/espace-client/votre-consommation.exportConsommationData.do?vueConso=historique"
 
 returnStatus = 0
-tempFile = "/tmp/temp.xls"
+tempFile = "/tmp/jeedom/teleo/historique.xls"
 
 try:
 	# Nouvelle session

@@ -20,7 +20,7 @@ from logging.handlers import RotatingFileHandler
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
-file_handler = RotatingFileHandler('/tmp/veolia.log', 'a', 1000000, 1)
+file_handler = RotatingFileHandler('/tmp/jeedom/teleo/veolia.log', 'a', 1000000, 1)
 file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
@@ -66,7 +66,7 @@ try:
 
 	# Bien indiquer l'emplacement de geckodriver
 	logger.info('Initialisation browser')
-	browser = webdriver.Firefox(firefox_profile=profile, options=options, executable_path=r'/usr/local/bin/geckodriver', service_log_path='/tmp/geckodriver.log')
+	browser = webdriver.Firefox(firefox_profile=profile, options=options, executable_path=r'/usr/local/bin/geckodriver', service_log_path='/tmp/jeedom/teleo/geckodriver.log')
 
 	# Page de login
 	logger.info('Page de login')

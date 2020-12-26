@@ -137,14 +137,14 @@ class teleo extends eqLogic {
 		  $login = $this->getConfiguration('login');
 		  $password = $this->getConfiguration('password');
 
-		  $cmdPython = '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' ' . $login . ' ' . $password . ' ' . $dataDirectory;
+		  $cmdBash = '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' ' . $login . ' ' . $password . ' ' . $dataDirectory;
 		  
-		  log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande : ' . $cmdPython);
-		  $output = shell_exec($cmdPython);
+		  log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande : ' . $cmdBash);
+		  $output = shell_exec($cmdBash);
 
 		  if (is_null($output) || ($output != 1))
 		  {   
-			log::add(__CLASS__, 'error', $this->getHumanName() . ' Erreur de lancement du script python - Abandon');
+			log::add(__CLASS__, 'error', $this->getHumanName() . ' Erreur de lancement du script : [ ' . $output . ' ] - Abandon');
 			return null;
 		  }
 	  }  
@@ -198,7 +198,7 @@ class teleo extends eqLogic {
 		}
 		
 		// clean data file
-		//shell_exec("rm -f " . $dataDirectory . "/historique_jours_litres.csv");
+		shell_exec("rm -f " . $dataDirectory . "/historique_jours_litres.csv");
 	 }
    }
 
@@ -388,7 +388,7 @@ class teleo extends eqLogic {
       $this->setDisplay('height','332px');
       $this->setDisplay('width', '192px');
       $this->setConfiguration('forceRefresh', 0);
-	  $this->setConfiguration('outputData', '/var/www/html/tmp/teleo');
+	  $this->setConfiguration('outputData', '/tmp/jeedom/teleo');
 	  $this->setConfiguration('connectToVeoliaWebsiteFromThisMachine', 1);
       $this->setCategory('energy', 1);
       $this->setIsEnable(1);
@@ -448,7 +448,7 @@ class teleo extends eqLogic {
 
 	  $outDir = $this->getConfiguration('outputData');
 	  if(!is_dir($outDir)) {
-		if(!mkdir($outDir))  
+		if(!mkdir($outDir, 0754, true))  
 		{
 			throw new Exception(__('Impossible de créer le répertoire destination',__FILE__));
 		}    
