@@ -21,7 +21,7 @@ Le plugin **Veolia Téléo** récupère les informations en utilisant un script 
 Chaque script nécessite l'installation de composants spécifiques :
 
 ### Pour le script Veolia Ile de France
-***la version de Python 3.7.x est indispensable*** (*python3 --version*)
+***la version de Python 3.7.x est indispensable*** (*python3 --version*) et Firefox 60 ou supérieur (donc mieux vaut une **distrib buster**)
 ```bash
 sudo apt-get update
 sudo apt-get install xvfb iceweasel
@@ -31,12 +31,12 @@ sudo pip3 install selenium pyvirtualdisplay urllib3
 **Pour la version du driver geckodriver, elle dépend de votre architecture**
 si la commande *uname -m* retourne **armv7l** (cas d'un Raspberry PI) alors :
 ```bash
-32bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux32.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux32.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux32.tar.gz
-64bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux64.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux64.tar.gz
+sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckodriver-v0.23.0-arm7hf.tar.gz && sudo tar xzfz geckodriver-v0.23.0-arm7hf.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.23.0-arm7hf.tar.gz
 ```
 sinon :
 ```bash
-sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux32.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux32.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux32.tar.gz
+32bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux32.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux32.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux32.tar.gz
+64bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux64.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux64.tar.gz
 ```
 ### Pour les autres sites Veolia
 **la version de Python 3.x est indispensable**

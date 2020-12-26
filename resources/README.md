@@ -4,7 +4,7 @@ Dans le cas où le script *get_veolia_idf_consommation.py* ne peut être install
 
 ## Installation prérequis
 
-***la version de Python 3.7.x est indispensable*** (*python3 --version*)
+***la version de Python 3.7.x est indispensable*** (*python3 --version*) et Firefox 60 ou supérieur (donc mieux vaut une **distrib buster**)
 ```bash
 sudo apt-get update
 sudo apt-get sshpass
@@ -24,22 +24,30 @@ sinon
 ```
 
 ## Création fichier bash
-> Créer un fichier sh : **get_veolia_data.sh** dans le répertoire *conso_veolia* de l'utilsateur *pi* avec dedans :
+> Créer un fichier sh : **conso_veolia.sh** dans le répertoire *conso_veolia* de l'utilsateur *pi* avec dedans :
 
 ```bash
-python3 /home/pi/conso_veolia/get_veolia_idf_consommation.py
-sshpass -p "<Mdp_ssh_jeedom>" scp /home/pi/conso_veolia/historique_jours_litres.csv <user_jeedom>@<adresse_ip_local_jeedom>:/var/www/html/tmp/teleo
+/home/pi/conso_veolia/get_veolia_data.sh IDF <username> <password> /home/pi/conso_veolia
+sshpass -p "<Mdp_ssh_jeedom>" scp /home/pi/conso_veolia/historique_jours_litres.csv <user_jeedom>@<adresse_ip_local_jeedom>:/tmp/jeedom/teleo
 rm /home/pi/conso_veolia/historique_jours_litres.csv
 ```
 
->**Attention** l'utilisateur ssh doit avoir les droits d'écriture sur répertoire destination */var/www/html/tmp/teleo* 
+>**Attention** l'utilisateur ssh doit avoir les droits d'écriture sur répertoire destination */tmp/jeedom/teleo* 
+
+> Modifier le fichier sh **get_veolia_data.sh** :
+```bash
+...
+# Setup
+root='home/pi/conso_veolia'
+...
+```
 
 ## Création commande cron
 > Editer le fichier crontab de l'utilisateur *pi*:
 ```bash
 crontab -e
 ```
-Et ajouter par exemple, la ligne suivante pour un lancement à 00h01 :
+Et ajouter par exemple, la ligne suivante pour un lancement à 00h05 :
 ```bash
-1 0 * * * /home/pi/conso_veolia/get_veolia_data.sh
+5 0 * * * /home/pi/conso_veolia/conso_veolia.sh >/dev/null 2>&1
 ```

@@ -21,7 +21,7 @@ The **Veolia Téléo** plugin retrieves the information using a Python script (o
 Each script requires the installation of specific components:
 
 ### For the Veolia Ile de France script
-***Python version 3.7.x is required*** (*python3 --version*)
+***Python version 3.7.x is required*** (*python3 --version*) and Firefox 60 or higher (so better to use **buster distrib**)
 ```bash
 sudo apt-get update
 sudo apt-get install python3 xvfb iceweasel
@@ -35,14 +35,14 @@ sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.23.0/gecko
 
 otherwise:
 ```bash
-sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux32.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux32.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux32.tar.gz
+32bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux32.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux32.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux32.tar.gz
+64bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux64.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux64.tar.gz
 ```
 
 ### For other Veolia sites
 **Python 3.x version is required ** ** Python 3.x is required**
 ```bash
-sudo pip install requests lxml xlrd
-sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux32.tar.gz
+sudo pip3 install requests lxml xlrd
 ```
 
 The data is checked every hour between 4 a.m. and 10 p.m. and updated only if not available in Jeedom. The start time can be set between 1 a.m. and 8 p.m.
