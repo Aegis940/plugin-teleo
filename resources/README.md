@@ -19,17 +19,22 @@ sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.23.0/gecko
 ```
 sinon
 ```bash
-32bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux32.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux32.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux32.tar.gz
-64bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux64.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux64.tar.gz
+32bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.28.0/geckodriver-v0.28.0-linux32.tar.gz && sudo tar xzfz geckodriver-v0.28.0-linux32.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.28.0-linux32.tar.gz
+64bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.28.0/geckodriver-v0.28.0-linux64.tar.gz && sudo tar xzfz geckodriver-v0.28.0-linux64.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.28.0-linux64.tar.gz
 ```
 
 ## Création fichier bash
 > Créer un fichier sh : **conso_veolia.sh** dans le répertoire *conso_veolia* de l'utilsateur *pi* avec dedans :
 
 ```bash
+#!/bin/bash
+
 /home/pi/conso_veolia/get_veolia_data.sh IDF <username> <password> /home/pi/conso_veolia
-sshpass -p "<Mdp_ssh_jeedom>" scp /home/pi/conso_veolia/historique_jours_litres.csv <user_jeedom>@<adresse_ip_local_jeedom>:/tmp/jeedom/teleo
-rm /home/pi/conso_veolia/historique_jours_litres.csv
+
+if [ $? -eq 1 ]; then
+    sshpass -p "<Mdp_ssh_jeedom>" scp /home/pi/conso_veolia/historique_jours_litres.csv <user_jeedom>@<adresse_ip_local_jeedom>:/tmp/jeedom/teleo
+	rm /home/pi/conso_veolia/historique_jours_litres.csv
+fi
 ```
 
 >**Attention** l'utilisateur ssh doit avoir les droits d'écriture sur répertoire destination */tmp/jeedom/teleo* 

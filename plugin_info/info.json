@@ -10,7 +10,7 @@
     "author": "Aegis",
     "require": "4.0.61",
     "category": "energy",
-    "hasDependency": false,
+    "hasDependency": true,
     "hasOwnDeamon": false,
     "maxDependancyInstallTime": 0,
     "changelog": "https:\/\/Aegis940.github.io\/plugin-teleo\/#language#\/changelog",

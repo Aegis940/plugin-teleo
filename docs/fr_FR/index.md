@@ -24,6 +24,7 @@ Chaque script nécessite l'installation de composants spécifiques :
 ***la version de Python 3.7.x est indispensable*** (*python3 --version*) et Firefox 60 ou supérieur (donc mieux vaut une **distrib buster**)
 ```bash
 sudo apt-get update
+sudo apt-get install python3 python3-pip
 sudo apt-get install xvfb iceweasel
 sudo pip3 install selenium pyvirtualdisplay urllib3
 ```
@@ -35,12 +36,13 @@ sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.23.0/gecko
 ```
 sinon :
 ```bash
-32bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux32.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux32.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux32.tar.gz
-64bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz && sudo tar xzfz geckodriver-v0.26.0-linux64.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.26.0-linux64.tar.gz
+32bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.28.0/geckodriver-v0.28.0-linux32.tar.gz && sudo tar xzfz geckodriver-v0.28.0-linux32.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.28.0-linux32.tar.gz
+64bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.28.0/geckodriver-v0.28.0-linux64.tar.gz && sudo tar xzfz geckodriver-v0.28.0-linux64.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.28.0-linux64.tar.gz
 ```
 ### Pour les autres sites Veolia
 **la version de Python 3.x est indispensable**
 ```bash
+sudo apt-get install python3 python3-pip
 sudo pip3 install requests lxml xlrd
 ```
 

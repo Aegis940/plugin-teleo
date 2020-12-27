@@ -29,6 +29,33 @@ class teleo extends eqLogic {
    */
 
     /*     * ***********************Methode static*************************** */
+  public static function dependancy_info() {
+        $return = array();
+		$return['log'] = log::getPathToLog(__CLASS__.'_update');
+		$return['progress_file'] = jeedom::getTmpFolder(__CLASS__) . '/dependency';
+		if (file_exists(jeedom::getTmpFolder(__CLASS__) . '/dependencies')) {
+            $return['state'] = 'in_progress';
+        } else {
+			if (exec(system::getCmdSudo() . system::get('cmd_check') . '-Ec "xvfb|iceweasel|python3\-pip|python3\-requests|python3\-urllib3"') < 5) {
+				$return['state'] = 'nok';
+			}
+			elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ec "requests|lxml|xlrd|selenium|PyVirtualDisplay|urllib3"') < 6) {
+				$return['state'] = 'nok';
+			}
+			elseif (!file_exists('/usr/local/bin/geckodriver')) {
+				$return['state'] = 'nok';
+			}			
+			else {
+				$return['state'] = 'ok';
+			}
+		}		
+		return $return;
+  }
+
+  public static function dependancy_install() {
+		log::remove(__CLASS__ . '_update');
+		return array('script' => dirname(__FILE__) . '/../../resources/install_#stype#.sh ' . jeedom::getTmpFolder(__CLASS__) . '/dependency', 'log' => log::getPathToLog(__CLASS__ . '_update'));
+  }
 
   public static function cron()
   {
