@@ -13,11 +13,9 @@ Les types de données de consommation suivants sont accessibles :
 >**Important**      
 > Il est nécessaire d'être en possession d'un compteur connecté **Téléo** et d'un compte-client Veolia. Le plugin récupère les informations, en fonction de la configuration choisie dans le plugin, à partir de la partie *mon espace* <a href="https://www.vedif.eau.veolia.fr/" target="_blank">du site Veolia Ile de France</a> pour les clients d'Ile de France ou à partir de la partie *mon espace personnel* <a href="https://www.service.eau.veolia.fr/" target="_blank">du site Veolia</a> pour les autres, il faut donc vérifier que vous y avez bien accès avec vos identifiants habituels et que les données y sont visibles. **Dans le cas contraire, le plugin ne fonctionnera pas.**
 
-# Configuration
+# Installation des dépendances
 
-## Configuration du plugin
-
-Le plugin **Veolia Téléo** récupère les informations en utilisant un script Python (un pour le site Veolia Ile de France et un pour les autres sites). 
+>Le plugin **Veolia Téléo** récupère les informations en utilisant un script Python (un pour le site Veolia Ile de France et un pour les autres sites). 
 Chaque script nécessite l'installation de composants spécifiques :
 
 ### Pour le script Veolia Ile de France
@@ -28,7 +26,6 @@ sudo apt-get install python3 python3-pip
 sudo apt-get install xvfb iceweasel
 sudo pip3 install selenium pyvirtualdisplay urllib3
 ```
-
 **Pour la version du driver geckodriver, elle dépend de votre architecture**
 si la commande *uname -m* retourne **armv7l** (cas d'un Raspberry PI) alors :
 ```bash
@@ -46,7 +43,13 @@ sudo apt-get install python3 python3-pip
 sudo pip3 install requests lxml xlrd
 ```
 
->Les données sont vérifiées, par défaut, toutes les heures entre 4h et 22h et mises à jour uniquement si non disponibles dans Jeedom. L'heure de début peut être réglée entre 1h et 20h.
+> Les dépendances sont installées automatiquement par Jeedom dans les 5 min. Elles seront également réinstallées lors d’une mise à jour du plugin si besoin.
+
+# Configuration
+
+## Configuration du plugin
+
+> Les données sont vérifiées, par défaut, toutes les heures entre 4h et 22h et mises à jour uniquement si non disponibles dans Jeedom. L'heure de début peut être réglée entre 1h et 20h.
 
 ## Configuration des équipements
 

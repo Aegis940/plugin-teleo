@@ -13,9 +13,7 @@ The following types of consumption data are available:
 >**Important**      
 > It is necessary to have a communicating water meter **Téléo** and a Veolia customer account. The plugin retrieves the information, according to the configuration chosen in the plugin, from the *my space* <a href="https://www.vedif.eau.veolia.fr/" target="_blank">part of the Veolia Ile de France website</a> for Ile de France customers or from the *my personal space* <a href="https://www.service.eau.veolia.fr/" target="_blank">part of the Veolia website</a> for others. You must therefore check that you have access to it with your usual identifiers and that the data is visible. **If not, the plugin will not work.**
 
-# Configuration
-
-## Plugin configuration
+# Installation of software dependencies
 
 The **Veolia Téléo** plugin retrieves the information using a Python script (one for the Veolia Ile de France site and one for the other sites). 
 Each script requires the installation of specific components:
@@ -40,6 +38,8 @@ otherwise:
 64bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.28.0/geckodriver-v0.28.0-linux64.tar.gz && sudo tar xzfz geckodriver-v0.28.0-linux64.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.28.0-linux64.tar.gz
 ```
 
+> The software dependencies are installed automatically by Jeedom within 5 minutes. They will also be reinstalled when the plugin is updated if necessary.
+
 ### For other Veolia sites
 **Python 3.x version is required ** ** Python 3.x is required**
 ```bash
@@ -47,7 +47,11 @@ sudo apt-get install python3 python3-pip
 sudo pip3 install requests lxml xlrd
 ```
 
-The data is checked every hour between 4 a.m. and 10 p.m. and updated only if not available in Jeedom. The start time can be set between 1 a.m. and 8 p.m.
+# Configuration
+
+## Plugin configuration
+
+> The data is checked every hour between 4 a.m. and 10 p.m. and updated only if not available in Jeedom. The start time can be set between 1 a.m. and 8 p.m.
 
 ## Equipment configuration
 
