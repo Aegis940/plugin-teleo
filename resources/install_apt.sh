@@ -22,7 +22,7 @@ sudo apt-get update
 
 echo 20 > "${PROGRESS_FILE}"
 echo "********************************************************"
-echo "*         Install iceweasel and xvfb                   *"
+echo "*         Install iceweasel and xvfb                   *"./
 echo "********************************************************"
 sudo apt-get install -y xvfb iceweasel
 
@@ -34,26 +34,26 @@ echo "********************************************************"
 driver_version=""
 driver_name=""
 
-if [ $( uname -s ) eq "Linux" ]; then
+if [ $( uname -s ) == "Linux" ]; then
   
 	case $( uname -m ) in
 	armv7l)
 		echo "Machine Hardware name: armv7l"
 		driver_version="v0.23.0"
 		driver_name="geckodriver-$driver_version-arm7hf.tar.gz";;
-	x86_64|aarch64)
+	x86_64|aarch64|AMD64)
 		echo "Machine Hardware name:$(uname -m)"
 		driver_version="v0.28.0"
 		driver_name="geckodriver-$driver_version-linux64.tar.gz";;
-	i686)
-		echo "Machine Hardware name: i686"
+	x86|i686)
+		echo "Machine Hardware name: $(uname -m)"
 		driver_version="v0.28.0"
 		driver_name="geckodriver-$driver_version-linux32.tar.gz";;
 	*)
 		echo "other : $(uname -m)"
-		echo "not supported";;
+		echo "not supported"
 		rm ${PROGRESS_FILE}
-		exit 1
+		exit 1;;
 	esac
 else
 	echo "$(uname -s) not supported"
