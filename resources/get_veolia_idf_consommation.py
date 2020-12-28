@@ -154,8 +154,8 @@ finally:
 
 	# Suppression fichier temporaire
 	logger.info('Suppression fichier log temporaire')
-	if os.path.exists("/tmp/geckodriver.log"):
-		os.remove("/tmp/geckodriver.log")
+	if os.path.exists(geckodriverLog):
+		os.remove(geckodriverLog)
 			
 	# fermeture de l'affichage virtuel
 	logger.info('Fermeture display. Exit code ' + str(returnStatus))
