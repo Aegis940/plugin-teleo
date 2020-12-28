@@ -19,14 +19,26 @@ echo "********************************************************"
 echo "*        Update package lists from repositories        *"
 echo "********************************************************"
 sudo apt-get update
-
+ 
 echo 20 > "${PROGRESS_FILE}"
 echo "********************************************************"
-echo "*         Install iceweasel and xvfb                   *"./
+echo "*         Install Firefox                              *"
+echo "********************************************************"
+sudo apt install -y firefox-esr
+
+# Check Firefox version
+if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -lt 60 ]; then
+	echo "Warning: Mozilla Firefox must be 60.x or higher for Veolia IDF WebSite"
+	echo "Current version is: $(firefox --version)"
+fi
+ 
+echo 30 > "${PROGRESS_FILE}"
+echo "********************************************************"
+echo "*         Install iceweasel and xvfb                   *"
 echo "********************************************************"
 sudo apt-get install -y xvfb iceweasel
 
-echo 30 > "${PROGRESS_FILE}"
+echo 40 > "${PROGRESS_FILE}"
 echo "********************************************************"
 echo "*         Install geckodriver driver                   *"
 echo "********************************************************"
@@ -68,11 +80,17 @@ if [ $driver_version != "" ]; then
 	sudo rm $driver_name
 fi
 
-echo 40 > "${PROGRESS_FILE}"
+echo 50 > "${PROGRESS_FILE}"
 echo "********************************************************"
 echo "*         Install Python3 and dependencies             *"
 echo "********************************************************"
 sudo apt-get install -y python3 python3-pip
+
+# Check Python version
+if [ $($python --version 2>&1 | grep -c 'Python 3.7.') == "0" ]; then
+	echo "Python version must be 3.7.x for Veolia IDF WebSite"
+	echo "Current version is: $(python --version)"
+fi
 
 echo 70 > "${PROGRESS_FILE}"
 echo "********************************************************"

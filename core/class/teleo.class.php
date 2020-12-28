@@ -36,7 +36,7 @@ class teleo extends eqLogic {
 		if (file_exists(jeedom::getTmpFolder(__CLASS__) . '/dependencies')) {
             $return['state'] = 'in_progress';
         } else {
-			if (exec(system::getCmdSudo() . system::get('cmd_check') . '-Ec "xvfb|iceweasel|python3\-pip|python3\-requests|python3\-urllib3"') < 5) {
+			if (exec(system::getCmdSudo() . system::get('cmd_check') . '-Ec "xvfb|firefox|iceweasel|python3\-pip|python3\-requests|python3\-urllib3"') < 6) {
 				$return['state'] = 'nok';
 			}
 			elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ec "requests|lxml|xlrd|selenium|PyVirtualDisplay|urllib3"') < 6) {
@@ -132,7 +132,7 @@ class teleo extends eqLogic {
            $this->getTeleoData();
         }
         else {
-          log::add(__CLASS__, 'info', $this->getHumanName() . ' Erreur connexion - Abandon');
+          log::add(__CLASS__, 'error', $this->getHumanName() . ' Erreur de récupération des données - Abandon');
         }
       }
       else
@@ -177,7 +177,7 @@ class teleo extends eqLogic {
 	  }  
 	
 	  if (!file_exists($dataFile)) {   
-		log::add(__CLASS__, 'info', $this->getHumanName() . ' Fichier <' . $dataFile . '> non trouvé - Abandon');
+		log::add(__CLASS__, 'error', $this->getHumanName() . ' Fichier <' . $dataFile . '> non trouvé - Abandon');
 		return null;
 	  }
 	  else 

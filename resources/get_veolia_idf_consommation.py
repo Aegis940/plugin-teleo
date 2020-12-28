@@ -15,7 +15,7 @@ import time
 import logging
 from logging.handlers import RotatingFileHandler
 
-	
+
 # Configuration des logs
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -36,12 +36,12 @@ urlConso = 'https://espace-client.vedif.eau.veolia.fr/s/historique'
 if len( sys.argv ) < 4:
 	logger.error('wrong number of arg')
 	sys.exit(0)
-	
+
 #Informations de connexion
 veolia_login = sys.argv[1]
 veolia_password = sys.argv[2]
 
-#Emplacement de sauvegarde du fichier à télécharger		
+#Emplacement de sauvegarde du fichier à télécharger
 downloadPath = sys.argv[3]
 downloadFile = downloadPath + '/historique_jours_litres.csv'
 
@@ -74,8 +74,8 @@ try:
 	WebDriverWait(browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR , 'input[inputmode="email"]')))
 
 	nb_form = len(browser.find_elements_by_css_selector('input[inputmode="email"]'))
-	if nb_form != 2 : raise Exception('wrong login number') 
-	
+	if nb_form != 2 : raise Exception('wrong login number')
+
 	# Recherche et remplis les champs d'identification
 	idEmail = browser.find_element_by_id('input-3')
 	idPassword = browser.find_element_by_css_selector('input[type="password"]')
@@ -95,17 +95,18 @@ try:
 	# Page de consommation
 	logger.info('Page de consommation')
 	browser.get(urlConso)
-	WebDriverWait(browser, 30).until(EC.presence_of_element_located((By.NAME , 'from')))
+	WebDriverWait(browser, 20).until(EC.presence_of_element_located((By.NAME , 'from')))
 
 	# Sélection boutons
 	logger.info('Sélection boutons')
-
+	time.sleep(15)
+	
 	dayButton = browser.find_element_by_xpath("//span[contains(.,'Jours')]//parent::button")
 	dayButton.send_keys(Keys.RETURN)
 	time.sleep(10)
 	literButton = browser.find_element_by_xpath("//span[contains(.,'Litres')]//parent::button")
 	literButton.send_keys(Keys.RETURN)
-	time.sleep(10)		
+	time.sleep(10)
 
 	# Téléchargement du fichier
 	logger.info('Téléchargement du fichier')
@@ -118,7 +119,7 @@ try:
 	returnStatus = 1
 
 except Exception as e: logger.error(str(e))
-  
+ 
 finally:
 	# fermeture browser
 	logger.info('Fermeture connexion')
