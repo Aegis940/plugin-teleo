@@ -53,9 +53,26 @@ options.add_argument("--no-sandbox")
 display = Display(visible=0, size=(800, 600))
 display.start()
 
-returnStatus = 0
+def waitData(exitCond, sleepTime, loopNb):
 
+	nb_kpi = len(browser.find_elements_by_class_name("kpi-value"))
+	if nb_kpi != 3 : raise Exception('wrong KPI number')
+	
+	loop = 1
+	while True:
+		time.sleep(sleepTime)
+
+		kpi_field = browser.find_elements_by_class_name("kpi-value")
+		if (kpi_field[2].text.find(exitCond) != -1): break
+
+		loop = loop + 1
+		if (loop > loopNb): break
+	
+	logger.info(kpi_field[2].text + ' waitTime = ' + str(loop*sleepTime) + ' sec')	
+	
 try:
+	returnStatus = 0
+
 	profile = webdriver.FirefoxProfile()
 	options = webdriver.FirefoxOptions()
 	options.headless = True
@@ -66,7 +83,7 @@ try:
 
 	# Bien indiquer l'emplacement de geckodriver
 	logger.info('Initialisation browser')
-	browser = webdriver.Firefox(firefox_profile=profile, options=options, executable_path=r'/usr/local/bin/geckodriver', service_log_path='/tmp/jeedom/teleo/geckodriver.log')
+	browser = webdriver.Firefox(firefox_profile=profile, options=options, executable_path=r'/usr/local/bin/geckodriver', service_log_path='/tmp/geckodriver.log')
 
 	# Page de login
 	logger.info('Page de login')
@@ -96,24 +113,27 @@ try:
 	logger.info('Page de consommation')
 	browser.get(urlConso)
 	WebDriverWait(browser, 20).until(EC.presence_of_element_located((By.NAME , 'from')))
-
+	
+	# On attend que les premières données soient chargées
+	waitData("mois",5,4)
+	
 	# Sélection boutons
 	logger.info('Sélection boutons')
-	time.sleep(15)
 	
 	dayButton = browser.find_element_by_xpath("//span[contains(.,'Jours')]//parent::button")
 	dayButton.send_keys(Keys.RETURN)
-	time.sleep(10)
+	waitData("jour",3,5)
+	
 	literButton = browser.find_element_by_xpath("//span[contains(.,'Litres')]//parent::button")
 	literButton.send_keys(Keys.RETURN)
-	time.sleep(10)
-
+	waitData("Litres",3,3)
+	
 	# Téléchargement du fichier
 	logger.info('Téléchargement du fichier')
 	downloadFileButton = browser.find_element_by_class_name("slds-button.slds-text-title_caps")
 	downloadFileButton.click()
 
-	logger.info('Fichier:' + downloadFile)
+	logger.info('Fichier: ' + downloadFile)
 
 	# Resultat
 	returnStatus = 1
