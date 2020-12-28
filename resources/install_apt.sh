@@ -24,7 +24,7 @@ echo 20 > "${PROGRESS_FILE}"
 echo "********************************************************"
 echo "                     Install Firefox                    "
 echo "********************************************************"
-sudo apt install -y firefox-esr
+sudo apt-get install -y firefox-esr
 
 # Check Firefox version
 if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -lt 60 ]; then
@@ -147,7 +147,7 @@ echo "2. geckodriver driver:"
 if [ -f "/usr/local/bin/geckodriver" ]; then
 	echo "geckodriver driver $driver_version for $(uname -m)"
 else
-	echo "Warning: geckodriver driver missing."
+	echo "Warning: geckodriver driver missing, but its mandatory for Veolia IDF WebSite. The Python script will not be able to be executed."
 fi
 
 echo "3. Packages:"
