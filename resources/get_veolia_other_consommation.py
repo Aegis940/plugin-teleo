@@ -16,10 +16,13 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 # Configuration des logs
+tempDir = '/tmp/jeedom/teleo'
+tempFile = tmpDir + '/historique.xls'
+
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
-file_handler = RotatingFileHandler('/tmp/jeedom/teleo/veolia.log', 'a', 1000000, 1)
+file_handler = RotatingFileHandler(tempDir + '/veolia.log', 'a', 1000000, 1)
 file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
@@ -43,10 +46,9 @@ url_action_login = url + "/home/connexion-espace-client/bloc-connexion-area/conn
 url_page_histo = url + "/home/espace-client/votre-consommation.html?vueConso=historique"
 url_fichier_histo = url + "/home/espace-client/votre-consommation.exportConsommationData.do?vueConso=historique"
 
-returnStatus = 0
-tempFile = "/tmp/jeedom/teleo/historique.xls"
-
 try:
+	returnStatus = 0
+	
 	# Nouvelle session
 	session = requests.Session()
 	
@@ -91,7 +93,7 @@ try:
 	releve = sheet.cell_value(sheet.nrows - 1, 3)
 
 	# Resultat
-	downloadPath = sys.argv[3]
+	downloadPath = os.path.normpath(sys.argv[3])
 	downloadFile = downloadPath + '/historique_jours_litres.csv'
 		
 	open(downloadFile, 'w').write(date.strftime("%Y-%m-%d") + ';' + str(index) + ';' + str(conso) + ';' + str(releve) + '\n')

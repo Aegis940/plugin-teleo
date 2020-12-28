@@ -17,10 +17,12 @@ from logging.handlers import RotatingFileHandler
 
 
 # Configuration des logs
+tempDir = "/tmp/jeedom/teleo"
+
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
-file_handler = RotatingFileHandler('/tmp/jeedom/teleo/veolia.log', 'a', 1000000, 1)
+file_handler = RotatingFileHandler(tempDir + '/veolia.log', 'a', 1000000, 1)
 file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
@@ -42,7 +44,7 @@ veolia_login = sys.argv[1]
 veolia_password = sys.argv[2]
 
 #Emplacement de sauvegarde du fichier à télécharger
-downloadPath = sys.argv[3]
+downloadPath = os.path.normpath(sys.argv[3])
 downloadFile = downloadPath + '/historique_jours_litres.csv'
 
 options = webdriver.FirefoxOptions()
