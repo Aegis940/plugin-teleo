@@ -1,11 +1,13 @@
+# Auteur : [Flobul](https://github.com/Flobul/conso_veolia) and some modif form [JohanSweck] (https://github.com/JohanSweck/conso_veolia)
 #
-#
+# Modif : [Aegis](https://github.com/Aegis940/plugin-teleo) pour intégration au plugin teleo
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 from pyvirtualdisplay import Display
 
@@ -17,12 +19,14 @@ from logging.handlers import RotatingFileHandler
 
 
 # Configuration des logs
-tempDir = "/tmp/jeedom/teleo"
+tempDir = '/tmp'
+logFile = tempDir + '/veolia.log'
+geckodriverLog = tempDir + '/geckodriver.log'
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
-file_handler = RotatingFileHandler(tempDir + '/veolia.log', 'a', 1000000, 1)
+file_handler = RotatingFileHandler(logFile, 'a', 1000000, 1)
 file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
@@ -57,18 +61,19 @@ display.start()
 
 def waitData(exitCond, sleepTime, loopNb):
 
-	nb_kpi = len(browser.find_elements_by_class_name("kpi-value"))
+	kpi_field = browser.find_elements_by_class_name("kpi-value")
+
+	nb_kpi = len(kpi_field)
 	if nb_kpi != 3 : raise Exception('wrong KPI number')
 	
 	loop = 1
 	while True:
 		time.sleep(sleepTime)
-
-		kpi_field = browser.find_elements_by_class_name("kpi-value")
+		
 		if (kpi_field[2].text.find(exitCond) != -1): break
 
+		if (loop > loopNb): raise Exception('display data too long')
 		loop = loop + 1
-		if (loop > loopNb): break
 	
 	logger.info(kpi_field[2].text + ' waitTime = ' + str(loop*sleepTime) + ' sec')	
 	
@@ -85,7 +90,7 @@ try:
 
 	# Bien indiquer l'emplacement de geckodriver
 	logger.info('Initialisation browser')
-	browser = webdriver.Firefox(firefox_profile=profile, options=options, executable_path=r'/usr/local/bin/geckodriver', service_log_path='/tmp/geckodriver.log')
+	browser = webdriver.Firefox(firefox_profile=profile, options=options, executable_path=r'/usr/local/bin/geckodriver', service_log_path=geckodriverLog)
 
 	# Page de login
 	logger.info('Page de login')
@@ -128,7 +133,7 @@ try:
 	
 	literButton = browser.find_element_by_xpath("//span[contains(.,'Litres')]//parent::button")
 	literButton.send_keys(Keys.RETURN)
-	waitData("Litres",3,3)
+	waitData("Litres",2,5)
 	
 	# Téléchargement du fichier
 	logger.info('Téléchargement du fichier')
@@ -140,12 +145,12 @@ try:
 	# Resultat
 	returnStatus = 1
 
-except Exception as e: logger.error(str(e))
+except (Exception, TimeoutException) as e: logger.error(str(e))
  
 finally:
 	# fermeture browser
 	logger.info('Fermeture connexion')
-	browser.close()
+	browser.quit()
 
 	# Suppression fichier temporaire
 	logger.info('Suppression fichier log temporaire')
