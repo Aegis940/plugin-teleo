@@ -119,7 +119,7 @@ try:
 	# Page de consommation
 	logger.info('Page de consommation')
 	browser.get(urlConso)
-	WebDriverWait(browser, 20).until(EC.presence_of_element_located((By.NAME , 'from')))
+	WebDriverWait(browser, 30).until(EC.presence_of_element_located((By.NAME , 'from')))
 	
 	# On attend que les premières données soient chargées
 	waitData("mois",5,4)
