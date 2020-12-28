@@ -33,7 +33,7 @@ sinon
 
 if [ $? -eq 1 ]; then
     sshpass -p "<Mdp_ssh_jeedom>" scp /home/pi/conso_veolia/historique_jours_litres.csv <user_jeedom>@<adresse_ip_local_jeedom>:/tmp/jeedom/teleo
-	rm /home/pi/conso_veolia/historique_jours_litres.csv
+    mv /home/pi/conso_veolia/historique_jours_litres.csv /home/pi/conso_veolia/historique_jours_litres.old
 fi
 ```
 
