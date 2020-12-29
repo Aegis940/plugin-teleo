@@ -7,7 +7,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
 
 from pyvirtualdisplay import Display
 
@@ -19,7 +18,7 @@ from logging.handlers import RotatingFileHandler
 
 
 # Configuration des logs
-tempDir = '/tmp'
+tempDir = '/tmp/teleo'
 logFile = tempDir + '/veolia.log'
 geckodriverLog = tempDir + '/geckodriver.log'
 
@@ -145,7 +144,7 @@ try:
 	# Resultat
 	returnStatus = 1
 
-except (Exception, TimeoutException) as e: logger.error(str(e))
+except Exception as e: logger.error(str(e))
  
 finally:
 	# fermeture browser

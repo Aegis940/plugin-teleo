@@ -15,7 +15,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 # Configuration des logs
-tempDir = '/tmp'
+tempDir = '/tmp/teleo'
 tempFile = tmpDir + '/historique.xls'
 logFile = tempDir + '/veolia.log'
 

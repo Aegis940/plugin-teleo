@@ -54,7 +54,7 @@ class teleo extends eqLogic {
 
   public static function dependancy_install() {
 		log::remove(__CLASS__ . '_update');
-		return array('script' => dirname(__FILE__) . '/../../resources/install_#stype#.sh ' . jeedom::getTmpFolder(__CLASS__) . '/dependency', 'log' => log::getPathToLog(__CLASS__ . '_update'));
+		return array('script' => dirname(__FILE__) . '/../../resources/install_#stype#.sh ' . jeedom::getTmpFolder(__CLASS__) . '/dependancy', 'log' => log::getPathToLog(__CLASS__ . '_update'));
   }
 
   public static function cron()
@@ -151,7 +151,7 @@ class teleo extends eqLogic {
 	  $dataDirectory = $this->getConfiguration('outputData');
 	  if (is_null($dataDirectory)) 
 	  {
-		 $dataDirectory = '/var/www/html/tmp/teleo';
+		 $dataDirectory = '/tmp/teleo';
 	  }
 	    
 	  $dataFile = $dataDirectory . "/historique_jours_litres.csv";
@@ -192,7 +192,7 @@ class teleo extends eqLogic {
 	 $dataDirectory = $this->getConfiguration('outputData');
 	 if (empty($dataDirectory)) 
 	 {
-		 $dataDirectory = '/var/www/html/tmp/teleo';
+		 $dataDirectory = '/tmp/teleo';
 	 }
 	
 	 // récupère le dernier index
@@ -415,7 +415,7 @@ class teleo extends eqLogic {
       $this->setDisplay('height','332px');
       $this->setDisplay('width', '192px');
       $this->setConfiguration('forceRefresh', 0);
-	  $this->setConfiguration('outputData', '/tmp/jeedom/teleo');
+	  $this->setConfiguration('outputData', '/tmp/teleo');
 	  $this->setConfiguration('connectToVeoliaWebsiteFromThisMachine', 1);
       $this->setCategory('energy', 1);
       $this->setIsEnable(1);
