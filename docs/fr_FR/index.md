@@ -80,6 +80,7 @@ Le plugin va alors vérifier la bonne connexion au site *Veolia* et récupérer 
 > **A savoir** 
 > Le calcul de consommation se faisant sur l'index, il est nécessaire de conserver son historique au moins sur 1 à 2 ans. 
 > **Le premier jour d'installation de l'équipement, les valeurs seront à 0** et c'est seulement au second jour que les données de consommation seront visibles.
+>
 > Pour les périodes *hebdomadaire*, *mensuelle* et *annuelle*, seules le dernier historique de la période en cours est conservé.
 
 # Remarques
