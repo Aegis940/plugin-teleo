@@ -15,37 +15,16 @@ The following types of consumption data are available:
 
 # Installation of software dependencies
 
-The **Veolia Téléo** plugin retrieves the information using a Python script (one for the Veolia Ile de France site and one for the other sites). 
-Each script requires the installation of specific components:
+> The **Veolia Téléo** plugin retrieves the information using a Python script (one for the Veolia Ile de France site and one for the other sites).
+> Each script has some constraints
 
 ### For the Veolia Ile de France script
-***Python version 3.7.x is required*** (*python3 --version*) and Firefox 60 or higher (so better to use **buster distrib**)
-```bash
-sudo apt-get update
-sudo apt-get install python3 python3-pip
-sudo apt-get install python3 xvfb iceweasel
-sudo pip3 install selenium pyvirtualdisplay urllib3
-```
-**For the geckodriver version, it depends on your architecture**.
-if the command *uname -m* returns **armv7l** (case of a Raspberry PI) then:
-```bash
-sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckodriver-v0.23.0-arm7hf.tar.gz && sudo tar xzfz geckodriver-v0.23.0-arm7hf.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.23.0-arm7hf.tar.gz
-```
-
-otherwise:
-```bash
-32bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.28.0/geckodriver-v0.28.0-linux32.tar.gz && sudo tar xzfz geckodriver-v0.28.0-linux32.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.28.0-linux32.tar.gz
-64bit : sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.28.0/geckodriver-v0.28.0-linux64.tar.gz && sudo tar xzfz geckodriver-v0.28.0-linux64.tar.gz && sudo mv geckodriver /usr/local/bin && sudo rm geckodriver-v0.28.0-linux64.tar.gz
-```
-
-> The software dependencies are installed automatically by Jeedom within 5 minutes. They will also be reinstalled when the plugin is updated if necessary.
+Python ***3.7.x version*** is required and ***Firefox 60 or higher*** (so better to use **buster distrib**)
 
 ### For other Veolia sites
-**Python 3.x version is required ** ** Python 3.x is required**
-```bash
-sudo apt-get install python3 python3-pip
-sudo pip3 install requests lxml xlrd
-```
+Python ***3.x version*** is required
+
+> The software dependencies are installed automatically by Jeedom within 5 minutes. They will also be reinstalled when the plugin is updated if necessary.
 
 # Configuration
 
