@@ -57,7 +57,7 @@ sudo pip3 install requests lxml xlrd
 
 To access the various **Veolia Téléo** facilities, go to the menu **Plugins → Energy → Veolia Téléo**.
 
->**Knowledge**
+> **Knowledge**
 > The **+ Add** button allows you to add a new account **Veolia Téléo**.
 
 On the equipment page, enter :
@@ -67,9 +67,9 @@ On the equipment page, enter :
 
 Then click on the **Save** button.
 
-Unchecking the option **Connection to the Veolia** site allows you not to launch the Python script to retrieve the data but to use a result file deposited in the **Veolia site data export directory** (to be used in the case where the prerequisites for the pyhton script cannot be met on the machine hosting Jeedom).
-The option **Force data recovery** allows the consumption information to be recovered even if it has already been recovered for the period concerned.
-The **Widget template** option allows the widget to be used in the colour of the Teleo meter.
+- Unchecking the option **Connection to the Veolia** site allows you not to launch the Python script to retrieve the data but to use a result file deposited in the **Veolia site data export directory** (to be used in the case where the prerequisites for the pyhton script cannot be met on the machine hosting Jeedom).
+- The option **Force data recovery** allows the consumption information to be recovered even if it has already been recovered for the period concerned.
+- The **Widget template** option allows the widget to be used in the colour of the Teleo meter.
 
 The plugin will then check the correct connection to the *Veolia* site and recover and insert in history :
 - **The consumption index**: in Litres, used to calculate consumption.
@@ -78,8 +78,10 @@ The plugin will then check the correct connection to the *Veolia* site and recov
 - **monthly consumption**: in Litres, based on the index,
 - **annual consumption**: in Litres, based on the index,
 
->As the calculation of consumption is based on the index, it is necessary to keep a history of at least 1 to 2 years. 
->**On the first day of installation of the equipment, the values will be at 0** and it is only on the second day that the consumption data will be visible.
+> As the calculation of consumption is based on the index, it is necessary to keep a history of at least 1 to 2 years. 
+> **On the first day of installation of the equipment, the values will be at 0** and it is only on the second day that the consumption data will be visible.
+>
+> For the *weekly*, *monthly* and *annual* periods, only the last history of the current period is kept.
 
 
 # Remarks
