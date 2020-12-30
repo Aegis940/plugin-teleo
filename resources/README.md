@@ -8,7 +8,7 @@ Dans le cas où le script *get_veolia_idf_consommation.py* ne peut être install
 ```bash
 sudo apt-get update
 sudo apt-get sshpass
-sudo apt-get install python3 xvfb iceweasel
+sudo apt-get install python3 python3-pip xvfb iceweasel
 sudo pip3 install selenium pyvirtualdisplay urllib3
 ```
 
