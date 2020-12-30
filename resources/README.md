@@ -24,7 +24,7 @@ sinon
 ```
 
 ## Création fichier bash
-> Créer un fichier sh : **conso_veolia.sh** dans le répertoire *conso_veolia* de l'utilsateur *pi* avec dedans :
+> Créer un fichier sh : **conso_veolia.sh** dans le répertoire *conso_veolia* de l'utilsateur *pi* (par exemple) avec dedans :
 
 ```bash
 #!/bin/bash
@@ -32,23 +32,23 @@ sinon
 /home/pi/conso_veolia/get_veolia_data.sh IDF <username> <password> /home/pi/conso_veolia
 
 if [ $? -eq 1 ]; then
-    sshpass -p "<Mdp_ssh_jeedom>" scp /home/pi/conso_veolia/historique_jours_litres.csv <user_jeedom>@<adresse_ip_local_jeedom>:/tmp/jeedom/teleo
+    sshpass -p "<Mdp_ssh_jeedom>" scp /home/pi/conso_veolia/historique_jours_litres.csv <user_jeedom>@<adresse_ip_local_jeedom>:/tmp/teleo
     mv /home/pi/conso_veolia/historique_jours_litres.csv /home/pi/conso_veolia/historique_jours_litres.old
 fi
 ```
 
->**Attention** l'utilisateur ssh doit avoir les droits d'écriture sur répertoire destination */tmp/jeedom/teleo* 
+>**Attention** l'utilisateur ssh doit avoir les droits d'écriture sur répertoire destination */tmp/teleo* 
 
 > Modifier le fichier sh **get_veolia_data.sh** :
 ```bash
 ...
 # Setup
 root='home/pi/conso_veolia'
-...
+...f
 ```
 
 ## Création commande cron
-> Editer le fichier crontab de l'utilisateur *pi*:
+> Editer le fichier crontab de l'utilisateur *pi* :
 ```bash
 crontab -e
 ```
