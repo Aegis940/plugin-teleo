@@ -15,8 +15,8 @@ Les types de données de consommation suivants sont accessibles :
 
 # Installation des dépendances
 
-> Le plugin **Veolia Téléo** récupère les informations en utilisant un script Python (un pour le site Veolia Ile de France et un pour les autres sites). 
-Chaque script a quelques contraites :
+> Le plugin **Veolia Téléo** récupère les informations en utilisant un script Python (un pour le site Veolia Ile de France et un pour les autres sites).
+> Chaque script a quelques contraintes :
 
 ### Pour le script Veolia Ile de France
 La version de ***Python 3.7.x*** est indispensable et ***Firefox 60 ou supérieur*** (donc mieux vaut une **distrib buster**)
