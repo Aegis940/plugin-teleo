@@ -65,9 +65,9 @@ Sur la page de l'équipement, renseignez :
 
 Puis cliquez sur le bouton **Sauvegarder**.
 
-Décocher l'option **Connexion au site Veolia** permet de ne pas lancer le script Python pour récupérer les données mais l'exploiter un fichier résultat déposé dans le **Répertoire d'export des données du site Veolia** (à utiliser dans le cas où les prérequis pour le script pyhton ne peuvent être satisfait sur la machine hébergeant Jeedom).
-L'option **Forcer la récupération des données** permet de récupérer les informations de consommation même si elles ont déjà été récupérées pour la période concernée.
-L'option **Template de widget** permet d'utiliser le widget au couleur du compteur Téléo.
+- Décocher l'option **Connexion au site Veolia** permet de ne pas lancer le script Python pour récupérer les données mais l'exploiter un fichier résultat déposé dans le **Répertoire d'export des données du site Veolia** (à utiliser dans le cas où les prérequis pour le script python ne peuvent être satisfait sur la machine hébergeant Jeedom).
+- L'option **Forcer la récupération des données** permet de récupérer les informations de consommation même si elles ont déjà été récupérées pour la période concernée.
+- L'option **Template de widget** permet d'utiliser le widget au couleur du compteur Téléo.
 
 
 Le plugin va alors vérifier la bonne connexion au site *Veolia* et récupérer et insérer en historique :
@@ -80,7 +80,7 @@ Le plugin va alors vérifier la bonne connexion au site *Veolia* et récupérer 
 > **A savoir** 
 > Le calcul de consommation se faisant sur l'index, il est nécessaire de conserver son historique au moins sur 1 à 2 ans. 
 > **Le premier jour d'installation de l'équipement, les valeurs seront à 0** et c'est seulement au second jour que les données de consommation seront visibles.
-
+> Pour les périodes *hebdomadaire*, *mensuelle* et *annuelle*, seules le dernier historique de la période en cours est conservé.
 
 # Remarques
 
