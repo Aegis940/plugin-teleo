@@ -44,14 +44,18 @@ if [ "$1" = "IDF" ]; then
 fi
 
 # Launch python script
-timeout --signal=SIGINT ${timeout} $python $root/$scriptname $2 $3 $4
-codret=$?
+nbofretry=2
+codret=0
 
-# Retry one time
-if [ $codret -eq 0 ]; then
+loop=0 
+until [ $codret -eq 1 ] || [ $loop -ge $nbofretry ]
+do
 	timeout --signal=SIGINT ${timeout} $python $root/$scriptname $2 $3 $4
 	codret=$?
-fi
+
+	((loop++))
+done
+
 
 if [ $codret -eq 1 ]; then
 	if [ ! -f "$4/historique_jours_litres.csv" ]; then
@@ -70,6 +74,11 @@ if [ "$1" = "IDF" ]; then
 	if [ ! $nbprocess -eq 0 ]; then
 		pkill -f "firefox-esr -marionette -headless -profile"
 	fi
+	
+	nbprocess=$(pgrep -f "Xvfb -br -nolisten tcp -screen 0 800x600x24 -displayfd 5" -c)
+	if [ ! $nbprocess -eq 0 ]; then
+		pkill -f "Xvfb -br -nolisten tcp -screen 0 800x600x24 -displayfd 5"
+	fi	
 fi
 
 echo ${codret}

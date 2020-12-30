@@ -15,48 +15,25 @@ import sys
 import time
 import logging
 from logging.handlers import RotatingFileHandler
-
-
-# Configuration des logs
-tempDir = '/tmp/teleo'
-logFile = tempDir + '/veolia.log'
-geckodriverLog = tempDir + '/geckodriver.log'
-
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
-file_handler = RotatingFileHandler(logFile, 'a', 1000000, 1)
-file_handler.setLevel(logging.INFO)
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
-steam_handler = logging.StreamHandler()
-steam_handler.setLevel(logging.INFO)
-steam_handler.setFormatter(formatter)
-logger.addHandler(steam_handler)
+from pathlib import Path
 
 #URL des pages nécessaires
 urlHome = 'https://espace-client.vedif.eau.veolia.fr/s/login/'
 urlConso = 'https://espace-client.vedif.eau.veolia.fr/s/historique'
+logger = logging.getLogger()
 
-if len( sys.argv ) < 4:
-	logger.error('wrong number of arg')
-	sys.exit(0)
 
-#Informations de connexion
-veolia_login = sys.argv[1]
-veolia_password = sys.argv[2]
-
-#Emplacement de sauvegarde du fichier à télécharger
-downloadPath = os.path.normpath(sys.argv[3])
-downloadFile = downloadPath + '/historique_jours_litres.csv'
-
-options = webdriver.FirefoxOptions()
-options.add_argument('-headless')
-options.add_argument("--no-sandbox")
-
-#Démarre l'affichage virtuel
-display = Display(visible=0, size=(800, 600))
-display.start()
+def initLogger(logFile):
+	logger.setLevel(logging.INFO)
+	formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
+	file_handler = RotatingFileHandler(logFile, 'a', 1000000, 1)
+	file_handler.setLevel(logging.INFO)
+	file_handler.setFormatter(formatter)
+	logger.addHandler(file_handler)
+	steam_handler = logging.StreamHandler()
+	steam_handler.setLevel(logging.INFO)
+	steam_handler.setFormatter(formatter)
+	logger.addHandler(steam_handler)
 
 def waitData(exitCond, sleepTime, loopNb):
 
@@ -74,14 +51,42 @@ def waitData(exitCond, sleepTime, loopNb):
 		if (loop > loopNb): raise Exception('display data too long')
 		loop = loop + 1
 	
-	logger.info(kpi_field[2].text + ' waitTime = ' + str(loop*sleepTime) + ' sec')	
+	logger.debug(kpi_field[2].text + ' waitTime = ' + str(loop*sleepTime) + ' sec')	
 	
 try:
 	returnStatus = 0
 
-	profile = webdriver.FirefoxProfile()
+	#Configuration des logs
+	tempDir = '/tmp/teleo'
+	logFile = tempDir + '/veolia.log'
+	geckodriverLog = tempDir + '/geckodriver.log'
+	
+	Path(tempDir).mkdir(mode=0o754,parents=True, exist_ok=True)
+
+	initLogger(logFile)
+
+	if len( sys.argv ) < 4:
+		logger.error('wrong number of arg')
+		sys.exit(returnStatus)
+
+	#Informations de connexion
+	veolia_login = sys.argv[1]
+	veolia_password = sys.argv[2]
+
+	#Emplacement de sauvegarde du fichier à télécharger
+	downloadPath = os.path.normpath(sys.argv[3])
+	downloadFile = downloadPath + '/historique_jours_litres.csv'
+	
+	#Démarre l'affichage virtuel
+	display = Display(visible=0, size=(800, 600))
+	display.start()
+
 	options = webdriver.FirefoxOptions()
+	options.add_argument('-headless')
+	options.add_argument("--no-sandbox")
 	options.headless = True
+
+	profile = webdriver.FirefoxProfile()
 	profile.set_preference('browser.download.folderList', 2)
 	profile.set_preference('browser.download.manager.showWhenStarting', False)
 	profile.set_preference('browser.download.dir', downloadPath)
@@ -118,13 +123,13 @@ try:
 	# Page de consommation
 	logger.info('Page de consommation')
 	browser.get(urlConso)
-	WebDriverWait(browser, 30).until(EC.presence_of_element_located((By.NAME , 'from')))
+	WebDriverWait(browser, 20).until(EC.presence_of_element_located((By.NAME , 'from')))
 	
 	# On attend que les premières données soient chargées
 	waitData("mois",5,4)
 	
 	# Sélection boutons
-	logger.info('Sélection boutons')
+	logger.info('Sélection des données en Jours et Litres')
 	
 	dayButton = browser.find_element_by_xpath("//span[contains(.,'Jours')]//parent::button")
 	dayButton.send_keys(Keys.RETURN)
@@ -148,11 +153,11 @@ except Exception as e: logger.error(str(e))
  
 finally:
 	# fermeture browser
-	logger.info('Fermeture connexion')
+	logger.debug('Fermeture connexion')
 	browser.quit()
 
 	# Suppression fichier temporaire
-	logger.info('Suppression fichier log temporaire')
+	logger.debug('Suppression fichier log temporaire')
 	if os.path.exists(geckodriverLog):
 		os.remove(geckodriverLog)
 			
