@@ -214,7 +214,7 @@ class teleo extends eqLogic {
 		$valeurMesure = $mesure[1];
 		
 		if (!is_null($mesure[3]) && $mesure[3] == 'Estimé') {
-			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier relevé de l\'index indique une estimation pas une mesure réélle');
+			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier relevé de l\'index indique une estimation pas une mesure réelle');
 		}
 		 
 		// Check si la date de la dernière mesure est bien celle d'hier
