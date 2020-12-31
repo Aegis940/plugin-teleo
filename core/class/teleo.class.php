@@ -206,10 +206,16 @@ class teleo extends eqLogic {
 	 }
 	 else {
 		 
-		// Stucture du résultat : 2020-12-17 19:00:00;321134;220;Mesuré (seuls les deux premiers champs sont utilisés)
+		// Stucture du résultat : 2020-12-17 19:00:00;321134;220;Mesuré
+		log::add(__CLASS__, 'debug', $this->getHumanName() . ' Data : ' . $output);
+		
 		$mesure = explode(";",$output); 
 		$dateMesure = substr($mesure[0],0,10);
 		$valeurMesure = $mesure[1];
+		
+		if (!is_null($mesure[3]) && $mesure[3] == 'Estimé') {
+			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier relevé de l\'index indique une estimation pas une mesure réélle');
+		}
 		 
 		// Check si la date de la dernière mesure est bien celle d'hier
 		$dateLastMeasure = date('Y-m-d 23:55:00', strtotime($dateMesure));
