@@ -7,6 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 from pyvirtualdisplay import Display
 
@@ -20,8 +21,11 @@ from pathlib import Path
 #URL des pages nécessaires
 urlHome = 'https://espace-client.vedif.eau.veolia.fr/s/login/'
 urlConso = 'https://espace-client.vedif.eau.veolia.fr/s/historique'
-logger = logging.getLogger()
 
+browser = None
+display = None
+geckodriverLog = None
+logger = None
 
 def initLogger(logFile):
 	logger.setLevel(logging.INFO)
@@ -55,7 +59,7 @@ def waitData(exitCond, sleepTime, loopNb):
 	
 try:
 	returnStatus = 0
-
+	
 	#Configuration des logs
 	tempDir = '/tmp/teleo'
 	logFile = tempDir + '/veolia.log'
@@ -63,6 +67,7 @@ try:
 	
 	Path(tempDir).mkdir(mode=0o754,parents=True, exist_ok=True)
 
+	logger = logging.getLogger()
 	initLogger(logFile)
 
 	if len( sys.argv ) < 4:
@@ -149,21 +154,22 @@ try:
 	# Resultat
 	returnStatus = 1
 
-except Exception as e: logger.error(str(e))
+except Exception as e: 
+	if (str(e.__class__).find('TimeoutException') != -1) : logger.error('La page met trop de temps à s\'afficher')
+	else : logger.error(str(e))
  
 finally:
 	# fermeture browser
 	logger.debug('Fermeture connexion')
-	browser.quit()
+	if (browser is not None) : browser.quit()
 
 	# Suppression fichier temporaire
 	logger.debug('Suppression fichier log temporaire')
-	if os.path.exists(geckodriverLog):
-		os.remove(geckodriverLog)
+	if (geckodriverLog is not None and os.path.exists(geckodriverLog)) : os.remove(geckodriverLog)
 			
 	# fermeture de l'affichage virtuel
 	logger.info('Fermeture display. Exit code ' + str(returnStatus))
-	display.stop()
+	if (display is not None) : display.stop()
 	
 	# print (returnStatus)
 	sys.exit(returnStatus)
