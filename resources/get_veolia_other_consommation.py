@@ -22,7 +22,9 @@ url_action_login = url + "/home/connexion-espace-client/bloc-connexion-area/conn
 url_page_histo = url + "/home/espace-client/votre-consommation.html?vueConso=historique"
 url_fichier_histo = url + "/home/espace-client/votre-consommation.exportConsommationData.do?vueConso=historique"
 
-logger = logging.getLogger()
+logger = None
+tempFile = None
+session = None
 
 def initLogger(logFile):
 	logger.setLevel(logging.INFO)
@@ -46,6 +48,7 @@ try:
 	tempFile = tempDir + '/historique.xls'
 	logFile = tempDir + '/veolia.log'
 	
+	logger = logging.getLogger()
 	initLogger(logFile)
 
 	if len( sys.argv ) < 4:
@@ -111,12 +114,11 @@ except Exception as e: logger.error(str(e))
 finally:
 	# Suppression fichier temporaire
 	logger.info('Suppression fichier temporaire')
-	if os.path.exists(tempFile):
-		os.remove(tempFile)
+	if (tempFile is not None and os.path.exists(tempFile)) : os.remove(tempFile)
   
 	# Fermeture connexion
 	logger.info('Fermeture connexion. Exit code ' + str(returnStatus))
-	session.close()
+	if (session is not None) : session.close()
 	
 	#print(returnStatus)
 	sys.exit(returnStatus)
