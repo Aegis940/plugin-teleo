@@ -73,6 +73,7 @@ if [ $driver_version != "" ]; then
 	sudo wget https://github.com/mozilla/geckodriver/releases/download/$driver_version/$driver_name
 	sudo tar xzfz $driver_name
 	sudo mv geckodriver /usr/local/bin
+	sudo chmod +x /usr/local/bin/geckodriver
 	sudo rm $driver_name
 
 	if [ -f "/usr/local/bin/geckodriver" ]; then
