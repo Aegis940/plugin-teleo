@@ -243,10 +243,21 @@ class teleo extends eqLogic {
 		$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -1 day'));		
 		$dateEnd = date("Y-m-d 23:55:00", strtotime('-2 day'));
 		
+		# Cas spécial dernière valeur de l'année 
+		if ($dateBegin > $dateEnd) {
+			$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -2 day'));
+		}
+		
 		$all = history::all($cmdId, $dateBegin, $dateEnd);
 		$dateCollectPreviousIndex = count($all) ? $all[count($all) - 1]->getDatetime() : null;
 
-		log::add(__CLASS__, 'debug', $this->getHumanName() . ' Dernière date de collecte de l\'index = '. $dateCollectPreviousIndex);
+		if (is_null($dateCollectPreviousIndex)) {
+			$dateCollectPreviousIndex = $dateEnd;
+			log::add(__CLASS__, 'debug', $this->getHumanName() . ' Aucune valeur de l\'index historisé, date de dernière collecte par défaut = '. $dateCollectPreviousIndex);		
+		}
+		else {
+			log::add(__CLASS__, 'debug', $this->getHumanName() . ' Dernière date de collecte de l\'index = '. $dateCollectPreviousIndex);
+		}
 
 		return $dateCollectPreviousIndex;			
    }
@@ -343,7 +354,7 @@ class teleo extends eqLogic {
 					if ($dateLastMeasure < $dateBegin) {
 						# Last measure of previous month
 						$dateBegin = date('Y-m-d 23:55:00', strtotime(date('Y-m-d 23:55:00', strtotime('first day of this month -1 month')) . ' -1 day'));
-						$dateBeginPeriod = date('Y-m-d 23:55:00', strtotimestrtotime('first day of this month - 1 month'));						
+						$dateBeginPeriod = date('Y-m-d 23:55:00', strtotime('first day of this month - 1 month'));						
 					}
 					else {
 						# New month
