@@ -82,12 +82,21 @@ class teleo extends eqLogic {
 
     foreach ($eqLogics as $eqLogic)
     { 
-      if (date('G') < $startCheckHour || date('G') >= 22)
+	
+      if (date('G') < $startCheckHour || date('G') > 22)
       {
         if ($eqLogic->getCache('getTeleoData') == 'done')
     	{
           $eqLogic->setCache('getTeleoData', null);
         }
+		else
+		{
+			# Aucune donnée récupérée
+			$dateYesterday = date('Y-m-d', strtotime('-1 day'));
+			
+			log::add(__CLASS__, 'error', $eqLogic->getHumanName() . ' Aucune donnée n\'a pu être récupérée pour la journée du ' . $dateYesterday);
+		}
+		
         return;
       }
 
@@ -132,7 +141,7 @@ class teleo extends eqLogic {
            $this->getTeleoData();
         }
         else {
-          log::add(__CLASS__, 'error', $this->getHumanName() . ' Erreur de récupération des données - Abandon');
+          log::add(__CLASS__, 'warning', $this->getHumanName() . ' Erreur de récupération des données - Abandon');
         }
       }
       else
@@ -171,13 +180,13 @@ class teleo extends eqLogic {
 
 		  if (is_null($output) || ($output != 1))
 		  {   
-			log::add(__CLASS__, 'error', $this->getHumanName() . ' Erreur de lancement du script : [ ' . $output . ' ] - Abandon');
+			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Erreur de lancement du script : [ ' . $output . ' ] (/tmp/teleo/veolia.log) - Abandon');
 			return null;
 		  }
 	  }  
 	
 	  if (!file_exists($dataFile)) {   
-		log::add(__CLASS__, 'error', $this->getHumanName() . ' Fichier <' . $dataFile . '> non trouvé - Abandon');
+		log::add(__CLASS__, 'warning', $this->getHumanName() . ' Fichier <' . $dataFile . '> non trouvé - Abandon');
 		return null;
 	  }
 	  else 
@@ -202,7 +211,7 @@ class teleo extends eqLogic {
 	 
 	 $output = shell_exec($cmdtail);
 	 if (is_null($output)) {
-		 log::add(__CLASS__, 'error', $this->getHumanName() . 'Erreur dans la commande de lecture du fichier résultat <' . $dataDirectory . '/historique_jours_litres.csv>');
+		 log::add(__CLASS__, 'error', $this->getHumanName() . ' Erreur dans la commande de lecture du fichier résultat <' . $dataDirectory . '/historique_jours_litres.csv>');
 	 }
 	 else {
 		 
@@ -224,7 +233,7 @@ class teleo extends eqLogic {
         log::add(__CLASS__, 'debug', $this->getHumanName() . ' Vérification date dernière mesure : ' . $dateLastMeasure);
 		
 		if ($dateLastMeasure < $dateYesterday) {
-			log::add(__CLASS__, 'info', $this->getHumanName() . ' Récupération des données ' . " le relevé n'est pas encore disponible, la derniere valeur est en date du " . $dateLastMeasure);
+			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Récupération des données ' . " le relevé n'est pas encore disponible, la derniere valeur est en date du " . $dateLastMeasure);
 		}
 		else {
 			$this->recordData($valeurMesure,$dateLastMeasure);    	
@@ -253,7 +262,7 @@ class teleo extends eqLogic {
 
 		if (is_null($dateCollectPreviousIndex)) {
 			$dateCollectPreviousIndex = $dateEnd;
-			log::add(__CLASS__, 'debug', $this->getHumanName() . ' Aucune valeur de l\'index historisé, date de dernière collecte par défaut = '. $dateCollectPreviousIndex);		
+			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Aucune valeur de l\'index historisé, date de dernière collecte par défaut = '. $dateCollectPreviousIndex);		
 		}
 		else {
 			log::add(__CLASS__, 'debug', $this->getHumanName() . ' Dernière date de collecte de l\'index = '. $dateCollectPreviousIndex);
