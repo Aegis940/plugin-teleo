@@ -57,7 +57,7 @@ The plugin will then check the correct connection to the *Veolia* site and recov
 - **monthly consumption**: in Litres, based on the index,
 - **annual consumption**: in Litres, based on the index,
 
-> As the calculation of consumption is based on the index, it is necessary to keep a history of at least 1 to 2 years. 
+> As the calculation of consumption is based on the index, it is necessary to keep a history of at least 2 years (1 year and 2 days in fact). 
 > **On the first day of installation of the equipment, the values will be at 0** and it is only on the second day that the consumption data will be visible.
 >
 > For the *weekly*, *monthly* and *annual* periods, only the last history of the current period is kept.
