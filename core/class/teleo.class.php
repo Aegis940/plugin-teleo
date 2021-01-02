@@ -83,20 +83,20 @@ class teleo extends eqLogic {
     foreach ($eqLogics as $eqLogic)
     { 
 	
-      if (date('G') < $startCheckHour || date('G') >= 22)
+      if (date('G') < $startCheckHour || date('G') >= 23)
       {
-        if ($eqLogic->getCache('getTeleoData') == 'done')
-    	{
-          $eqLogic->setCache('getTeleoData', null);
-        }
-
-		if ((date('G') >= 23) && ($eqLogic->getCache('getTeleoData') != 'done'))
+		if ((date('G') == 23) && ($eqLogic->getCache('getTeleoData') != 'done'))
 		{
 			# Aucune donnée récupérée
 			$dateYesterday = date('Y-m-d', strtotime('-1 day'));
 			
 			log::add(__CLASS__, 'error', $eqLogic->getHumanName() . ' Aucune donnée n\'a pu être récupérée pour la journée du ' . $dateYesterday);
 		}
+		
+        if ($eqLogic->getCache('getTeleoData') == 'done')
+    	{
+          $eqLogic->setCache('getTeleoData', null);
+        }
 		
         return;
       }
