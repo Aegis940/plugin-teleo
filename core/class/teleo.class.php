@@ -83,13 +83,14 @@ class teleo extends eqLogic {
     foreach ($eqLogics as $eqLogic)
     { 
 	
-      if (date('G') < $startCheckHour || date('G') > 22)
+      if (date('G') < $startCheckHour || date('G') >= 22)
       {
         if ($eqLogic->getCache('getTeleoData') == 'done')
     	{
           $eqLogic->setCache('getTeleoData', null);
         }
-		else
+
+		if ((date('G') >= 23) && ($eqLogic->getCache('getTeleoData') != 'done'))
 		{
 			# Aucune donnée récupérée
 			$dateYesterday = date('Y-m-d', strtotime('-1 day'));
@@ -345,7 +346,7 @@ class teleo extends eqLogic {
 	
 						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation hebomadaire pour aujourdh\'ui car la valeur est à cheval sur plusieurs semaines.');
 											
-						continue;		
+						continue 2;		
 					}
 					else {
 						
@@ -367,14 +368,14 @@ class teleo extends eqLogic {
 					}
 					else {
 						# New month
-						$dateBegin = date('Y-m-d 23:55:00', strtotime('first day of this month -1 day'));
+						$dateBegin = date('Y-m-d 23:55:00', strtotime(date('Y-m-d 23:55:00', strtotime('first day of this month')) . ' -1 day'));
 					}
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
 
 						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation mensuelle pour aujourdh\'ui car la valeur est à cheval sur plusieurs mois.');
 											
-						continue;		
+						continue 2;		
 					}
 					else {
 						
@@ -403,7 +404,7 @@ class teleo extends eqLogic {
 
 						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation annuelle pour aujourdh\'ui car la valeur est à cheval sur plusieurs années.');
 											
-						continue;		
+						continue 2;		
 					}
 					else {
 
@@ -425,7 +426,10 @@ class teleo extends eqLogic {
 				# Pour les période Hebdo, Mois et Année on ne garde que la dernière valeur de la période en cours
 				if ($cmdName != 'index' && $cmdName != 'consod') {
 					log::add(__CLASS__, 'debug', $this->getHumanName() . ' Suppression historique entre le ' . $dateBeginPeriod . ' et le ' . $dateReal);
-					history::removes($cmdId, $dateBeginPeriod, $dateReal);				
+					if (!is_null($dateBeginPeriod)&& !is_null($dateReal)) {
+						history::removes($cmdId, $dateBeginPeriod, $dateReal);				
+					}
+					
 				}
 				
 				log::add(__CLASS__, 'debug', $this->getHumanName() . ' Enregistrement mesure : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $measure);
