@@ -344,9 +344,10 @@ class teleo extends eqLogic {
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
 	
-						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation hebomadaire pour aujourdh\'ui car la valeur est à cheval sur plusieurs semaines.');
-											
-						continue 2;		
+						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation hebomadaire pour aujourd\'hui car la valeur est à cheval sur plusieurs semaines.');
+						
+						$cmd = $this->getCmd(null, $cmdName);						
+						$measure = $cmd->execCmd();
 					}
 					else {
 						
@@ -373,9 +374,10 @@ class teleo extends eqLogic {
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
 
-						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation mensuelle pour aujourdh\'ui car la valeur est à cheval sur plusieurs mois.');
-											
-						continue 2;		
+						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation mensuelle pour aujourd\'hui car la valeur est à cheval sur plusieurs mois.');
+								
+						$cmd = $this->getCmd(null, $cmdName);						
+						$measure = $cmd->execCmd();
 					}
 					else {
 						
@@ -402,9 +404,10 @@ class teleo extends eqLogic {
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
 
-						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation annuelle pour aujourdh\'ui car la valeur est à cheval sur plusieurs années.');
-											
-						continue 2;		
+						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation annuelle pour aujourd\'hui car la valeur est à cheval sur plusieurs années.');
+
+						$cmd = $this->getCmd(null, $cmdName);						
+						$measure = $cmd->execCmd();	
 					}
 					else {
 
