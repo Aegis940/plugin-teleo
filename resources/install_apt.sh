@@ -55,11 +55,11 @@ if [ $( uname -s ) == "Linux" ]; then
 		driver_name="geckodriver-$driver_version-arm7hf.tar.gz";;
 	x86_64|aarch64|AMD64)
 		echo "Machine Hardware name:$(uname -m)"
-		driver_version="v0.28.0"
+		driver_version="v0.26.0"
 		driver_name="geckodriver-$driver_version-linux64.tar.gz";;
 	x86|i686)
 		echo "Machine Hardware name: $(uname -m)"
-		driver_version="v0.28.0"
+		driver_version="v0.26.0"
 		driver_name="geckodriver-$driver_version-linux32.tar.gz";;
 	*)
 		echo "other : $(uname -m)"
@@ -105,6 +105,7 @@ echo 75 > "${PROGRESS_FILE}"
 echo "********************************************************"
 echo "               Python3 'lxml' module                    "
 echo "********************************************************"
+sudo apt-get build-dep python3-lxml
 sudo pip3 install lxml
 
 echo 80 > "${PROGRESS_FILE}"
@@ -160,6 +161,6 @@ if [ $(python3 --version 2>&1 | grep -c 'Python 3.7.') == "0" ]; then
 fi
 
 echo "5. Python modules:"
-echo "$(sudo pip3 list --format=legacy | grep -E "requests|lxml|xlrd|selenium|PyVirtualDisplay|urllib3")"
+echo "$(sudo pip3 list | grep -E "requests|lxml|xlrd|selenium|PyVirtualDisplay|urllib3")"
 
 rm "${PROGRESS_FILE}"
