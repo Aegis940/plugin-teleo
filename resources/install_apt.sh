@@ -45,21 +45,30 @@ echo "********************************************************"
 
 driver_version=""
 driver_name=""
+url=""
 
 if [ $( uname -s ) == "Linux" ]; then
   
 	case $( uname -m ) in
 	armv7l)
 		echo "Machine Hardware name: armv7l"
-		driver_version="v0.23.0"
-		driver_name="geckodriver-$driver_version-arm7hf.tar.gz";;
-	x86_64|aarch64|AMD64)
+		url="https://eu.mirror.archlinuxarm.org/armv7h/community"
+		driver_version="0.26.0-1"
+		driver_name="geckodriver-$driver_version-armv7h.pkg.tar.xz";;
+	aarch64)
+		echo "Machine Hardware name: aarch64"
+		url="https://eu.mirror.archlinuxarm.org/aarch64/community"
+		driver_version="0.26.0-1"
+		driver_name="geckodriver-$driver_version-aarch64.pkg.tar.xz";;
+	x86_64|amd64)
 		echo "Machine Hardware name:$(uname -m)"
-		driver_version="v0.28.0"
+		url="https://github.com/mozilla/geckodriver/releases/download"
+		driver_version="v0.26.0"
 		driver_name="geckodriver-$driver_version-linux64.tar.gz";;
 	x86|i686)
 		echo "Machine Hardware name: $(uname -m)"
-		driver_version="v0.28.0"
+		url="https://github.com/mozilla/geckodriver/releases/download"
+		driver_version="v0.26.0"
 		driver_name="geckodriver-$driver_version-linux32.tar.gz";;
 	*)
 		echo "other : $(uname -m)"
@@ -70,11 +79,29 @@ else
 fi
 
 if [ $driver_version != "" ]; then
-	sudo wget https://github.com/mozilla/geckodriver/releases/download/$driver_version/$driver_name
-	sudo tar xzfz $driver_name
-	sudo mv geckodriver /usr/local/bin
-	sudo chmod +x /usr/local/bin/geckodriver
-	sudo rm $driver_name
+
+	if [ $(uname -m) == "armv7l" ] || [ $(uname -m) == "aarch64" ]; then
+		sudo wget $url/$driver_name
+		sudo tar xJf $driver_name usr/bin/geckodriver
+		sudo mv usr/bin/geckodriver /usr/local/bin
+		sudo chmod +x /usr/local/bin/geckodriver
+
+		# clean temp dir
+		if [ -z "$(ls -A usr/bin)" ]; then
+			sudo rmdir usr/bin
+		fi
+		if [ -z "$(ls -A usr)" ]; then
+			sudo rmdir usr
+		fi
+		
+		sudo rm $driver_name
+	else
+		sudo wget $url/$driver_version/$driver_name
+		sudo tar xzfz $driver_name
+		sudo mv geckodriver /usr/local/bin
+		sudo chmod +x /usr/local/bin/geckodriver
+		sudo rm $driver_name
+	fi
 
 	if [ -f "/usr/local/bin/geckodriver" ]; then
 		echo "geckodriver driver successfully installed"
@@ -144,11 +171,11 @@ if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -lt 60 ];
 	echo "Warning: Mozilla Firefox must be 60.x or higher for Veolia IDF WebSite. The Python script will not be able to be executed."
 fi
 
-echo "2. geckodriver driver:"
+echo "2. geckodriver :"
 if [ -f "/usr/local/bin/geckodriver" ]; then
-	echo "geckodriver driver $driver_version for $(uname -m)"
+	echo "$(uname -m) $(geckodriver --version)"
 else
-	echo "Warning: geckodriver driver missing, but its mandatory for Veolia IDF WebSite. The Python script will not be able to be executed."
+	echo "Warning: geckodriver missing, but its mandatory for Veolia IDF WebSite. The Python script will not be able to be executed."
 fi
 
 echo "3. Packages:"
