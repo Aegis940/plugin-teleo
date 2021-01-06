@@ -187,6 +187,6 @@ if [ $(python3 --version 2>&1 | grep -c 'Python 3.7.') == "0" ]; then
 fi
 
 echo "5. Python modules:"
-echo "$(sudo pip3 list --format=legacy | grep -E "requests|lxml|xlrd|selenium|PyVirtualDisplay|urllib3")"
+echo "$(sudo pip3 list | grep -E "requests|lxml|xlrd|selenium|PyVirtualDisplay|urllib3")"
 
 rm "${PROGRESS_FILE}"
