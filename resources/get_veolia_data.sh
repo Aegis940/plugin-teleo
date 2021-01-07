@@ -78,7 +78,12 @@ if [ "$1" = "IDF" ]; then
 	nbprocess=$(pgrep -f "Xvfb -br -nolisten tcp -screen 0 800x600x24 -displayfd 5" -c)
 	if [ ! $nbprocess -eq 0 ]; then
 		pkill -f "Xvfb -br -nolisten tcp -screen 0 800x600x24 -displayfd 5"
-	fi	
+	fi
+	
+	nbprocess=$(pgrep -f "/usr/local/bin/geckodriver" -c)
+	if [ ! $nbprocess -eq 0 ]; then
+		pkill -f "/usr/local/bin/geckodriver"
+	fi		
 fi
 
 echo ${codret}
