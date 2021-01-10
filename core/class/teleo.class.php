@@ -223,7 +223,7 @@ class teleo extends eqLogic {
 		$dateMesure = substr($mesure[0],0,10);
 		$valeurMesure = $mesure[1];
 		
-		if (!is_null($mesure[3]) && $mesure[3] == 'Estimé') {
+		if (!is_null($mesure[3]) && ($mesure[3] != 'Mesuré' && $mesure[3] != 'M')) {
 			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier relevé de l\'index indique une estimation pas une mesure réelle');
 		}
 		 
@@ -234,10 +234,29 @@ class teleo extends eqLogic {
         log::add(__CLASS__, 'debug', $this->getHumanName() . ' Vérification date dernière mesure : ' . $dateLastMeasure);
 		
 		if ($dateLastMeasure < $dateYesterday) {
-			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Récupération des données ' . " le relevé n'est pas encore disponible, la derniere valeur est en date du " . $dateLastMeasure);
+			
+			// Check la date de collect de l'index et si elle est antérieure à la date de mesure, on la prend en compte
+			$cmd = $this->getCmd(null, 'index');
+			$value = $cmd->execCmd();
+			$lastCollectDate = $cmd->getCollectDate();
+	
+			log::add(__CLASS__, 'debug', $this->getHumanName() . ' Dernière date de collecte = ' . $lastCollectDate);
+
+		
+			if (is_null($lastCollectDate) || ($lastCollectDate < $dateLastMeasure)) {
+				$diffDays = floor(abs(strtotime($dateMesure) - strtotime('today'))/(60 * 60 * 24));
+				$this->recordData($valeurMesure,$dateLastMeasure,$diffDays); 					
+			}
+			else {
+				log::add(__CLASS__, 'warning', $this->getHumanName() . ' Récupération des données ' . " le relevé n'est pas encore disponible, la derniere valeur est en date du " . $dateLastMeasure);
+			}
+		}
+		else if ($dateLastMeasure == $dateYesterday) {
+			$this->recordData($valeurMesure,$dateLastMeasure);    	
+
 		}
 		else {
-			$this->recordData($valeurMesure,$dateLastMeasure);    	
+			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Récupération des données ' . " pb dans le relevé, la derniere valeur est en date du " . $dateLastMeasure);
 		}
 		
 		// clean data file
@@ -245,28 +264,39 @@ class teleo extends eqLogic {
 	 }
    }
 
-   public function getDateCollectPreviousIndex() {
+   public function getDateCollectPreviousIndex($diffDay=1) {
 	   
 	    $cmd = $this->getCmd(null, 'index');
 		$cmdId = $cmd->getId();
 		
-		$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -1 day'));		
-		$dateEnd = date("Y-m-d 23:55:00", strtotime('-2 day'));
-		
+		$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -1 day'));
+		$dateEnd = date('Y-m-d 23:55:00', strtotime(date('Y-m-d 23:55:00', strtotime('now')) . ' -' . ($diffDay+1) . ' day'));		
+		//$dateEnd = date("Y-m-d 23:55:00", strtotime('-2 day'));
+				
 		# Cas spécial dernière valeur de l'année 
 		if ($dateBegin > $dateEnd) {
-			$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -2 day'));
+			$dateBegin = date('Y-m-d 23:55:00', strtotime((date("Y") . '-01-01') . ' -' . ($diffDay+1) . ' day'));	
+			//$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -2 day'));
+			$value = $cmd->execCmd();
+			$lastCollectDate = $cmd->getCollectDate();
+			
+			if ($lastCollectDate < $dateBegin) {
+				$dateBegin = $lastCollectDate;
+			}
+
 		}
+		
+		log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande = ' . $cmdId . ' Récupération historique index entre le ' . $dateBegin . ' et le ' . $dateEnd . ' Diff = ' . $diffDay);
 		
 		$all = history::all($cmdId, $dateBegin, $dateEnd);
 		$dateCollectPreviousIndex = count($all) ? $all[count($all) - 1]->getDatetime() : null;
 
 		if (is_null($dateCollectPreviousIndex)) {
 			$dateCollectPreviousIndex = $dateEnd;
-			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Aucune valeur de l\'index historisé, date de dernière collecte par défaut = '. $dateCollectPreviousIndex);		
+			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Aucune valeur de l\'index historisé, date de collecte précédente par défaut = '. $dateCollectPreviousIndex);		
 		}
 		else {
-			log::add(__CLASS__, 'debug', $this->getHumanName() . ' Dernière date de collecte de l\'index = '. $dateCollectPreviousIndex);
+			log::add(__CLASS__, 'debug', $this->getHumanName() . ' Date de collecte précédente de l\'index = '. $dateCollectPreviousIndex);
 		}
 
 		return $dateCollectPreviousIndex;			
@@ -290,12 +320,13 @@ class teleo extends eqLogic {
 		return $measure;			
    }
     
-   public function recordData($index, $dateLastMeasure) {
+   public function recordData($index, $dateLastMeasure, $diffDay=1) {
 	  
 		$cmdInfos = ['index','consod','consoh','consom','consoa'];
 		
-		$dateCollectPreviousIndex = $this->getDateCollectPreviousIndex();
-		$dateReal = date("Y-m-d 23:55:00", strtotime('-1 day'));
+		$dateCollectPreviousIndex = $this->getDateCollectPreviousIndex($diffDay);
+		$dateReal = date('Y-m-d 23:55:00', strtotime(date('Y-m-d 23:55:00', strtotime('now')) . ' -' . $diffDay . ' day'));	
+		//$dateReal = date("Y-m-d 23:55:00", strtotime('-1 day'));
 		
 		foreach ($cmdInfos as $cmdName)
 		{
@@ -312,7 +343,8 @@ class teleo extends eqLogic {
 				case 'consod':
 					log::add(__CLASS__, 'debug', $this->getHumanName() . '--------------------------');
 
-					$dateBegin = date('Y-m-d 23:55:00', strtotime('-2 day'));
+					$dateBegin = date('Y-m-d 23:55:00', strtotime(date('Y-m-d 23:55:00', strtotime('now')) . ' -' . ($diffDay+1) . ' day'));	
+					//$dateBegin = date('Y-m-d 23:55:00', strtotime('-2 day'));
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
 						
@@ -331,7 +363,7 @@ class teleo extends eqLogic {
 					
 					$dateBeginPeriod = date('Y-m-d 23:55:00', strtotime('monday this week'));
 					$dateBegin = $dateBeginPeriod;
-									
+												
 					if ($dateLastMeasure < $dateBegin) {
 						# Last measure of previous week
 						$dateBegin = date('Y-m-d 23:55:00', strtotime('monday this week -1 week -1 day'));
@@ -346,8 +378,13 @@ class teleo extends eqLogic {
 	
 						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation hebomadaire pour aujourd\'hui car la valeur est à cheval sur plusieurs semaines.');
 						
-						$cmd = $this->getCmd(null, $cmdName);						
-						$measure = $cmd->execCmd();
+						if ($dateBeginPeriod == date("Y-m-d 23:55:00", strtotime('-1 day'))) {
+							$measure = 0;
+						}
+						else {
+							$cmd = $this->getCmd(null, $cmdName);						
+							$measure = $cmd->execCmd();
+						}
 					}
 					else {
 						
@@ -376,8 +413,13 @@ class teleo extends eqLogic {
 
 						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation mensuelle pour aujourd\'hui car la valeur est à cheval sur plusieurs mois.');
 								
-						$cmd = $this->getCmd(null, $cmdName);						
-						$measure = $cmd->execCmd();
+						if ($dateBeginPeriod == date("Y-m-d 23:55:00", strtotime('-1 day'))) {
+							$measure = 0;
+						}
+						else {
+							$cmd = $this->getCmd(null, $cmdName);						
+							$measure = $cmd->execCmd();
+						}
 					}
 					else {
 						
@@ -406,8 +448,13 @@ class teleo extends eqLogic {
 
 						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation annuelle pour aujourd\'hui car la valeur est à cheval sur plusieurs années.');
 
-						$cmd = $this->getCmd(null, $cmdName);						
-						$measure = $cmd->execCmd();	
+						if ($dateBeginPeriod == date("Y-m-d 23:55:00", strtotime('-1 day'))) {
+							$measure = 0;
+						}
+						else {
+							$cmd = $this->getCmd(null, $cmdName);						
+							$measure = $cmd->execCmd();
+						}
 					}
 					else {
 
@@ -423,7 +470,7 @@ class teleo extends eqLogic {
 			
 			$cmdHistory = history::byCmdIdDatetime($cmdId, $dateReal);
 			if (is_object($cmdHistory) && $cmdHistory->getValue() == $measure) {
-				log::add(__CLASS__, 'debug', $this->getHumanName() . ' Mesure en historique - Aucune action : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $measure);
+				log::add(__CLASS__, 'info', $this->getHumanName() . ' Mesure en historique - Aucune action : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $measure);
 			}
 			else {
 				# Pour les période Hebdo, Mois et Année on ne garde que la dernière valeur de la période en cours
@@ -435,7 +482,7 @@ class teleo extends eqLogic {
 					
 				}
 				
-				log::add(__CLASS__, 'debug', $this->getHumanName() . ' Enregistrement mesure : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $measure);
+				log::add(__CLASS__, 'info', $this->getHumanName() . ' Enregistrement mesure : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $measure);
 				$cmd->event($measure, $dateReal);
 			}
 		
