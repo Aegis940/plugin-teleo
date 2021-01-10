@@ -238,7 +238,7 @@ class teleo extends eqLogic {
 			// Check la date de collect de l'index et si elle est antérieure à la date de mesure, on la prend en compte
 			$cmd = $this->getCmd(null, 'index');
 			$value = $cmd->execCmd();
-			$lastCollectDate = $cmd->getCollectDate();
+			$lastCollectDate = $cmd->getValueDate();
 	
 			log::add(__CLASS__, 'debug', $this->getHumanName() . ' Dernière date de collecte = ' . $lastCollectDate);
 
@@ -278,7 +278,7 @@ class teleo extends eqLogic {
 			$dateBegin = date('Y-m-d 23:55:00', strtotime((date("Y") . '-01-01') . ' -' . ($diffDay+1) . ' day'));	
 			//$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -2 day'));
 			$value = $cmd->execCmd();
-			$lastCollectDate = $cmd->getCollectDate();
+			$lastCollectDate = $cmd->getValueDate();
 			
 			if ($lastCollectDate < $dateBegin) {
 				$dateBegin = $lastCollectDate;
