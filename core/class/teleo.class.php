@@ -174,7 +174,7 @@ class teleo extends eqLogic {
 		  $login = $this->getConfiguration('login');
 		  $password = $this->getConfiguration('password');
 
-		  $cmdBash = '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' ' . $login . ' ' . $password . ' ' . $dataDirectory;
+		  $cmdBash = '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' \'' . $password . '\' ' . $dataDirectory;
 		  
 		  log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande : ' . $cmdBash);
 		  $output = shell_exec($cmdBash);
