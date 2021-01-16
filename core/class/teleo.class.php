@@ -205,6 +205,9 @@ class teleo extends eqLogic {
 		 $dataDirectory = '/tmp/teleo';
 	 }
 	
+	 // On essai d'importer les indexes manquants précédant la dernière valeur
+	 $this->fillMissingIndexes(); 
+ 
 	 // récupère le dernier index
 	 $cmdtail = "tail -1 " . $dataDirectory . "/historique_jours_litres.csv";
 	 
@@ -220,11 +223,31 @@ class teleo extends eqLogic {
 		log::add(__CLASS__, 'debug', $this->getHumanName() . ' Data : ' . $output);
 		
 		$mesure = explode(";",$output); 
+		
+		if (count($mesure) < 4) {
+			log::add(__CLASS__, 'error', $this->getHumanName() . ' Erreur de structure du fichier <' . $dataDirectory . '/historique_jours_litres.csv>');
+			
+			// clean data file
+			shell_exec("rm -f " . $dataDirectory . "/historique_jours_litres.csv");				
+				
+			return null;			
+		}
+		
 		$dateMesure = substr($mesure[0],0,10);
 		$valeurMesure = $mesure[1];
+		$type = rtrim ($mesure[3]);
 		
-		if (!is_null($mesure[3]) && ($mesure[3] != 'Mesuré' && $mesure[3] != 'M')) {
+		if ($type != 'Mesuré' && $type != 'M') {
 			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier relevé de l\'index indique une estimation pas une mesure réelle');
+			
+			if ($this->getConfiguration('ignoreEstimation') == 1) {
+				log::add(__CLASS__, 'warning', $this->getHumanName() . ' La valeur ' . $valeurMesure . ' n\'est pas prise en compte.');
+				
+				// clean data file
+				shell_exec("rm -f " . $dataDirectory . "/historique_jours_litres.csv");				
+				
+				return null;
+			}				
 		}
 		 
 		// Check si la date de la dernière mesure est bien celle d'hier
@@ -263,6 +286,57 @@ class teleo extends eqLogic {
 	 }
    }
 
+   public function fillMissingIndexes() {
+
+		$dataDirectory = $this->getConfiguration('outputData');
+		if (empty($dataDirectory)) {
+			$dataDirectory = '/tmp/teleo';
+		}
+		
+		$fichier = file($dataDirectory . "/historique_jours_litres.csv");
+    
+		// Nombre total de ligne du fichier
+		$total = count($fichier);
+
+		for($i = 1; $i < $total-1; $i++) {
+			
+			$mesure = explode(";",$fichier[$i]); 
+			if (count($mesure) < 4) {
+				log::add(__CLASS__, 'error', $this->getHumanName() . ' Erreur de structure du fichier <' . $dataDirectory . '/historique_jours_litres.csv>');
+					
+				continue;			
+			}
+		
+			$dateMesure = substr($mesure[0],0,10);
+			$valeurMesure = $mesure[1];
+			$type = rtrim($mesure[3]);
+			
+			if ($type != 'Mesuré' && $type != 'M') {
+				log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le relevé de l\'index à la date du ' . $dateMesure . ' indique une estimation pas une mesure réelle');
+
+				if ($this->getConfiguration('ignoreEstimation') == 1) {
+					log::add(__CLASS__, 'warning', $this->getHumanName() . ' La valeur ' . $valeurMesure . ' n\'est pas prise en compte.');
+					
+					continue;
+				}
+			}
+
+			$cmd = $this->getCmd(null, 'index');
+			$cmdId = $cmd->getId();
+			$dateReal =  date('Y-m-d 23:55:00', strtotime($dateMesure));
+			
+			$cmdHistory = history::byCmdIdDatetime($cmdId, $dateReal);
+			if (is_object($cmdHistory) && $cmdHistory->getValue() == $valeurMesure) {
+				log::add(__CLASS__, 'debug', $this->getHumanName() . ' Mesure en historique - Aucune action : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $valeurMesure);
+			}
+			else {
+				log::add(__CLASS__, 'info', $this->getHumanName() . ' Enregistrement mesure manquante : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $valeurMesure);
+
+				$cmd->addHistoryValue( $valeurMesure, $dateReal);
+			}
+		}
+   }
+    
    public function getDateCollectPreviousIndex($diffDay=1) {
 	   
 	    $cmd = $this->getCmd(null, 'index');
@@ -375,15 +449,9 @@ class teleo extends eqLogic {
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
 	
-						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation hebomadaire pour aujourd\'hui car la valeur est à cheval sur plusieurs semaines.');
+						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation hebomadaire pour ce début de période car la valeur est à cheval sur plusieurs semaines. La valeur est mise à 0.');
 						
-						if ($dateBeginPeriod == date("Y-m-d 23:55:00", strtotime('-1 day'))) {
-							$measure = 0;
-						}
-						else {
-							$cmd = $this->getCmd(null, $cmdName);						
-							$measure = $cmd->execCmd();
-						}
+						$measure = 0;
 					}
 					else {
 						
@@ -410,15 +478,9 @@ class teleo extends eqLogic {
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
 
-						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation mensuelle pour aujourd\'hui car la valeur est à cheval sur plusieurs mois.');
-								
-						if ($dateBeginPeriod == date("Y-m-d 23:55:00", strtotime('-1 day'))) {
-							$measure = 0;
-						}
-						else {
-							$cmd = $this->getCmd(null, $cmdName);						
-							$measure = $cmd->execCmd();
-						}
+						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation mensuelle pour ce début de période car la valeur est à cheval sur plusieurs mois. La valeur est mise à 0.');
+						
+						$measure = 0;	
 					}
 					else {
 						
@@ -445,15 +507,9 @@ class teleo extends eqLogic {
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
 
-						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation annuelle pour aujourd\'hui car la valeur est à cheval sur plusieurs années.');
-
-						if ($dateBeginPeriod == date("Y-m-d 23:55:00", strtotime('-1 day'))) {
-							$measure = 0;
-						}
-						else {
-							$cmd = $this->getCmd(null, $cmdName);						
-							$measure = $cmd->execCmd();
-						}
+						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation annuelle pour ce début de période car la valeur est à cheval sur plusieurs années. La valeur est mise à 0.');
+						
+						$measure = 0;
 					}
 					else {
 
@@ -494,6 +550,7 @@ class teleo extends eqLogic {
       $this->setDisplay('height','332px');
       $this->setDisplay('width', '192px');
       $this->setConfiguration('forceRefresh', 0);
+	  $this->setConfiguration('ignoreEstimation', 0);	  
 	  $this->setConfiguration('outputData', '/tmp/teleo');
 	  $this->setConfiguration('connectToVeoliaWebsiteFromThisMachine', 1);
       $this->setCategory('energy', 1);

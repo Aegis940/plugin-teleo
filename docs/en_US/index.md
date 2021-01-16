@@ -47,6 +47,7 @@ On the equipment page, enter :
 Then click on the **Save** button.
 
 - Unchecking the option **Connection to the Veolia** site allows you not to launch the Python script to retrieve the data but to use a result file deposited in the **Veolia site data export directory** (to be used in the case where the prerequisites for the pyhton script cannot be met on the machine hosting Jeedom).
+- The option **Ignore estimated records** allows you to skip importing an index record estimated.
 - The option **Force data recovery** allows the consumption information to be recovered even if it has already been recovered for the period concerned.
 - The **Widget template** option allows the widget to be used in the colour of the Teleo meter.
 

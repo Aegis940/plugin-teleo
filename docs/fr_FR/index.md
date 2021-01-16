@@ -47,6 +47,7 @@ Sur la page de l'équipement, renseignez :
 Puis cliquez sur le bouton **Sauvegarder**.
 
 - Décocher l'option **Connexion au site Veolia** permet de ne pas lancer le script Python pour récupérer les données mais d'exploiter un fichier résultat déposé dans le **Répertoire d'export des données du site Veolia** (à utiliser dans le cas où les prérequis pour le script python ne peuvent être satisfait sur la machine hébergeant Jeedom).
+- L'option **Ignorer les relevés estimés** permet de ne pas importer une estimation d'index.
 - L'option **Forcer la récupération des données** permet de récupérer les informations de consommation même si elles ont déjà été récupérées pour la période concernée.
 - L'option **Template de widget** permet d'utiliser le widget au couleur du compteur Téléo.
 

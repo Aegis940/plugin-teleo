@@ -28,6 +28,7 @@
         "Mot de passe Veolia": "Veolia password",
         "Forcer la répcupération des données": "Force data retrieval",
 		"Répertoire d\\'export des données": "Output data directory",
+		"Ignorer les relevés estimés": "Ignore estimated records",
 		"Cocher la case si la connexion au site Veolia est faite depuis cette machine": "Check this optionif the connection to the Veolia site is made from this machine",		
         "Cocher la case pour forcer la récupération des données même si déjà présentes": "Check this option to force data retrieval even if data already present for concerned periods",
         "Cocher la case pour utiliser le template de widget aux couleurs du compteur Téléo": "Check this option to use widget's template with Téléo colors",

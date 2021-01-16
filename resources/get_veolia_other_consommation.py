@@ -95,17 +95,20 @@ try:
 	wb = xlrd.open_workbook(tempFile)
 	sheet = wb.sheet_by_index(0)
 
-	# Donnees du dernier releve
-	date = datetime.datetime.strptime('1900-01-01', '%Y-%m-%d') + datetime.timedelta(sheet.cell_value(sheet.nrows - 1, 0) - 2)
-	index = sheet.cell_value(sheet.nrows - 1, 1)
-	conso = sheet.cell_value(sheet.nrows - 1, 2)
-	releve = sheet.cell_value(sheet.nrows - 1, 3)
-
-	# Resultat
-	downloadPath = os.path.normpath(sys.argv[3])
-	downloadFile = downloadPath + '/historique_jours_litres.csv'
-		
-	open(downloadFile, 'w').write(date.strftime("%Y-%m-%d") + ';' + str(index) + ';' + str(conso) + ';' + str(releve))
+	# Donnees du dernier releve (14 jours précédent afin de palier aux erreurs de remontée)
+	startindex = sheet.nrows - 14
+	if (startindex < 0) : startindex = 0
+	
+	open(downloadFile, 'w').write('Date de relevé;Index relevé (litres);Consommation du jour (litres);Index Mesuré/Estimé\n')
+	
+	for i in range(startindex,sheet.nrows):
+	
+		if (str(sheet.cell_value(i, 0)).find('Date de relev') == -1) : 
+			date = datetime.datetime.strptime('1900-01-01', '%Y-%m-%d') + datetime.timedelta(sheet.cell_value(i, 0) - 2)
+			index = sheet.cell_value(i, 1)
+			conso = sheet.cell_value(i, 2)
+			releve = sheet.cell_value(i, 3)
+			open(downloadFile, 'a').write(date.strftime("%Y-%m-%d") + ';' + str(index) + ';' + str(conso) + ';' + str(releve) + '\n')
 
 	returnStatus = 1
 

@@ -27,6 +27,11 @@ display = None
 geckodriverLog = None
 logger = None
 
+def take_screenshot(name,tempDir):
+	logging.debug("Taking screenshot : %s"%name)
+	screenshot = tempDir + '/' + name
+	browser.save_screenshot('%s.png'%screenshot)
+	
 def initLogger(logFile):
 	logger.setLevel(logging.INFO)
 	formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
@@ -121,15 +126,19 @@ try:
 	idPassword.send_keys(veolia_password)
 	time.sleep(3)
 
+	take_screenshot("1_login_form",tempDir)
+	
 	loginButton = browser.find_element_by_class_name('submit-button')
 	loginButton.click()
-	time.sleep(2)
+	time.sleep(5)
 
+	take_screenshot("2_login_form",tempDir)
+	
 	# Page de consommation
 	logger.info('Page de consommation')
 	browser.get(urlConso)
 	WebDriverWait(browser, 20).until(EC.presence_of_element_located((By.NAME , 'from')))
-	
+		
 	# On attend que les premières données soient chargées
 	waitData("mois",5,4)
 	
@@ -144,6 +153,8 @@ try:
 	literButton.send_keys(Keys.RETURN)
 	waitData("Litres",2,5)
 	
+	take_screenshot("3_conso",tempDir)
+	
 	# Téléchargement du fichier
 	logger.info('Téléchargement du fichier')
 	downloadFileButton = browser.find_element_by_class_name("slds-button.slds-text-title_caps")
@@ -155,7 +166,10 @@ try:
 	returnStatus = 1
 
 except Exception as e: 
-	if (str(e.__class__).find('TimeoutException') != -1) : logger.error('La page met trop de temps à s\'afficher')
+	if (str(e.__class__).find('TimeoutException') != -1) : 
+		logger.error('La page met trop de temps a s\'afficher')
+		take_screenshot("Exception",tempDir)
+		
 	else : logger.error(str(e))
  
 finally:
