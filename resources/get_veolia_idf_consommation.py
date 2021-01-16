@@ -26,24 +26,40 @@ browser = None
 display = None
 geckodriverLog = None
 logger = None
+logLevel = None
 
 def take_screenshot(name,tempDir):
+	if (logLevel != logging.DEBUG) : return;
+	
 	logging.debug("Taking screenshot : %s"%name)
 	screenshot = tempDir + '/' + name
-	browser.save_screenshot('%s.png'%screenshot)
 	
-def initLogger(logFile):
-	logger.setLevel(logging.INFO)
-	formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
+	browser.save_screenshot('%s.png'%screenshot)
+
+def setLogLevel(level):
+	if (level == '100') : return logging.DEBUG
+	if (level == '200') : return logging.INFO
+	if (level == '300') : return logging.WARNING
+	if (level == '400') : return logging.ERROR
+	if (level == '1000') : return logging.CRITICAL
+	
+	return logging.INFO
+	
+def initLogger(logFile, logLevel):
+	logger.setLevel(logLevel)
+	formatter = logging.Formatter('[%(asctime)s][%(levelname)s] : [Script Python] %(message)s')
 	file_handler = RotatingFileHandler(logFile, 'a', 1000000, 1)
-	file_handler.setLevel(logging.INFO)
+	
+	file_handler.setLevel(logLevel)
 	file_handler.setFormatter(formatter)
 	logger.addHandler(file_handler)
-	steam_handler = logging.StreamHandler()
-	steam_handler.setLevel(logging.INFO)
-	steam_handler.setFormatter(formatter)
-	logger.addHandler(steam_handler)
-
+	
+	if (sys.argv == 4):
+		steam_handler = logging.StreamHandler()
+		steam_handler.setLevel(logLevel)
+		steam_handler.setFormatter(formatter)
+		logger.addHandler(steam_handler)
+		
 def waitData(exitCond, sleepTime, loopNb):
 
 	kpi_field = browser.find_elements_by_class_name("kpi-value")
@@ -70,13 +86,21 @@ try:
 		
 	#Configuration des logs
 	tempDir = os.path.normpath(sys.argv[3])
-	logFile = tempDir + '/veolia.log'
+	
+	logPath = '/var/www/html/log'
+	if (os.path.exists(logPath)) : logFile = logPath + '/teleo_python'
+	else : logFile = tempDir + '/teleo_python.log'	
+
 	geckodriverLog = tempDir + '/geckodriver.log'
 	
 	Path(tempDir).mkdir(mode=0o754,parents=True, exist_ok=True)
 
 	logger = logging.getLogger()
-	initLogger(logFile)
+	
+	if len( sys.argv ) == 5: logLevel = setLogLevel(sys.argv[4])
+	else: logLevel = logging.INFO
+
+	initLogger(logFile, logLevel)
 
 	#Informations de connexion
 	veolia_login = sys.argv[1]
@@ -176,9 +200,9 @@ finally:
 	logger.debug('Fermeture connexion')
 	if (browser is not None) : browser.quit()
 
-	# Suppression fichier temporaire
-	logger.debug('Suppression fichier log temporaire')
-	if (geckodriverLog is not None and os.path.exists(geckodriverLog)) : os.remove(geckodriverLog)
+	# Suppression fichier temporaire sauf en debug
+	if (geckodriverLog is not None and os.path.exists(geckodriverLog)) : 
+		if (logLevel != logging.DEBUG) : os.remove(geckodriverLog)
 			
 	# fermeture de l'affichage virtuel
 	logger.info('Fermeture display. Exit code ' + str(returnStatus))

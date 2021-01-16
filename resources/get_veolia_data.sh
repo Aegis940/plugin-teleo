@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Check argv
-if [ "$#" -ne 4 ]; then
-	echo -e "Usage: $0 <site_type> <username> <password> <output_dir>"
+if [ "$#" -ne 5 ]; then
+	echo -e "Usage: $0 <site_type> <username> <password> <output_dir> <log_level>"
 	exit 0
 fi
 
@@ -50,7 +50,7 @@ codret=0
 loop=0 
 until [ $codret -eq 1 ] || [ $loop -ge $nbofretry ]
 do
-	timeout --signal=SIGINT ${timeout} $python $root/$scriptname $2 $3 $4
+	timeout --signal=SIGINT ${timeout} $python $root/$scriptname $2 $3 $4 $5
 	codret=$?
 
 	((loop++))

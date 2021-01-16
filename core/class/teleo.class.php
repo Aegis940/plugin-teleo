@@ -173,15 +173,22 @@ class teleo extends eqLogic {
 		  $veoliaWebsite = $this->getConfiguration('type');
 		  $login = $this->getConfiguration('login');
 		  $password = $this->getConfiguration('password');
-
-		  $cmdBash = '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' \'' . $password . '\' ' . $dataDirectory;
+		  $logLevel = log::getLogLevel(__CLASS__);
+		  
+		  $cmdBash = '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' \'' . $password . '\' ' . $dataDirectory . ' ' . $logLevel;
 		  
 		  log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande : ' . $cmdBash);
 		  $output = shell_exec($cmdBash);
 
-		  if (is_null($output) || ($output != 1))
+		  if (is_null($output))
 		  {   
-			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Erreur de lancement du script : [ ' . $output . ' ] (/tmp/teleo/veolia.log) - Abandon');
+			log::add(__CLASS__, 'error', $this->getHumanName() . ' Erreur de lancement du script : problème de droits d\'exécution - Abandon');
+			return null;
+		  }
+		  
+		  if ($output != 1)
+		  {   
+			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Erreur de lancement du script : [ ' . $output . ' ] consulter le log <teleo_python.log> pour plus d\'info - Abandon');
 			return null;
 		  }
 	  }  

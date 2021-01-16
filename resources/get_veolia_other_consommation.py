@@ -25,34 +25,57 @@ url_fichier_histo = url + "/home/espace-client/votre-consommation.exportConsomma
 logger = None
 tempFile = None
 session = None
+logLevel = None
 
-def initLogger(logFile):
-	logger.setLevel(logging.INFO)
-	formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
+def setLogLevel(level):
+	if (level == '100') : return logging.DEBUG
+	if (level == '200') : return logging.INFO
+	if (level == '300') : return logging.WARNING
+	if (level == '400') : return logging.ERROR
+	if (level == '1000') : return logging.CRITICAL
+	
+	return logging.INFO
+	
+def initLogger(logFile, logLevel):
+	logger.setLevel(logLevel)
+	formatter = logging.Formatter('[%(asctime)s][%(levelname)s] : [Script Python] %(message)s')
+	
 	file_handler = RotatingFileHandler(logFile, 'a', 1000000, 1)
-	file_handler.setLevel(logging.INFO)
+	
+	file_handler.setLevel(logLevel)
 	file_handler.setFormatter(formatter)
 	logger.addHandler(file_handler)
-	steam_handler = logging.StreamHandler()
-	steam_handler.setLevel(logging.INFO)
-	steam_handler.setFormatter(formatter)
-	logger.addHandler(steam_handler)
+	
+	if (sys.argv == 4):
+		steam_handler = logging.StreamHandler()
+		steam_handler.setLevel(logLevel)
+		steam_handler.setFormatter(formatter)
+		logger.addHandler(steam_handler)
 
 try:
 	returnStatus = 0
 
 	if len( sys.argv ) < 4:
 		sys.exit(returnStatus)
-		
-	# Configuration des logs
+	
+	#Configuration des logs
 	tempDir = os.path.normpath(sys.argv[3])
-	Path(tempDir).mkdir(mode=0o754,parents=True, exist_ok=True)
+	
+	logPath = '/var/www/html/log'
+	if (os.path.exists(logPath)) : logFile = logPath + '/teleo_python'
+	else : logFile = tempDir + '/teleo_python.log'	
 
 	tempFile = tempDir + '/historique.xls'
-	logFile = tempDir + '/veolia.log'
+	
+	Path(tempDir).mkdir(mode=0o754,parents=True, exist_ok=True)		
 	
 	logger = logging.getLogger()
-	initLogger(logFile)
+		
+	if len( sys.argv ) == 5: logLevel = setLogLevel(sys.argv[4])
+	else: logLevel = logging.INFO
+	
+	logLevel = logging.INFO
+	initLogger(logFile, logLevel)
 
 	# Identifiants
 	veolia_username = sys.argv[1]
