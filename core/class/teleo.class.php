@@ -243,7 +243,7 @@ class teleo extends eqLogic {
 			log::add(__CLASS__, 'debug', $this->getHumanName() . ' Dernière date de collecte = ' . $lastCollectDate);
 
 		
-			if (is_null($lastCollectDate) || ($lastCollectDate < $dateLastMeasure)) {
+			if (is_null($lastCollectDate) || ($lastCollectDate <= $dateLastMeasure)) {
 				$diffDays = floor(abs(strtotime($dateMesure) - strtotime('today'))/(60 * 60 * 24));
 				$this->recordData($valeurMesure,$dateLastMeasure,$diffDays); 					
 			}
@@ -253,7 +253,6 @@ class teleo extends eqLogic {
 		}
 		else if ($dateLastMeasure == $dateYesterday) {
 			$this->recordData($valeurMesure,$dateLastMeasure);    	
-
 		}
 		else {
 			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Récupération des données ' . " pb dans le relevé, la derniere valeur est en date du " . $dateLastMeasure);
