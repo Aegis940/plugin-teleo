@@ -78,8 +78,6 @@ try:
 	logger = logging.getLogger()
 	initLogger(logFile)
 
-
-
 	#Informations de connexion
 	veolia_login = sys.argv[1]
 	veolia_password = sys.argv[2]
