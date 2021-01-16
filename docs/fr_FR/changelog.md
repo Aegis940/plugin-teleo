@@ -12,6 +12,7 @@
 - Ajout d'une option pour ignorer les relevés estimés
 - Ajout de screenshots de debug pour le script IDF
 - Ajout de la récupération de 14 jours d'index pour le script Other pour la gestion des indexes manquants
+- Ajout d'un log teleo_python accessible depuis Jeedom
 
 # 03/01/2021
 - Première version publique (beta)
