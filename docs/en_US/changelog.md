@@ -13,6 +13,7 @@
 - Added option to ignore estimated records
 - Added debug screenshots for the IDF script
 - Added recovery of 14 days of indexes for the Other script for the management of missing indexes
+- Adding a teleo_python log accessible from Jeedom
 
 # 03/01/2021
 - First public version (beta).
