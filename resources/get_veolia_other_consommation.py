@@ -42,7 +42,7 @@ try:
 	returnStatus = 0
 
 	# Configuration des logs
-	tempDir = '/tmp/teleo'
+	tempDir = os.path.normpath(sys.argv[3])
 	Path(tempDir).mkdir(mode=0o754,parents=True, exist_ok=True)
 
 	tempFile = tempDir + '/historique.xls'
@@ -99,6 +99,9 @@ try:
 	startindex = sheet.nrows - 14
 	if (startindex < 0) : startindex = 0
 	
+	# Resultat
+	downloadPath = os.path.normpath(sys.argv[3])
+	downloadFile = downloadPath + '/historique_jours_litres.csv'
 	open(downloadFile, 'w').write('Date de relevé;Index relevé (litres);Consommation du jour (litres);Index Mesuré/Estimé\n')
 	
 	for i in range(startindex,sheet.nrows):

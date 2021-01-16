@@ -66,7 +66,7 @@ try:
 	returnStatus = 0
 	
 	#Configuration des logs
-	tempDir = '/tmp/teleo'
+	tempDir = os.path.normpath(sys.argv[3])
 	logFile = tempDir + '/veolia.log'
 	geckodriverLog = tempDir + '/geckodriver.log'
 	
