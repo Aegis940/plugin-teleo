@@ -64,7 +64,10 @@ def waitData(exitCond, sleepTime, loopNb):
 	
 try:
 	returnStatus = 0
-	
+
+	if len( sys.argv ) < 4:
+		sys.exit(returnStatus)
+		
 	#Configuration des logs
 	tempDir = os.path.normpath(sys.argv[3])
 	logFile = tempDir + '/veolia.log'
@@ -75,9 +78,7 @@ try:
 	logger = logging.getLogger()
 	initLogger(logFile)
 
-	if len( sys.argv ) < 4:
-		logger.error('wrong number of arg')
-		sys.exit(returnStatus)
+
 
 	#Informations de connexion
 	veolia_login = sys.argv[1]
