@@ -40,7 +40,7 @@ sudo apt-get install -y xvfb iceweasel
 
 echo 40 > "${PROGRESS_FILE}"
 echo "********************************************************"
-echo "              Install geckodriver driver                "
+echo "              Install geckodriver                       "
 echo "********************************************************"
 
 driver_version=""
