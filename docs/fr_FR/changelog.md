@@ -5,7 +5,7 @@
 >Pour rappel s'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
 # 17/01/2021
-- Utilisation des unités dynamiques sur les commandes pour les utilisateur Jeedom 4.1 (ne s'appliquera qu'à la création d'un nouvel équipement)
+- Utilisation des unités dynamiques sur les commandes pour les utilisateurs Jeedom 4.1 (ne s'appliquera qu'à la création d'un nouvel équipement)
 - Correction du message d'erreur en fin de journée si l'option *Forcer la récupération des données* est activée tout le temps
 - Correction d'un problème de calcul de la date de l'index s'il y a des indexes précédents réintégrés
 
