@@ -139,7 +139,12 @@ class teleo extends eqLogic {
 		$result = $this->connectTeleo();
 
         if (!is_null($result)) {
-           $this->getTeleoData();
+           $result = $this->getTeleoData();
+		
+		   // Last try 
+		   if (date('G') >= 22 && $result == 1) {
+			   $this->setCache('getTeleoData', 'done');
+		   }
         }
         else {
           log::add(__CLASS__, 'warning', $this->getHumanName() . ' Erreur de récupération des données - Abandon');
@@ -204,6 +209,9 @@ class teleo extends eqLogic {
    }
 
    public function getTeleoData() {
+	   
+	 $resultStatus = null;
+	 
      log::add(__CLASS__, 'info', $this->getHumanName() . ' Récupération des données ' . " - 2ème étape"); 
      
 	 $dataDirectory = $this->getConfiguration('outputData');
@@ -237,7 +245,7 @@ class teleo extends eqLogic {
 			// clean data file
 			shell_exec("rm -f " . $dataDirectory . "/historique_jours_litres.csv");				
 				
-			return null;			
+			return $resultStatus;			
 		}
 		
 		$dateMesure = substr($mesure[0],0,10);
@@ -253,7 +261,7 @@ class teleo extends eqLogic {
 				// clean data file
 				shell_exec("rm -f " . $dataDirectory . "/historique_jours_litres.csv");				
 				
-				return null;
+				return $resultStatus;
 			}				
 		}
 		 
@@ -282,7 +290,8 @@ class teleo extends eqLogic {
 			}
 		}
 		else if ($dateLastMeasure == $dateYesterday) {
-			$this->recordData($valeurMesure,$dateLastMeasure);    	
+			$this->recordData($valeurMesure,$dateLastMeasure);
+			$resultStatus = 1;			
 		}
 		else {
 			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Récupération des données ' . " pb dans le relevé, la derniere valeur est en date du " . $dateLastMeasure);
@@ -291,6 +300,8 @@ class teleo extends eqLogic {
 		// clean data file
 		shell_exec("rm -f " . $dataDirectory . "/historique_jours_litres.csv");
 	 }
+	 
+	 return $resultStatus;			
    }
 
    public function fillMissingIndexes() {
@@ -305,6 +316,8 @@ class teleo extends eqLogic {
 		// Nombre total de ligne du fichier
 		$total = count($fichier);
 
+		log::add(__CLASS__, 'info', $this->getHumanName() . ' Vérification et rattrapage éventuel des indexes non reçus.');
+		
 		for($i = 1; $i < $total-1; $i++) {
 			
 			$mesure = explode(";",$fichier[$i]); 
@@ -369,8 +382,15 @@ class teleo extends eqLogic {
 		log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande = ' . $cmdId . ' Récupération historique index entre le ' . $dateBegin . ' et le ' . $dateEnd . ' Diff = ' . $diffDay);
 		
 		$all = history::all($cmdId, $dateBegin, $dateEnd);
-		$dateCollectPreviousIndex = count($all) ? $all[count($all) - 1]->getDatetime() : null;
-
+		//$dateCollectPreviousIndex = count($all) ? $all[count($all) - 1]->getDatetime() : null;
+		$dateCollectPreviousIndex = null;
+		for($i = 0; $i < count($all); $i++) {
+				$dateHisto = $all[$i]->getDatetime();
+				if ($dateHisto > $dateCollectPreviousIndex) {
+					$dateCollectPreviousIndex = $dateHisto;
+				}
+		}
+		
 		if (is_null($dateCollectPreviousIndex)) {
 			$dateCollectPreviousIndex = $dateEnd;
 			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Aucune valeur de l\'index historisé, date de collecte précédente par défaut = '. $dateCollectPreviousIndex);		
@@ -602,15 +622,26 @@ class teleo extends eqLogic {
           $cmd->setTemplate('dashboard','tile');
           $cmd->setTemplate('mobile','tile');
 
-			if ($logicalId == 'index') {
+		  if ($logicalId == 'index') {
 				$cmd->setIsVisible(0);
-			}
-		
+		  }
+			
+		  $version = explode(".",jeedom::version()); 
+		  $major = (int)$version[0];
+		  $minor = (int)$version[1];
+		  
+		  // Use dynamic unit for jeedom version >= 4.1
+		  if ($major <4 || ($major >= 4 && $minor < 1) ) {
+			  $unit = 'L';
+		  }
+		  else  {
+			  $unit = '*l';
+		  }
+		  
+		  $cmd->setUnite($unit);
         }
 
         $cmd->setName($name);
-        $cmd->setUnite('L');
- 
 		$cmd->setType('info');
         $cmd->setSubType('numeric');
         $cmd->save();
