@@ -316,7 +316,7 @@ class teleo extends eqLogic {
 		// Nombre total de ligne du fichier
 		$total = count($fichier);
 
-		log::add(__CLASS__, 'info', $this->getHumanName() . ' Vérification et rattrapage éventuel des indexes non reçus.');
+		log::add(__CLASS__, 'info', $this->getHumanName() . ' Vérification et rattrapage éventuel des index non reçus.');
 		
 		for($i = 1; $i < $total-1; $i++) {
 			
