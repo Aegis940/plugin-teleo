@@ -303,7 +303,7 @@ class teleo extends eqLogic {
 	 
 	 return $resultStatus;			
    }
-
+	
    public function fillMissingIndexes() {
 
 		$dataDirectory = $this->getConfiguration('outputData');
@@ -356,7 +356,27 @@ class teleo extends eqLogic {
 			}
 		}
    }
-    
+
+   function sortHisto($a, $b)
+   {
+	if (is_null($a) || is_null($b)) {
+	    return 0;
+        }
+      
+        $dateA = $a->getDatetime();
+        $dateB = $b->getDatetime();
+
+        if ($dateA == $dateB) {
+            return 0;
+        }
+        elseif ($dateA < $dateB) {
+            return -1;
+        }
+        else {
+            return 1;
+        }
+   }
+	
    public function getDateCollectPreviousIndex($diffDay=1) {
 	   
 	    $cmd = $this->getCmd(null, 'index');
@@ -382,15 +402,9 @@ class teleo extends eqLogic {
 		log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande = ' . $cmdId . ' Récupération historique index entre le ' . $dateBegin . ' et le ' . $dateEnd . ' Diff = ' . $diffDay);
 		
 		$all = history::all($cmdId, $dateBegin, $dateEnd);
-		//$dateCollectPreviousIndex = count($all) ? $all[count($all) - 1]->getDatetime() : null;
-		$dateCollectPreviousIndex = null;
-		for($i = 0; $i < count($all); $i++) {
-				$dateHisto = $all[$i]->getDatetime();
-				if ($dateHisto > $dateCollectPreviousIndex) {
-					$dateCollectPreviousIndex = $dateHisto;
-				}
-		}
-		
+	   	usort($all, "sortHisto");   	
+		$dateCollectPreviousIndex = count($all) ? $all[count($all) - 1]->getDatetime() : null;
+			   	
 		if (is_null($dateCollectPreviousIndex)) {
 			$dateCollectPreviousIndex = $dateEnd;
 			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Aucune valeur de l\'index historisé, date de collecte précédente par défaut = '. $dateCollectPreviousIndex);		
