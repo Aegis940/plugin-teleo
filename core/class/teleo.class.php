@@ -139,7 +139,12 @@ class teleo extends eqLogic {
 		$result = $this->connectTeleo();
 
         if (!is_null($result)) {
-           $this->getTeleoData();
+           $result = $this->getTeleoData();
+		
+		   // Last try 
+		   if (date('G') >= 22 && $result == 1) {
+			   $this->setCache('getTeleoData', 'done');
+		   }
         }
         else {
           log::add(__CLASS__, 'warning', $this->getHumanName() . ' Erreur de récupération des données - Abandon');
@@ -173,15 +178,22 @@ class teleo extends eqLogic {
 		  $veoliaWebsite = $this->getConfiguration('type');
 		  $login = $this->getConfiguration('login');
 		  $password = $this->getConfiguration('password');
-
-		  $cmdBash = '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' ' . $login . ' ' . $password . ' ' . $dataDirectory;
+		  $logLevel = log::getLogLevel(__CLASS__);
+		  
+		  $cmdBash = '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' \'' . $password . '\' ' . $dataDirectory . ' ' . $logLevel;
 		  
 		  log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande : ' . $cmdBash);
 		  $output = shell_exec($cmdBash);
 
-		  if (is_null($output) || ($output != 1))
+		  if (is_null($output))
 		  {   
-			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Erreur de lancement du script : [ ' . $output . ' ] (/tmp/teleo/veolia.log) - Abandon');
+			log::add(__CLASS__, 'error', $this->getHumanName() . ' Erreur de lancement du script : problème de droits d\'exécution - Abandon');
+			return null;
+		  }
+		  
+		  if ($output != 1)
+		  {   
+			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Erreur de lancement du script : [ ' . $output . ' ] consulter le log <teleo_python.log> pour plus d\'info - Abandon');
 			return null;
 		  }
 	  }  
@@ -197,6 +209,9 @@ class teleo extends eqLogic {
    }
 
    public function getTeleoData() {
+	   
+	 $resultStatus = null;
+	 
      log::add(__CLASS__, 'info', $this->getHumanName() . ' Récupération des données ' . " - 2ème étape"); 
      
 	 $dataDirectory = $this->getConfiguration('outputData');
@@ -205,6 +220,9 @@ class teleo extends eqLogic {
 		 $dataDirectory = '/tmp/teleo';
 	 }
 	
+	 // On essai d'importer les indexes manquants précédant la dernière valeur
+	 $this->fillMissingIndexes(); 
+ 
 	 // récupère le dernier index
 	 $cmdtail = "tail -1 " . $dataDirectory . "/historique_jours_litres.csv";
 	 
@@ -220,11 +238,31 @@ class teleo extends eqLogic {
 		log::add(__CLASS__, 'debug', $this->getHumanName() . ' Data : ' . $output);
 		
 		$mesure = explode(";",$output); 
+		
+		if (count($mesure) < 4) {
+			log::add(__CLASS__, 'error', $this->getHumanName() . ' Erreur de structure du fichier <' . $dataDirectory . '/historique_jours_litres.csv>');
+			
+			// clean data file
+			shell_exec("rm -f " . $dataDirectory . "/historique_jours_litres.csv");				
+				
+			return $resultStatus;			
+		}
+		
 		$dateMesure = substr($mesure[0],0,10);
 		$valeurMesure = $mesure[1];
+		$type = rtrim ($mesure[3]);
 		
-		if (!is_null($mesure[3]) && $mesure[3] == 'Estimé') {
+		if ($type != 'Mesuré' && $type != 'M') {
 			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier relevé de l\'index indique une estimation pas une mesure réelle');
+			
+			if ($this->getConfiguration('ignoreEstimation') == 1) {
+				log::add(__CLASS__, 'warning', $this->getHumanName() . ' La valeur ' . $valeurMesure . ' n\'est pas prise en compte.');
+				
+				// clean data file
+				shell_exec("rm -f " . $dataDirectory . "/historique_jours_litres.csv");				
+				
+				return $resultStatus;
+			}				
 		}
 		 
 		// Check si la date de la dernière mesure est bien celle d'hier
@@ -234,39 +272,145 @@ class teleo extends eqLogic {
         log::add(__CLASS__, 'debug', $this->getHumanName() . ' Vérification date dernière mesure : ' . $dateLastMeasure);
 		
 		if ($dateLastMeasure < $dateYesterday) {
-			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Récupération des données ' . " le relevé n'est pas encore disponible, la derniere valeur est en date du " . $dateLastMeasure);
+			
+			// Check la date de collect de l'index et si elle est antérieure à la date de mesure, on la prend en compte
+			$cmd = $this->getCmd(null, 'index');
+			$value = $cmd->execCmd();
+			$lastCollectDate = $cmd->getValueDate();
+	
+			log::add(__CLASS__, 'debug', $this->getHumanName() . ' Dernière date de collecte = ' . $lastCollectDate);
+
+		
+			if (is_null($lastCollectDate) || ($lastCollectDate <= $dateLastMeasure)) {
+				$diffDays = floor(abs(strtotime($dateMesure) - strtotime('today'))/(60 * 60 * 24));
+				$this->recordData($valeurMesure,$dateLastMeasure,$diffDays); 					
+			}
+			else {
+				log::add(__CLASS__, 'warning', $this->getHumanName() . ' Récupération des données ' . " le relevé n'est pas encore disponible, la derniere valeur est en date du " . $dateLastMeasure);
+			}
+		}
+		else if ($dateLastMeasure == $dateYesterday) {
+			$this->recordData($valeurMesure,$dateLastMeasure);
+			$resultStatus = 1;			
 		}
 		else {
-			$this->recordData($valeurMesure,$dateLastMeasure);    	
+			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Récupération des données ' . " pb dans le relevé, la derniere valeur est en date du " . $dateLastMeasure);
 		}
 		
 		// clean data file
 		shell_exec("rm -f " . $dataDirectory . "/historique_jours_litres.csv");
 	 }
+	 
+	 return $resultStatus;			
+   }
+	
+   public function fillMissingIndexes() {
+
+		$dataDirectory = $this->getConfiguration('outputData');
+		if (empty($dataDirectory)) {
+			$dataDirectory = '/tmp/teleo';
+		}
+		
+		$fichier = file($dataDirectory . "/historique_jours_litres.csv");
+    
+		// Nombre total de ligne du fichier
+		$total = count($fichier);
+
+		log::add(__CLASS__, 'info', $this->getHumanName() . ' Vérification et rattrapage éventuel des index non reçus.');
+		
+		for($i = 1; $i < $total-1; $i++) {
+			
+			$mesure = explode(";",$fichier[$i]); 
+			if (count($mesure) < 4) {
+				log::add(__CLASS__, 'error', $this->getHumanName() . ' Erreur de structure du fichier <' . $dataDirectory . '/historique_jours_litres.csv>');
+					
+				continue;			
+			}
+		
+			$dateMesure = substr($mesure[0],0,10);
+			$valeurMesure = $mesure[1];
+			$type = rtrim($mesure[3]);
+			
+			if ($type != 'Mesuré' && $type != 'M') {
+				log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le relevé de l\'index à la date du ' . $dateMesure . ' indique une estimation pas une mesure réelle');
+
+				if ($this->getConfiguration('ignoreEstimation') == 1) {
+					log::add(__CLASS__, 'warning', $this->getHumanName() . ' La valeur ' . $valeurMesure . ' n\'est pas prise en compte.');
+					
+					continue;
+				}
+			}
+
+			$cmd = $this->getCmd(null, 'index');
+			$cmdId = $cmd->getId();
+			$dateReal =  date('Y-m-d 23:55:00', strtotime($dateMesure));
+			
+			$cmdHistory = history::byCmdIdDatetime($cmdId, $dateReal);
+			if (is_object($cmdHistory) && $cmdHistory->getValue() == $valeurMesure) {
+				log::add(__CLASS__, 'debug', $this->getHumanName() . ' Mesure en historique - Aucune action : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $valeurMesure);
+			}
+			else {
+				log::add(__CLASS__, 'info', $this->getHumanName() . ' Enregistrement mesure manquante : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $valeurMesure);
+
+				$cmd->addHistoryValue( $valeurMesure, $dateReal);
+			}
+		}
    }
 
-   public function getDateCollectPreviousIndex() {
+   function sortHisto($a, $b)
+   {
+	if (is_null($a) || is_null($b)) {
+	    return 0;
+        }
+      
+        $dateA = $a->getDatetime();
+        $dateB = $b->getDatetime();
+
+        if ($dateA == $dateB) {
+            return 0;
+        }
+        elseif ($dateA < $dateB) {
+            return -1;
+        }
+        else {
+            return 1;
+        }
+   }
+	
+   public function getDateCollectPreviousIndex($diffDay=1) {
 	   
 	    $cmd = $this->getCmd(null, 'index');
 		$cmdId = $cmd->getId();
 		
-		$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -1 day'));		
-		$dateEnd = date("Y-m-d 23:55:00", strtotime('-2 day'));
-		
+		$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -1 day'));
+		$dateEnd = date('Y-m-d 23:55:00', strtotime(date('Y-m-d 23:55:00', strtotime('now')) . ' -' . ($diffDay+1) . ' day'));		
+		//$dateEnd = date("Y-m-d 23:55:00", strtotime('-2 day'));
+				
 		# Cas spécial dernière valeur de l'année 
 		if ($dateBegin > $dateEnd) {
-			$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -2 day'));
+			$dateBegin = date('Y-m-d 23:55:00', strtotime((date("Y") . '-01-01') . ' -' . ($diffDay+1) . ' day'));	
+			//$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -2 day'));
+			$value = $cmd->execCmd();
+			$lastCollectDate = $cmd->getValueDate();
+			
+			if ($lastCollectDate < $dateBegin) {
+				$dateBegin = $lastCollectDate;
+			}
+
 		}
 		
+		log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande = ' . $cmdId . ' Récupération historique index entre le ' . $dateBegin . ' et le ' . $dateEnd . ' Diff = ' . $diffDay);
+		
 		$all = history::all($cmdId, $dateBegin, $dateEnd);
+	   	usort($all, "sortHisto");   	
 		$dateCollectPreviousIndex = count($all) ? $all[count($all) - 1]->getDatetime() : null;
-
+			   	
 		if (is_null($dateCollectPreviousIndex)) {
 			$dateCollectPreviousIndex = $dateEnd;
-			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Aucune valeur de l\'index historisé, date de dernière collecte par défaut = '. $dateCollectPreviousIndex);		
+			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Aucune valeur de l\'index historisé, date de collecte précédente par défaut = '. $dateCollectPreviousIndex);		
 		}
 		else {
-			log::add(__CLASS__, 'debug', $this->getHumanName() . ' Dernière date de collecte de l\'index = '. $dateCollectPreviousIndex);
+			log::add(__CLASS__, 'debug', $this->getHumanName() . ' Date de collecte précédente de l\'index = '. $dateCollectPreviousIndex);
 		}
 
 		return $dateCollectPreviousIndex;			
@@ -290,12 +434,13 @@ class teleo extends eqLogic {
 		return $measure;			
    }
     
-   public function recordData($index, $dateLastMeasure) {
+   public function recordData($index, $dateLastMeasure, $diffDay=1) {
 	  
 		$cmdInfos = ['index','consod','consoh','consom','consoa'];
 		
-		$dateCollectPreviousIndex = $this->getDateCollectPreviousIndex();
-		$dateReal = date("Y-m-d 23:55:00", strtotime('-1 day'));
+		$dateCollectPreviousIndex = $this->getDateCollectPreviousIndex($diffDay);
+		$dateReal = date('Y-m-d 23:55:00', strtotime(date('Y-m-d 23:55:00', strtotime('now')) . ' -' . $diffDay . ' day'));	
+		//$dateReal = date("Y-m-d 23:55:00", strtotime('-1 day'));
 		
 		foreach ($cmdInfos as $cmdName)
 		{
@@ -312,7 +457,8 @@ class teleo extends eqLogic {
 				case 'consod':
 					log::add(__CLASS__, 'debug', $this->getHumanName() . '--------------------------');
 
-					$dateBegin = date('Y-m-d 23:55:00', strtotime('-2 day'));
+					$dateBegin = date('Y-m-d 23:55:00', strtotime(date('Y-m-d 23:55:00', strtotime('now')) . ' -' . ($diffDay+1) . ' day'));	
+					//$dateBegin = date('Y-m-d 23:55:00', strtotime('-2 day'));
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
 						
@@ -331,7 +477,7 @@ class teleo extends eqLogic {
 					
 					$dateBeginPeriod = date('Y-m-d 23:55:00', strtotime('monday this week'));
 					$dateBegin = $dateBeginPeriod;
-									
+												
 					if ($dateLastMeasure < $dateBegin) {
 						# Last measure of previous week
 						$dateBegin = date('Y-m-d 23:55:00', strtotime('monday this week -1 week -1 day'));
@@ -344,10 +490,9 @@ class teleo extends eqLogic {
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
 	
-						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation hebomadaire pour aujourd\'hui car la valeur est à cheval sur plusieurs semaines.');
+						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation hebomadaire pour ce début de période car la valeur est à cheval sur plusieurs semaines. La valeur est mise à 0.');
 						
-						$cmd = $this->getCmd(null, $cmdName);						
-						$measure = $cmd->execCmd();
+						$measure = 0;
 					}
 					else {
 						
@@ -374,10 +519,9 @@ class teleo extends eqLogic {
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
 
-						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation mensuelle pour aujourd\'hui car la valeur est à cheval sur plusieurs mois.');
-								
-						$cmd = $this->getCmd(null, $cmdName);						
-						$measure = $cmd->execCmd();
+						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation mensuelle pour ce début de période car la valeur est à cheval sur plusieurs mois. La valeur est mise à 0.');
+						
+						$measure = 0;	
 					}
 					else {
 						
@@ -404,10 +548,9 @@ class teleo extends eqLogic {
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
 
-						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation annuelle pour aujourd\'hui car la valeur est à cheval sur plusieurs années.');
-
-						$cmd = $this->getCmd(null, $cmdName);						
-						$measure = $cmd->execCmd();	
+						log::add(__CLASS__, 'warning', $this->getHumanName() . ' Le dernier index collecté date du '. $dateCollectPreviousIndex . '. Impossible de calculer la consommation annuelle pour ce début de période car la valeur est à cheval sur plusieurs années. La valeur est mise à 0.');
+						
+						$measure = 0;
 					}
 					else {
 
@@ -423,7 +566,7 @@ class teleo extends eqLogic {
 			
 			$cmdHistory = history::byCmdIdDatetime($cmdId, $dateReal);
 			if (is_object($cmdHistory) && $cmdHistory->getValue() == $measure) {
-				log::add(__CLASS__, 'debug', $this->getHumanName() . ' Mesure en historique - Aucune action : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $measure);
+				log::add(__CLASS__, 'info', $this->getHumanName() . ' Mesure en historique - Aucune action : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $measure);
 			}
 			else {
 				# Pour les période Hebdo, Mois et Année on ne garde que la dernière valeur de la période en cours
@@ -435,7 +578,7 @@ class teleo extends eqLogic {
 					
 				}
 				
-				log::add(__CLASS__, 'debug', $this->getHumanName() . ' Enregistrement mesure : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $measure);
+				log::add(__CLASS__, 'info', $this->getHumanName() . ' Enregistrement mesure : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $measure);
 				$cmd->event($measure, $dateReal);
 			}
 		
@@ -448,6 +591,7 @@ class teleo extends eqLogic {
       $this->setDisplay('height','332px');
       $this->setDisplay('width', '192px');
       $this->setConfiguration('forceRefresh', 0);
+	  $this->setConfiguration('ignoreEstimation', 0);	  
 	  $this->setConfiguration('outputData', '/tmp/teleo');
 	  $this->setConfiguration('connectToVeoliaWebsiteFromThisMachine', 1);
       $this->setCategory('energy', 1);
@@ -492,15 +636,26 @@ class teleo extends eqLogic {
           $cmd->setTemplate('dashboard','tile');
           $cmd->setTemplate('mobile','tile');
 
-			if ($logicalId == 'index') {
+		  if ($logicalId == 'index') {
 				$cmd->setIsVisible(0);
-			}
-		
+		  }
+			
+		  $version = explode(".",jeedom::version()); 
+		  $major = (int)$version[0];
+		  $minor = (int)$version[1];
+		  
+		  // Use dynamic unit for jeedom version >= 4.1
+		  if ($major <4 || ($major >= 4 && $minor < 1) ) {
+			  $unit = 'L';
+		  }
+		  else  {
+			  $unit = '*l';
+		  }
+		  
+		  $cmd->setUnite($unit);
         }
 
         $cmd->setName($name);
-        $cmd->setUnite('L');
- 
 		$cmd->setType('info');
         $cmd->setSubType('numeric');
         $cmd->save();

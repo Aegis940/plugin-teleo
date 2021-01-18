@@ -129,6 +129,12 @@ foreach (jeeObject::all() as $object) {
 		 </div>
 	</div>
 	 <div class="form-group">
+		 <label class="col-sm-3 control-label help" data-help="{{Ignorer les relevés estimés}}">{{Ignorer les relevés estimés}}</label>
+		 <div class="col-sm-3">
+			<input type="checkbox" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="ignoreEstimation"/>
+		 </div>
+		</div>	
+	 <div class="form-group">
 		 <label class="col-sm-3 control-label help" data-help="{{Cocher la case pour forcer la récupération des données même si déjà présentes}}">{{Forcer la récupération des données}}</label>
 		 <div class="col-sm-3">
 			<input type="checkbox" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="forceRefresh"/>

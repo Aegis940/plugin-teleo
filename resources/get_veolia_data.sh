@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Check argv
-if [ "$#" -ne 4 ]; then
-	echo -e "Usage: $0 <site_type> <username> <password> <output_dir>"
+if [ "$#" -ne 5 ]; then
+	echo -e "Usage: $0 <site_type> <username> <password> <output_dir> <log_level>"
 	exit 0
 fi
 
@@ -50,7 +50,7 @@ codret=0
 loop=0 
 until [ $codret -eq 1 ] || [ $loop -ge $nbofretry ]
 do
-	timeout --signal=SIGINT ${timeout} $python $root/$scriptname $2 $3 $4
+	timeout --signal=SIGINT ${timeout} $python $root/$scriptname $2 $3 $4 $5
 	codret=$?
 
 	((loop++))
@@ -78,7 +78,12 @@ if [ "$1" = "IDF" ]; then
 	nbprocess=$(pgrep -f "Xvfb -br -nolisten tcp -screen 0 800x600x24 -displayfd 5" -c)
 	if [ ! $nbprocess -eq 0 ]; then
 		pkill -f "Xvfb -br -nolisten tcp -screen 0 800x600x24 -displayfd 5"
-	fi	
+	fi
+	
+	nbprocess=$(pgrep -f "/usr/local/bin/geckodriver" -c)
+	if [ ! $nbprocess -eq 0 ]; then
+		pkill -f "/usr/local/bin/geckodriver"
+	fi		
 fi
 
 echo ${codret}
