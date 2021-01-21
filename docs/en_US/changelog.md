@@ -4,6 +4,9 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 21/01/2021
+- Remove last history for index and consod in case of modification of the last value (in forced mode)
+
 # 17/01/2021
 - Use of dynamic units on commands for Jeedom 4.1 users (will only apply on creation of new equipment)
 - Fixed end-of-day error message if *Force data recovery* option is enabled all the time
