@@ -577,6 +577,9 @@ class teleo extends eqLogic {
 					}
 					
 				}
+              			else {
+                  			history::removes($cmdId, $dateReal, $dateReal);
+                		}
 				
 				log::add(__CLASS__, 'info', $this->getHumanName() . ' Enregistrement mesure : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $measure);
 				$cmd->event($measure, $dateReal);
