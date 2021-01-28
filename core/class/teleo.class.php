@@ -357,7 +357,7 @@ class teleo extends eqLogic {
 		}
    }
 
-   function sortHisto($a, $b)
+   public function sortHisto($a, $b)
    {
 	if (is_null($a) || is_null($b)) {
 	    return 0;
@@ -402,7 +402,7 @@ class teleo extends eqLogic {
 		log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande = ' . $cmdId . ' Récupération historique index entre le ' . $dateBegin . ' et le ' . $dateEnd . ' Diff = ' . $diffDay);
 		
 		$all = history::all($cmdId, $dateBegin, $dateEnd);
-	   	usort($all, "sortHisto");   	
+	   	usort($all, array($this, "sortHisto"));   	
 		$dateCollectPreviousIndex = count($all) ? $all[count($all) - 1]->getDatetime() : null;
 			   	
 		if (is_null($dateCollectPreviousIndex)) {
