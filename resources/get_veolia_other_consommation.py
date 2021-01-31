@@ -61,13 +61,14 @@ try:
 	#Configuration des logs
 	tempDir = os.path.normpath(sys.argv[3])
 	
-	logPath = '/var/www/html/log'
-	if (os.path.exists(logPath)) : logFile = logPath + '/teleo_python'
-	else : logFile = tempDir + '/teleo_python.log'	
-
+	#logPath = '/var/www/html/log'
+	#if (os.path.exists(logPath)) : logFile = logPath + '/teleo_python'
+	#else : logFile = tempDir + '/teleo_python.log'	
+	logFile = tempDir + '/teleo_python.log'
+	
 	tempFile = tempDir + '/historique.xls'
 	
-	Path(tempDir).mkdir(mode=0o754,parents=True, exist_ok=True)		
+	Path(tempDir).mkdir(mode=0o777,parents=True, exist_ok=True)		
 	
 	logger = logging.getLogger()
 		

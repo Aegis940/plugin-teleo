@@ -132,7 +132,9 @@ echo 75 > "${PROGRESS_FILE}"
 echo "********************************************************"
 echo "               Python3 'lxml' module                    "
 echo "********************************************************"
-sudo apt-get build-dep python3-lxml
+#sudo apt-get build-dep python3-lxml
+sudo apt-get install -y libxml2-dev libxslt-dev python-dev
+
 sudo pip3 install lxml
 
 echo 80 > "${PROGRESS_FILE}"

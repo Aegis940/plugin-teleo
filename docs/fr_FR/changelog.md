@@ -4,6 +4,10 @@
 >
 >Pour rappel s'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 01/02/2021
+- Correction des dépendances module 'lxml' (ibxml2-dev libxslt-dev). Attention l'installation est assez longue  
+- Lancement du script shell en sudo afin d'éviter un problème avec geckodriver
+
 # 21/01/2021
 - Suppression de la dernière valeur d'historique pour index et consod (dans le cs du mode forcé)
 
