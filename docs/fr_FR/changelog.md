@@ -6,7 +6,7 @@
 
 # 01/02/2021
 - Correction des dépendances module 'lxml' (ibxml2-dev libxslt-dev). Attention l'installation est assez longue  
-- Lancement du script shell en sudo afin d'éviter un problème avec geckodriver
+- Lancement du script shell en sudo afin d'éviter un problème avec geckodriver. **Pensez à sauvegarder à nouveau l'équipement pour mettre à jour les droits du répertoire d'export.**
 
 # 21/01/2021
 - Suppression de la dernière valeur d'historique pour index et consod (dans le cs du mode forcé)
