@@ -186,7 +186,10 @@ class teleo extends eqLogic {
 		  log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande : ' . $cmdBash);
 		  $output = shell_exec($cmdBash);
 
-		  copy($dataDirectory . '/teleo_python.log', '/var/www/html/log/teleo_python')
+          $logFile = $dataDirectory . '/teleo_python.log';
+          if (file_exists($logFile)) {
+		  	copy($logFile, '/var/www/html/log/teleo_python');
+          }
 		  
 		  if (is_null($output))
 		  {   
