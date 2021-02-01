@@ -1,4 +1,4 @@
-# Auteur : [Flobul](https://github.com/Flobul/conso_veolia) and some modif form [JohanSweck] (https://github.com/JohanSweck/conso_veolia)
+# Auteur : [Flobul](https://github.com/Flobul/conso_veolia) and some modif from [JohanSweck] (https://github.com/JohanSweck/conso_veolia)
 #
 # Modif : [Aegis](https://github.com/Aegis940/plugin-teleo) pour intégration au plugin teleo
 
@@ -87,13 +87,14 @@ try:
 	#Configuration des logs
 	tempDir = os.path.normpath(sys.argv[3])
 	
-	logPath = '/var/www/html/log'
-	if (os.path.exists(logPath)) : logFile = logPath + '/teleo_python'
-	else : logFile = tempDir + '/teleo_python.log'	
-
+	#logPath = '/var/www/html/log'
+	#if (os.path.exists(logPath)) : logFile = logPath + '/teleo_python'
+	#else : logFile = tempDir + '/teleo_python.log'	
+	logFile = tempDir + '/teleo_python.log'
+	
 	geckodriverLog = tempDir + '/geckodriver.log'
 	
-	Path(tempDir).mkdir(mode=0o754,parents=True, exist_ok=True)
+	Path(tempDir).mkdir(mode=0o777,parents=True, exist_ok=True)
 
 	logger = logging.getLogger()
 	
@@ -199,7 +200,7 @@ finally:
 	# fermeture browser
 	logger.debug('Fermeture connexion')
 	if (browser is not None) : browser.quit()
-
+		
 	# Suppression fichier temporaire sauf en debug
 	if (geckodriverLog is not None and os.path.exists(geckodriverLog)) : 
 		if (logLevel != logging.DEBUG) : os.remove(geckodriverLog)

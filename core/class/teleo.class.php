@@ -180,11 +180,17 @@ class teleo extends eqLogic {
 		  $password = $this->getConfiguration('password');
 		  $logLevel = log::getLogLevel(__CLASS__);
 		  
-		  $cmdBash = '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' \'' . $password . '\' ' . $dataDirectory . ' ' . $logLevel;
+		  //$cmdBash = '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' \'' . $password . '\' ' . $dataDirectory . ' ' . $logLevel;
+		  $cmdBash = system::getCmdSudo() . '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' \'' . $password . '\' ' . $dataDirectory . ' ' . $logLevel;
 		  
 		  log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande : ' . $cmdBash);
 		  $output = shell_exec($cmdBash);
 
+          $logFile = $dataDirectory . '/teleo_python.log';
+          if (file_exists($logFile)) {
+		  	copy($logFile, '/var/www/html/log/teleo_python');
+          }
+		  
 		  if (is_null($output))
 		  {   
 			log::add(__CLASS__, 'error', $this->getHumanName() . ' Erreur de lancement du script : problème de droits d\'exécution - Abandon');
@@ -193,7 +199,7 @@ class teleo extends eqLogic {
 		  
 		  if ($output != 1)
 		  {   
-			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Erreur de lancement du script : [ ' . $output . ' ] consulter le log <teleo_python.log> pour plus d\'info - Abandon');
+			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Erreur de lancement du script : [ ' . $output . ' ] consulter le log <teleo_python> pour plus d\'info - Abandon');
 			return null;
 		  }
 	  }  
@@ -352,12 +358,16 @@ class teleo extends eqLogic {
 			else {
 				log::add(__CLASS__, 'info', $this->getHumanName() . ' Enregistrement mesure manquante : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $valeurMesure);
 
+				if (is_object($cmdHistory)) {
+					history::removes($cmdId, $dateReal, $dateReal);	
+				}
+				
 				$cmd->addHistoryValue( $valeurMesure, $dateReal);
 			}
 		}
    }
 
-   function sortHisto($a, $b)
+   public function sortHisto($a, $b)
    {
 	if (is_null($a) || is_null($b)) {
 	    return 0;
@@ -402,7 +412,7 @@ class teleo extends eqLogic {
 		log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande = ' . $cmdId . ' Récupération historique index entre le ' . $dateBegin . ' et le ' . $dateEnd . ' Diff = ' . $diffDay);
 		
 		$all = history::all($cmdId, $dateBegin, $dateEnd);
-	   	usort($all, "sortHisto");   	
+	   	usort($all, array($this, "sortHisto"));   	
 		$dateCollectPreviousIndex = count($all) ? $all[count($all) - 1]->getDatetime() : null;
 			   	
 		if (is_null($dateCollectPreviousIndex)) {
@@ -577,10 +587,10 @@ class teleo extends eqLogic {
 					}
 					
 				}
-              			else {
-                  			history::removes($cmdId, $dateReal, $dateReal);
-                		}
-				
+				else {
+					history::removes($cmdId, $dateReal, $dateReal);
+				}
+		
 				log::add(__CLASS__, 'info', $this->getHumanName() . ' Enregistrement mesure : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $measure);
 				$cmd->event($measure, $dateReal);
 			}
@@ -666,11 +676,14 @@ class teleo extends eqLogic {
 
 	  $outDir = $this->getConfiguration('outputData');
 	  if(!is_dir($outDir)) {
-		if(!mkdir($outDir, 0754, true))  
+		if(!mkdir($outDir, 0777, true))  
 		{
 			throw new Exception(__('Impossible de créer le répertoire destination',__FILE__));
 		}    
-      }	  
+      }
+	  else {
+		chmod($outDir, 0777);  
+	  }		  
 	  
 	  if ($this->getIsEnable() == 1) {
 			$this->pullTeleo();
