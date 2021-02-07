@@ -179,9 +179,10 @@ class teleo extends eqLogic {
 		  $login = $this->getConfiguration('login');
 		  $password = $this->getConfiguration('password');
 		  $logLevel = log::getLogLevel(__CLASS__);
+		  $contractID = $this->getConfiguration('contract_id');
 		  
 		  //$cmdBash = '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' \'' . $password . '\' ' . $dataDirectory . ' ' . $logLevel;
-		  $cmdBash = system::getCmdSudo() . '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' \'' . $password . '\' ' . $dataDirectory . ' ' . $logLevel;
+		  $cmdBash = system::getCmdSudo() . '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' \'' . $password . '\' ' . $dataDirectory . ' ' . $logLevel . ' ' . $contractID;
 		  
 		  log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande : ' . $cmdBash);
 		  $output = shell_exec($cmdBash);
@@ -601,15 +602,17 @@ class teleo extends eqLogic {
 
  // Fonction exécutée automatiquement avant la création de l'équipement
     public function preInsert() {
-      $this->setDisplay('height','332px');
-      $this->setDisplay('width', '192px');
-      $this->setConfiguration('forceRefresh', 0);
-	  $this->setConfiguration('ignoreEstimation', 0);	  
-	  $this->setConfiguration('outputData', '/tmp/teleo');
-	  $this->setConfiguration('connectToVeoliaWebsiteFromThisMachine', 1);
-      $this->setCategory('energy', 1);
-      $this->setIsEnable(1);
-      $this->setIsVisible(1);
+		$this->setDisplay('height','332px');
+		$this->setDisplay('width', '192px');
+		$this->setConfiguration('forceRefresh', 0);
+		$this->setConfiguration('ignoreEstimation', 0);	  
+		$this->setConfiguration('outputData', '/tmp/teleo');
+		$this->setConfiguration('connectToVeoliaWebsiteFromThisMachine', 1);
+		$this->setCategory('energy', 1);
+		$this->setIsEnable(1);
+		$this->setIsVisible(1);
+		$this->setConfiguration('widgetTemplate', 1);
+		$this->setConfiguration('widgetBGColor', '#9fe7e7');	  
     }
 
  // Fonction exécutée automatiquement avant la mise à jour de l'équipement
@@ -692,27 +695,35 @@ class teleo extends eqLogic {
     }
     
     public function toHtml($_version = 'dashboard') {
-      if ($this->getConfiguration('widgetTemplate') != 1)
-    	{
-    		return parent::toHtml($_version);
-    	}
+		if ($this->getConfiguration('widgetTemplate') != 1)
+		{
+			return parent::toHtml($_version);
+		}
 
-      $replace = $this->preToHtml($_version);
-      if (!is_array($replace)) {
-        return $replace;
-      }
-      $version = jeedom::versionAlias($_version);
+		$replace = $this->preToHtml($_version);
+		if (!is_array($replace)) {
+			return $replace;
+		}
+		$version = jeedom::versionAlias($_version);
 
-      foreach ($this->getCmd('info') as $cmd) {
-        $replace['#' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
-        $replace['#' . $cmd->getLogicalId() . '#'] = $cmd->execCmd();
-        $replace['#' . $cmd->getLogicalId() . '_collect#'] = $cmd->getCollectDate();
-      }
+		foreach ($this->getCmd('info') as $cmd) {
+			$replace['#' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
+			$replace['#' . $cmd->getLogicalId() . '#'] = $cmd->execCmd();
+			$replace['#' . $cmd->getLogicalId() . '_collect#'] = $cmd->getCollectDate();
+		}
 
-      $html = template_replace($replace, getTemplate('core', $version, 'teleo.template', __CLASS__));
-      cache::set('widgetHtml' . $_version . $this->getId(), $html, 0);
-      return $html;
-    }
+		$bgcolor = $this->getConfiguration('widgetBGColor');
+		if (empty($bgcolor)) {
+			$bgcolor = '#9fe7e7';
+			$this->setConfiguration('widgetBGColor', $bgcolor);			
+		}
+		
+		$replace['#BGTeleo#'] = ($this->getConfiguration('widgetTransparent') == 1) ? 'transparent' : $bgcolor;
+
+		$html = template_replace($replace, getTemplate('core', $version, 'teleo.template', __CLASS__));
+		cache::set('widgetHtml' . $_version . $this->getId(), $html, 0);
+		return $html;
+	}
 
 }
 

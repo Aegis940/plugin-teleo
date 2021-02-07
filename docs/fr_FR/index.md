@@ -19,7 +19,7 @@ Les types de données de consommation suivants sont accessibles :
 > Chaque script a quelques contraintes :
 
 ### Pour le script Veolia Ile de France
-La version de ***Python 3.7.x*** est indispensable et ***Firefox 60 ou supérieur*** (donc mieux vaut une **distrib buster**)
+La version de ***Python 3.7.x*** est indispensable et ***Firefox 60 ou supérieur*** (donc une **distrib buster** obligatoire)
 
 ### Pour les autres sites Veolia
 La version de ***Python 3.x*** est indispensable
@@ -43,7 +43,7 @@ Sur la page de l'équipement, renseignez :
 
 - le **Site Veolia** auquel se connecter (*Veolia Ile de France* ou *Autre site Veolia*)
 - l'**identifiant** ainsi que le **mot de passe** de votre compte-client *Veolia* 
-
+- Si plusieurs contrats sont rattachés au même compte **Veolia IDF**, indiquer le **numéro du contrat** où les données seront récupérées (laisser vide sinon)
 Puis cliquez sur le bouton **Sauvegarder**.
 
 - Décocher l'option **Connexion au site Veolia** permet de ne pas lancer le script Python pour récupérer les données mais d'exploiter un fichier résultat déposé dans le **Répertoire d'export des données du site Veolia** (à utiliser dans le cas où les prérequis pour le script python ne peuvent être satisfait sur la machine hébergeant Jeedom).
@@ -61,9 +61,8 @@ Le plugin va alors vérifier la bonne connexion au site *Veolia* et récupérer 
 
 > **A savoir**    
 > Le calcul de consommation se faisant sur l'index, il est nécessaire de conserver son historique au moins sur 2 ans (1 an et 2 jours en fait). 
-> **Le premier jour d'installation de l'équipement, les valeurs seront à 0** et c'est seulement au second jour que les données de consommation seront visibles.
 >
-> Pour les périodes *hebdomadaire*, *mensuelle* et *annuelle*, seules le dernier historique de la période en cours est conservé.
+> Pour les périodes *hebdomadaire*, *mensuelle* et *annuelle*, seul le dernier historique de la période en cours est conservé.
 
 # Remarques
 

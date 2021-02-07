@@ -4,6 +4,11 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 07/02/2021
+- Adding template colour customization as done in the Linky plugin by [Salvialf]
+- Reorganization of equipment parameters for better readability
+- Add new parameter named **Contract** for Veolia IDF users **only**, allowing to indicate on which contract the data recovery is done (to be used only if several contracts are linked to the same account). However, the plugin does not currently allow you to manage several equipment for the same Jeedom installation.
+
 # 01/02/2021
 - Correction of 'lxml' module dependencies (ibxml2-dev libxslt-dev). Caution: the installation is quite long
 - Launching the shell script with sudo command to avoid an issue with geckodriver. **Remember to save the equipment again to update the export directory rights.**

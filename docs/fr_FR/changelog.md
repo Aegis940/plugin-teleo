@@ -4,8 +4,13 @@
 >
 >Pour rappel s'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 07/02/2021
+- Ajout de la personnalisation de la couleur de template comme dans le plugin Linky de [Salvialf]
+- Réorganisation des paramètres de l'équipement pour plus de lisibilité
+- Ajout d'un paramètre **Contrat** pour les utilisateur de Veolia IDF **uniquement**, permettant d'indiquer sur quel contrat se fait la récupération des données (à n'utiliser que si plusieurs contrats sont lié à un même compte). Cependant le plugin ne permet pas actuellement de gérer plusieurs compteurs pour une même installation Jeedom.
+
 # 01/02/2021
-- Correction des dépendances module 'lxml' (ibxml2-dev libxslt-dev). Attention l'installation est assez longue  
+- Correction des dépendances module 'lxml' (ibxml2-dev libxslt-dev). **Attention l'installation est assez longue** 
 - Lancement du script shell en sudo afin d'éviter un problème avec geckodriver. **Pensez à sauvegarder à nouveau l'équipement pour mettre à jour les droits du répertoire d'export.**
 
 # 21/01/2021

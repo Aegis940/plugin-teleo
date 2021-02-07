@@ -72,7 +72,7 @@ try:
 	
 	logger = logging.getLogger()
 		
-	if len( sys.argv ) == 5: logLevel = setLogLevel(sys.argv[4])
+	if len( sys.argv ) >= 5: logLevel = setLogLevel(sys.argv[4])
 	else: logLevel = logging.INFO
 	
 	logLevel = logging.INFO

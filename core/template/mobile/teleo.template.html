@@ -1,14 +1,14 @@
-<div class="eqLogic eqLogic-widget teleoEqlogicName" data-eqLogic_id="#id#" data-eqType="#eqType#" data-version="#version#" data-eqLogic_uid="#uid#" data-translate-category="#translate_category#" data-tags="#tags#" style="background-color:#9fe7e7!important;">
+<div class="eqLogic eqLogic-widget" data-eqLogic_id="#id#" data-eqType="#eqType#" data-version="#version#" data-eqLogic_uid="#uid#" data-translate-category="#translate_category#" data-tags="#tags#" style="background-color:#BGTeleo#!important;">
 	<center>
 		<link rel="stylesheet" href="plugins/teleo/data/css/teleo.mobile.css"/>
-		  		<div class="" style="padding:2% 0;font-size:22px;color:#9fe7e7!important;">
+		<div class="widget-name" style="padding:2% 0;font-size:22px;color:#9fe7e7!important;">
 			<span class="warning" title="#alert_name#">
 				<i class='#alert_icon#'></i>
 			</span>
-			<span>#name_display#</span><br/>
+			<span>#name_display# <span class="object_name">#object_name#</span></span><br/>
 		</div>
 		<div class="teleo_template text-center" style="height:265px;">
-			<div data-cmd_id="#consoa_id#" title="#consoa_collect#" style="padding-top:25%;">
+			<div data-cmd_id="#consoa_id#" title="#consoa_collect#" style="padding-top:19%;">
  		    <div class="teleoCdc">ANNUEL</div>
  		    <div class="teleoValueUnite"><span class="teleoValue">#consoa#</span><span class="teleoUnite"> L</span></div>
  	   </div>
@@ -25,5 +25,11 @@
 		 		  <div class="teleoValueUnite"><span class="teleoValue">#consod#</span><span class="teleoUnite"> L</span></div>
 		 	  </div>
 		</div>
+		<script>
+			var eqLogic = $('.eqLogic[data-eqLogic_uid=#uid#]');
+			if ('#BGTeleo#' != 'transparent') {
+				eqLogic.find('.widget-name').attr('style', 'background-color:#BGTeleo#!important');
+			}	
+		</script>
 	</center>
 </div>

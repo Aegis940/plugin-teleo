@@ -15,6 +15,13 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 
+$('.eqLogicAttr[data-l2key=widgetTemplate]').on('change', function() {
+  if( $(this).is(':checked') ){
+    $('#templateParams').show();
+  } else {
+    $('#templateParams').hide();
+  }
+})
 
 $("#table_cmd").sortable({axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
 /*
