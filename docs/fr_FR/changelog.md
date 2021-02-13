@@ -4,6 +4,9 @@
 >
 >Pour rappel s'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 13/02/2021
+- Ajout sudo sur la commande de suppression du fichier de mesure
+
 # 07/02/2021
 - Ajout de la personnalisation de la couleur de template comme dans le plugin Linky de [Salvialf]
 - Réorganisation des paramètres de l'équipement pour plus de lisibilité
