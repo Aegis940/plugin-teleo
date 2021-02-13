@@ -65,7 +65,7 @@ if [ $( uname -s ) == "Linux" ]; then
 		url="https://github.com/mozilla/geckodriver/releases/download"
 		driver_version="v0.26.0"
 		driver_name="geckodriver-$driver_version-linux64.tar.gz";;
-	x86|i686)
+	x86|i386|i686)
 		echo "Machine Hardware name: $(uname -m)"
 		url="https://github.com/mozilla/geckodriver/releases/download"
 		driver_version="v0.26.0"

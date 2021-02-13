@@ -12,7 +12,7 @@
     "category": "energy",
     "hasDependency": true,
     "hasOwnDeamon": false,
-    "maxDependancyInstallTime": 0,
+    "maxDependancyInstallTime": 30,
     "changelog": "https:\/\/Aegis940.github.io\/plugin-teleo\/#language#\/changelog",
     "documentation": "https:\/\/Aegis940.github.io\/plugin-teleo\/#language#\/",
     "language": [
