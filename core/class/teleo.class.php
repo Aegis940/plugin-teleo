@@ -227,6 +227,9 @@ class teleo extends eqLogic {
 		 $dataDirectory = '/tmp/teleo';
 	 }
 	
+	 // Clean commande
+	 $cmdCleanBash = system::getCmdSudo() . "rm -f " . $dataDirectory . "/historique_jours_litres.csv";
+	 
 	 // On essai d'importer les indexes manquants précédant la dernière valeur
 	 $this->fillMissingIndexes(); 
  
@@ -250,7 +253,7 @@ class teleo extends eqLogic {
 			log::add(__CLASS__, 'error', $this->getHumanName() . ' Erreur de structure du fichier <' . $dataDirectory . '/historique_jours_litres.csv>');
 			
 			// clean data file
-			shell_exec("rm -f " . $dataDirectory . "/historique_jours_litres.csv");				
+			shell_exec($cmdCleanBash);				
 				
 			return $resultStatus;			
 		}
@@ -266,12 +269,26 @@ class teleo extends eqLogic {
 				log::add(__CLASS__, 'warning', $this->getHumanName() . ' La valeur ' . $valeurMesure . ' n\'est pas prise en compte.');
 				
 				// clean data file
-				shell_exec("rm -f " . $dataDirectory . "/historique_jours_litres.csv");				
+				shell_exec($cmdCleanBash);				
 				
 				return $resultStatus;
 			}				
 		}
-		 
+
+			
+		// check is index value is inf to last index value
+		$cmd = $this->getCmd(null, 'index');
+		$value = $cmd->execCmd();
+		
+		if (($value > $valeurMesure) && ($type != 'Mesuré' && $type != 'M')) {
+			log::add(__CLASS__, 'warning', $this->getHumanName() . ' La valeur estimée de l\'index (' . $valeurMesure . ') est inférieure à la valeur précédente (' . $value . '). Valeur ignorée.');
+			
+			// clean data file
+			shell_exec($cmdCleanBash);				
+				
+			return $resultStatus;			
+		}
+		
 		// Check si la date de la dernière mesure est bien celle d'hier
 		$dateLastMeasure = date('Y-m-d 23:55:00', strtotime($dateMesure));
 		$dateYesterday = date('Y-m-d 23:55:00', strtotime('-1 day'));
@@ -305,7 +322,7 @@ class teleo extends eqLogic {
 		}
 		
 		// clean data file
-		shell_exec("rm -f " . $dataDirectory . "/historique_jours_litres.csv");
+		shell_exec($cmdCleanBash);
 	 }
 	 
 	 return $resultStatus;			
