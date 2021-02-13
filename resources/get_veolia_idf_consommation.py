@@ -18,9 +18,11 @@ import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-#URL des pages nécessaires
-urlHome = 'https://espace-client.vedif.eau.veolia.fr/s/login/'
-urlConso = 'https://espace-client.vedif.eau.veolia.fr/s/historique'
+# URL des pages nécessaires
+url = 'https://espace-client.vedif.eau.veolia.fr'
+urlHome = url + '/s/login/'
+urlConso = url + '/s/historique'
+urlConsoMultiContrat = url + '/s/contrats'
 
 browser = None
 display = None
@@ -98,7 +100,7 @@ try:
 
 	logger = logging.getLogger()
 	
-	if len( sys.argv ) == 5: logLevel = setLogLevel(sys.argv[4])
+	if len( sys.argv ) >= 5: logLevel = setLogLevel(sys.argv[4])
 	else: logLevel = logging.INFO
 
 	initLogger(logFile, logLevel)
@@ -158,11 +160,40 @@ try:
 
 	take_screenshot("2_login_form",tempDir)
 	
-	# Page de consommation
-	logger.info('Page de consommation')
-	browser.get(urlConso)
-	WebDriverWait(browser, 20).until(EC.presence_of_element_located((By.NAME , 'from')))
+	# Manage Multi-Contract
+	if len( sys.argv ) == 6 :
+		contractID = sys.argv[5]
 		
+		# Page des contrats
+		logger.info('Page de(s) contrat(s)')
+		browser.get(urlConsoMultiContrat)
+		WebDriverWait(browser, 30).until(EC.presence_of_element_located((By.XPATH , "//a[contains(.," + contractID +")]")))
+
+		take_screenshot("2_contrats",tempDir)
+		
+		# Page de consommation
+		logger.info('Page de consommation')
+
+		contract=browser.find_element_by_xpath("//a[contains(.," + contractID +")]")
+		contract.click()
+
+		WebDriverWait(browser, 30).until(EC.presence_of_element_located((By.XPATH , "//span[contains(.,'Historique')]//parent::div//parent::a")))
+		
+		take_screenshot("2_contrat_selected",tempDir)
+		
+		histoTab = browser.find_element_by_xpath("//span[contains(.,'Historique')]//parent::div//parent::a")
+		histoTab.click()
+	
+		take_screenshot("3a_conso",tempDir)
+	
+	else : 
+		# Page de consommation
+		logger.info('Page de consommation')
+		
+		browser.get(urlConso)
+	
+	WebDriverWait(browser, 60).until(EC.presence_of_element_located((By.NAME , 'from')))
+	
 	# On attend que les premières données soient chargées
 	waitData("mois",5,4)
 	
@@ -192,10 +223,11 @@ try:
 except Exception as e: 
 	if (str(e.__class__).find('TimeoutException') != -1) : 
 		logger.error('La page met trop de temps a s\'afficher')
-		take_screenshot("Exception",tempDir)
 		
 	else : logger.error(str(e))
- 
+
+	take_screenshot("Exception",tempDir) 
+	
 finally:
 	# fermeture browser
 	logger.debug('Fermeture connexion')

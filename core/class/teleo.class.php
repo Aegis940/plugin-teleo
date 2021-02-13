@@ -179,9 +179,13 @@ class teleo extends eqLogic {
 		  $login = $this->getConfiguration('login');
 		  $password = $this->getConfiguration('password');
 		  $logLevel = log::getLogLevel(__CLASS__);
+		  $contractID = $this->getConfiguration('contract_id');
 		  
+		  // Protect simple/double quotes in password
+		  $password = preg_replace('/\"/', '\\\"',$password, -1);
+
 		  //$cmdBash = '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' \'' . $password . '\' ' . $dataDirectory . ' ' . $logLevel;
-		  $cmdBash = system::getCmdSudo() . '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' \'' . $password . '\' ' . $dataDirectory . ' ' . $logLevel;
+		  $cmdBash = system::getCmdSudo() . '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' "' . $password . '" ' . $dataDirectory . ' ' . $logLevel . ' ' . $contractID;
 		  
 		  log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande : ' . $cmdBash);
 		  $output = shell_exec($cmdBash);
@@ -226,6 +230,9 @@ class teleo extends eqLogic {
 		 $dataDirectory = '/tmp/teleo';
 	 }
 	
+	 // Clean commande
+	 $cmdCleanBash = system::getCmdSudo() . "rm -f " . $dataDirectory . "/historique_jours_litres.csv";
+	 
 	 // On essai d'importer les indexes manquants précédant la dernière valeur
 	 $this->fillMissingIndexes(); 
  
@@ -249,7 +256,7 @@ class teleo extends eqLogic {
 			log::add(__CLASS__, 'error', $this->getHumanName() . ' Erreur de structure du fichier <' . $dataDirectory . '/historique_jours_litres.csv>');
 			
 			// clean data file
-			shell_exec("rm -f " . $dataDirectory . "/historique_jours_litres.csv");				
+			shell_exec($cmdCleanBash);				
 				
 			return $resultStatus;			
 		}
@@ -265,12 +272,26 @@ class teleo extends eqLogic {
 				log::add(__CLASS__, 'warning', $this->getHumanName() . ' La valeur ' . $valeurMesure . ' n\'est pas prise en compte.');
 				
 				// clean data file
-				shell_exec("rm -f " . $dataDirectory . "/historique_jours_litres.csv");				
+				shell_exec($cmdCleanBash);				
 				
 				return $resultStatus;
 			}				
 		}
-		 
+
+			
+		// check is index value is inf to last index value
+		$cmd = $this->getCmd(null, 'index');
+		$value = $cmd->execCmd();
+		
+		if (($value > $valeurMesure) && ($type != 'Mesuré' && $type != 'M')) {
+			log::add(__CLASS__, 'warning', $this->getHumanName() . ' La valeur estimée de l\'index (' . $valeurMesure . ') est inférieure à la valeur précédente (' . $value . '). Valeur ignorée.');
+			
+			// clean data file
+			shell_exec($cmdCleanBash);				
+				
+			return $resultStatus;			
+		}
+		
 		// Check si la date de la dernière mesure est bien celle d'hier
 		$dateLastMeasure = date('Y-m-d 23:55:00', strtotime($dateMesure));
 		$dateYesterday = date('Y-m-d 23:55:00', strtotime('-1 day'));
@@ -304,7 +325,7 @@ class teleo extends eqLogic {
 		}
 		
 		// clean data file
-		shell_exec("rm -f " . $dataDirectory . "/historique_jours_litres.csv");
+		shell_exec($cmdCleanBash);
 	 }
 	 
 	 return $resultStatus;			
@@ -601,15 +622,17 @@ class teleo extends eqLogic {
 
  // Fonction exécutée automatiquement avant la création de l'équipement
     public function preInsert() {
-      $this->setDisplay('height','332px');
-      $this->setDisplay('width', '192px');
-      $this->setConfiguration('forceRefresh', 0);
-	  $this->setConfiguration('ignoreEstimation', 0);	  
-	  $this->setConfiguration('outputData', '/tmp/teleo');
-	  $this->setConfiguration('connectToVeoliaWebsiteFromThisMachine', 1);
-      $this->setCategory('energy', 1);
-      $this->setIsEnable(1);
-      $this->setIsVisible(1);
+		$this->setDisplay('height','332px');
+		$this->setDisplay('width', '192px');
+		$this->setConfiguration('forceRefresh', 0);
+		$this->setConfiguration('ignoreEstimation', 0);	  
+		$this->setConfiguration('outputData', '/tmp/teleo');
+		$this->setConfiguration('connectToVeoliaWebsiteFromThisMachine', 1);
+		$this->setCategory('energy', 1);
+		$this->setIsEnable(1);
+		$this->setIsVisible(1);
+		$this->setConfiguration('widgetTemplate', 1);
+		$this->setConfiguration('widgetBGColor', '#9fe7e7');	  
     }
 
  // Fonction exécutée automatiquement avant la mise à jour de l'équipement
@@ -692,27 +715,35 @@ class teleo extends eqLogic {
     }
     
     public function toHtml($_version = 'dashboard') {
-      if ($this->getConfiguration('widgetTemplate') != 1)
-    	{
-    		return parent::toHtml($_version);
-    	}
+		if ($this->getConfiguration('widgetTemplate') != 1)
+		{
+			return parent::toHtml($_version);
+		}
 
-      $replace = $this->preToHtml($_version);
-      if (!is_array($replace)) {
-        return $replace;
-      }
-      $version = jeedom::versionAlias($_version);
+		$replace = $this->preToHtml($_version);
+		if (!is_array($replace)) {
+			return $replace;
+		}
+		$version = jeedom::versionAlias($_version);
 
-      foreach ($this->getCmd('info') as $cmd) {
-        $replace['#' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
-        $replace['#' . $cmd->getLogicalId() . '#'] = $cmd->execCmd();
-        $replace['#' . $cmd->getLogicalId() . '_collect#'] = $cmd->getCollectDate();
-      }
+		foreach ($this->getCmd('info') as $cmd) {
+			$replace['#' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
+			$replace['#' . $cmd->getLogicalId() . '#'] = $cmd->execCmd();
+			$replace['#' . $cmd->getLogicalId() . '_collect#'] = $cmd->getCollectDate();
+		}
 
-      $html = template_replace($replace, getTemplate('core', $version, 'teleo.template', __CLASS__));
-      cache::set('widgetHtml' . $_version . $this->getId(), $html, 0);
-      return $html;
-    }
+		$bgcolor = $this->getConfiguration('widgetBGColor');
+		if (empty($bgcolor)) {
+			$bgcolor = '#9fe7e7';
+			$this->setConfiguration('widgetBGColor', $bgcolor);			
+		}
+		
+		$replace['#BGTeleo#'] = ($this->getConfiguration('widgetTransparent') == 1) ? 'transparent' : $bgcolor;
+
+		$html = template_replace($replace, getTemplate('core', $version, 'teleo.template', __CLASS__));
+		cache::set('widgetHtml' . $_version . $this->getId(), $html, 0);
+		return $html;
+	}
 
 }
 

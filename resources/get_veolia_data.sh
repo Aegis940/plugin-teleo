@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Check argv
-if [ "$#" -ne 5 ]; then
-	echo -e "Usage: $0 <site_type> <username> <password> <output_dir> <log_level>"
+if [ "$#" -le 4 ]; then
+	echo -e "Usage: $0 <site_type> <username> <password> <output_dir> <log_level> [<ContractID>]"
 	exit 0
 fi
 
@@ -19,7 +19,7 @@ fi
 # Setup
 root='/var/www/html/plugins/teleo/resources'
 python="python3"
-timeout=90
+timeout=180
 
 # Check Python version
 if [ "$1" = "IDF" ]; then
@@ -50,7 +50,7 @@ codret=0
 loop=0 
 until [ $codret -eq 1 ] || [ $loop -ge $nbofretry ]
 do
-	timeout --signal=SIGINT ${timeout} $python $root/$scriptname $2 $3 $4 $5
+	timeout --signal=SIGINT ${timeout} $python $root/$scriptname $2 $3 $4 $5 $6
 	codret=$?
 
 	((loop++))
@@ -66,7 +66,7 @@ fi
 # Kill ghosts processes
 nbprocess=$(pgrep -f "$python $root/$scriptname" -c)
 if [ ! $nbprocess -eq 0 ]; then
-    pkill -f "$python $root/$scriptname"
+	pkill -f "$python $root/$scriptname"
 fi
 
 if [ "$1" = "IDF" ]; then

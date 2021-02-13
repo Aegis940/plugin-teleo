@@ -1,9 +1,9 @@
-<div class="eqLogic eqLogic-widget allowResize #eqLogic_class# #class#" data-eqType="#eqType#" data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-version="#version#" data-translate-category="#translate_category#" data-category="#category#" data-tags="#tags#" style="width:#width#;height:#height#;background-color:#9fe7e7!important;">
+<div class="eqLogic eqLogic-widget allowResize #eqLogic_class# #class#" data-eqType="#eqType#" data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-version="#version#" data-translate-category="#translate_category#" data-category="#category#" data-tags="#tags#" style="width:#width#;height:#height#;background-color:#BGTeleo#!important;">
 <link rel="stylesheet" href="plugins/teleo/data/css/teleo.template.css"/>
-  <div class="text-center" style="padding:2% 0;">
+  <div class="text-center widget-name" style="padding:2% 0;">
 	   <span class="warning" title="#alert_name#"><i class='#alert_icon#'></i></span>
 	   <span class="reportModeVisible">#name_display# <span class="object_name">#object_name#</span></span>
-	   <a href="#eqLink#" class="reportModeHidden teleoEqlogicName">#name_display# <span class="object_name">#object_name#</span></a>
+	   <a href="#eqLink#" class="reportModeHidden">#name_display# <span class="object_name">#object_name#</span></a>
   </div>
   <div class="teleo_template text-center">
 	   <div class="history cursor" data-cmd_id="#consoa_id#" title="#consoa_collect#" style="padding-top:25%;">
@@ -27,7 +27,10 @@
     var eqLogic = $('.eqLogic[data-eqLogic_uid=#uid#]');
     var eqlogic_width = eqLogic.width();
     var TeleoScreen_width = eqLogic.find('.teleo_template').width();
-    eqLogic.find('.teleoEqlogicName').attr('style', 'font-size :' + (eqlogic_width*0.13)+'px !important');
+    if ('#BGTeleo#' != 'transparent') {
+      eqLogic.find('.widget-name').attr('style', 'background-color:#BGTeleo#!important');
+    }	
+    //eqLogic.find('.reportModeHidden').attr('style', 'font-size :' + (eqlogic_width*0.13)+'px !important');
     eqLogic.find('.teleoCdc').css('font-size', (TeleoScreen_width*0.10)+'px');
     eqLogic.find('.teleoValue').css('font-size', (TeleoScreen_width*0.12)+'px');
     eqLogic.find('.teleoUnite').css('font-size', (TeleoScreen_width*0.08)+'px');

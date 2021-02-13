@@ -19,7 +19,7 @@ The following types of consumption data are available:
 > Each script has some constraints
 
 ### For the Veolia Ile de France script
-Python ***3.7.x version*** is required and ***Firefox 60 or higher*** (so better to use **buster distrib**)
+Python ***3.7.x version*** is required and ***Firefox 60 or higher*** (so use **buster distrib**)
 
 ### For other Veolia sites
 Python ***3.x version*** is required
@@ -43,6 +43,7 @@ On the equipment page, enter :
 
 - the **Veolia Site** to which to connect (*Veolia Ile de France* or *Other Veolia Site*)
 - the **login** and **password** of your *Veolia* customer account 
+- If several contracts are attached to the same **Veolia IDF** account, indicate the **contract number** where the data will be retrieved (otherwise leave blank).
 
 Then click on the **Save** button.
 
@@ -59,7 +60,6 @@ The plugin will then check the correct connection to the *Veolia* site and recov
 - **annual consumption**: in Litres, based on the index,
 
 > As the calculation of consumption is based on the index, it is necessary to keep a history of at least 2 years (1 year and 2 days in fact). 
-> **On the first day of installation of the equipment, the values will be at 0** and it is only on the second day that the consumption data will be visible.
 >
 > For the *weekly*, *monthly* and *annual* periods, only the last history of the current period is kept.
 
