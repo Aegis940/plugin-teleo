@@ -181,8 +181,11 @@ class teleo extends eqLogic {
 		  $logLevel = log::getLogLevel(__CLASS__);
 		  $contractID = $this->getConfiguration('contract_id');
 		  
+		  // Protect simple/double quotes in password
+		  $password = preg_replace('/\"/', '\\\"',$password, -1);
+
 		  //$cmdBash = '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' \'' . $password . '\' ' . $dataDirectory . ' ' . $logLevel;
-		  $cmdBash = system::getCmdSudo() . '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' \'' . $password . '\' ' . $dataDirectory . ' ' . $logLevel . ' ' . $contractID;
+		  $cmdBash = system::getCmdSudo() . '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' "' . $password . '" ' . $dataDirectory . ' ' . $logLevel . ' ' . $contractID;
 		  
 		  log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande : ' . $cmdBash);
 		  $output = shell_exec($cmdBash);

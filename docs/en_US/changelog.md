@@ -6,6 +6,7 @@
 
 # 13/02/2021
 - Add sudo on the command to delete the measurement file
+- Single/double quote management in the password
 
 # 07/02/2021
 - Adding template colour customization as done in the Linky plugin by [Salvialf]

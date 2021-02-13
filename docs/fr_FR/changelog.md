@@ -6,6 +6,7 @@
 
 # 13/02/2021
 - Ajout sudo sur la commande de suppression du fichier de mesure
+- Gestion simple/double quote dans le mot de passe
 
 # 07/02/2021
 - Ajout de la personnalisation de la couleur de template comme dans le plugin Linky de [Salvialf]
