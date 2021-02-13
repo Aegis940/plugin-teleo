@@ -4,6 +4,9 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 13/02/2021
+- Add sudo on the command to delete the measurement file
+
 # 07/02/2021
 - Adding template colour customization as done in the Linky plugin by [Salvialf]
 - Reorganization of equipment parameters for better readability
