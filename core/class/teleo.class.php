@@ -173,6 +173,10 @@ class teleo extends eqLogic {
 	  
 	  if ($this->getConfiguration('connectToVeoliaWebsiteFromThisMachine') == 1) {
 
+		  // Clean old csv files if cron time out happed previously
+		  $cmdCleanBash = system::getCmdSudo() . "rm -f " . $dataDirectory . "/*.csv";
+		  shell_exec($cmdCleanBash);		
+		  
 		  log::add(__CLASS__, 'info', $this->getHumanName() . ' 1ère étape d\'authentification Veolia');
 
 		  $veoliaWebsite = $this->getConfiguration('type');
