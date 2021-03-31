@@ -36,7 +36,7 @@ class teleo extends eqLogic {
 		if (file_exists(jeedom::getTmpFolder(__CLASS__) . '/dependencies')) {
             $return['state'] = 'in_progress';
         } else {
-			if (exec(system::getCmdSudo() . system::get('cmd_check') . '-Ec "xvfb|firefox|iceweasel|python3\-pip|python3\-requests|python3\-urllib3"') < 6) {
+			if (exec(system::getCmdSudo() . system::get('cmd_check') . '-Ec "xvfb|firefox|iceweasel|python3\-pip"') < 4) {
 				$return['state'] = 'nok';
 			}
 			elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ec "requests|lxml|xlrd|selenium|PyVirtualDisplay|urllib3"') < 6) {
@@ -173,6 +173,10 @@ class teleo extends eqLogic {
 	  
 	  if ($this->getConfiguration('connectToVeoliaWebsiteFromThisMachine') == 1) {
 
+		  // Clean old csv files if cron time out happed previously
+		  $cmdCleanBash = system::getCmdSudo() . "rm -f " . $dataDirectory . "/*.csv";
+		  shell_exec($cmdCleanBash);		
+		  
 		  log::add(__CLASS__, 'info', $this->getHumanName() . ' 1ère étape d\'authentification Veolia');
 
 		  $veoliaWebsite = $this->getConfiguration('type');
