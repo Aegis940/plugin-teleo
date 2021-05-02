@@ -143,8 +143,9 @@ except Exception as e: logger.error(str(e))
 finally:
 	# Suppression fichier temporaire
 	logger.info('Suppression fichier temporaire')
-	if (tempFile is not None and os.path.exists(tempFile)) : os.remove(tempFile)
-  
+	if (tempFile is not None and os.path.exists(tempFile)) : 
+		if (logLevel != logging.DEBUG) : os.remove(tempFile)
+		
 	# Fermeture connexion
 	logger.info('Fermeture connexion. Exit code ' + str(returnStatus))
 	if (session is not None) : session.close()
