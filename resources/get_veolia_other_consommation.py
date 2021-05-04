@@ -14,7 +14,8 @@ import sys
 import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-	
+import csv
+
 # URL des pages nécessaires
 url = "https://www.service.eau.veolia.fr"
 url_page_login = url + "/connexion-espace-client.html"
