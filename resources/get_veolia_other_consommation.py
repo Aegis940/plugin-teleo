@@ -14,7 +14,8 @@ import sys
 import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-	
+import csv
+
 # URL des pages nécessaires
 url = "https://www.service.eau.veolia.fr"
 url_page_login = url + "/connexion-espace-client.html"
@@ -52,6 +53,42 @@ def initLogger(logFile, logLevel):
 		steam_handler.setFormatter(formatter)
 		logger.addHandler(steam_handler)
 
+def parse_file(datafile):
+	f = open(datafile)
+	csv_reader_object = csv.reader(f)
+	
+	nrows = 0
+	for line in csv_reader_object:
+		nrows = nrows + 1
+
+	# Donnees du dernier releve (14 jours précédent afin de palier aux erreurs de remontée)
+	startindex = nrows - 14
+	if (startindex <= 0) : startindex = 1
+	
+	# Resultat
+	downloadPath = os.path.normpath(sys.argv[3])
+	downloadFile = downloadPath + '/historique_jours_litres.csv'
+	open(downloadFile, 'w').write('Date de relevé;Index relevé (litres);Consommation du jour (litres);Index Mesuré/Estimé\n')
+	
+	index = 0
+	f = open(datafile)
+	csv_reader_object = csv.reader(f)
+	
+	for col in csv_reader_object:
+		
+		if (index >= startindex):
+			
+			cell_value = col[0].split(";")
+			date = datetime.datetime.strptime(cell_value[0],'%d/%m/%Y')
+			index_value = cell_value[1]
+			conso = cell_value[2]
+			releve = cell_value[3]
+
+			open(downloadFile, 'a').write(str(date) +';' + str(index_value) + ';' + str(conso) + ';' + str(releve) + '\n')
+	
+
+		index = index + 1
+		
 try:
 	returnStatus = 0
 
@@ -115,26 +152,7 @@ try:
 	open(tempFile, 'wb').write(xls.content)
 
 	# Ouverture du fichier temporaire
-	wb = xlrd.open_workbook(tempFile)
-	sheet = wb.sheet_by_index(0)
-
-	# Donnees du dernier releve (14 jours précédent afin de palier aux erreurs de remontée)
-	startindex = sheet.nrows - 14
-	if (startindex < 0) : startindex = 0
-	
-	# Resultat
-	downloadPath = os.path.normpath(sys.argv[3])
-	downloadFile = downloadPath + '/historique_jours_litres.csv'
-	open(downloadFile, 'w').write('Date de relevé;Index relevé (litres);Consommation du jour (litres);Index Mesuré/Estimé\n')
-	
-	for i in range(startindex,sheet.nrows):
-	
-		if (str(sheet.cell_value(i, 0)).find('Date de relev') == -1) : 
-			date = datetime.datetime.strptime('1900-01-01', '%Y-%m-%d') + datetime.timedelta(sheet.cell_value(i, 0) - 2)
-			index = sheet.cell_value(i, 1)
-			conso = sheet.cell_value(i, 2)
-			releve = sheet.cell_value(i, 3)
-			open(downloadFile, 'a').write(date.strftime("%Y-%m-%d") + ';' + str(index) + ';' + str(conso) + ';' + str(releve) + '\n')
+	parse_file(tempFile)
 
 	returnStatus = 1
 
@@ -143,8 +161,9 @@ except Exception as e: logger.error(str(e))
 finally:
 	# Suppression fichier temporaire
 	logger.info('Suppression fichier temporaire')
-	if (tempFile is not None and os.path.exists(tempFile)) : os.remove(tempFile)
-  
+	if (tempFile is not None and os.path.exists(tempFile)) : 
+		if (logLevel != logging.DEBUG) : os.remove(tempFile)
+		
 	# Fermeture connexion
 	logger.info('Fermeture connexion. Exit code ' + str(returnStatus))
 	if (session is not None) : session.close()
