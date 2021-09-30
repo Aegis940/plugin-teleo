@@ -26,7 +26,7 @@ url_fichier_histo = url + "/home/espace-client/votre-consommation.exportConsomma
 logger = None
 tempFile = None
 session = None
-logLevel = None
+logLevel = logging.INFO
 
 def setLogLevel(level):
 	if (level == '100') : return logging.DEBUG
@@ -110,9 +110,7 @@ try:
 	logger = logging.getLogger()
 		
 	if len( sys.argv ) >= 5: logLevel = setLogLevel(sys.argv[4])
-	else: logLevel = logging.INFO
-	
-	logLevel = logging.INFO
+
 	initLogger(logFile, logLevel)
 
 	# Identifiants
