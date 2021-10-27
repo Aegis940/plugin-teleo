@@ -53,22 +53,22 @@ if [ $( uname -s ) == "Linux" ]; then
 	armv7l)
 		echo "Machine Hardware name: armv7l"
 		url="https://eu.mirror.archlinuxarm.org/armv7h/community"
-		driver_version="0.29.1-1"
+		driver_version="0.30.0-1"
 		driver_name="geckodriver-$driver_version-armv7h.pkg.tar.xz";;
 	aarch64)
 		echo "Machine Hardware name: aarch64"
 		url="https://eu.mirror.archlinuxarm.org/aarch64/community"
-		driver_version="0.29.1-1"
+		driver_version="0.30.0-1"
 		driver_name="geckodriver-$driver_version-aarch64.pkg.tar.xz";;
 	x86_64|amd64)
 		echo "Machine Hardware name:$(uname -m)"
-		url="https://github.com/mozilla/geckodriver/releases/tag"
-		driver_version="v0.29.1"
+		url="https://github.com/mozilla/geckodriver/releases/download"
+		driver_version="v0.30.0"
 		driver_name="geckodriver-$driver_version-linux64.tar.gz";;
 	x86|i386|i686)
 		echo "Machine Hardware name: $(uname -m)"
-		url="https://github.com/mozilla/geckodriver/releases/tag"
-		driver_version="v0.29.1"
+		url="https://github.com/mozilla/geckodriver/releases/download"
+		driver_version="v0.30.0"
 		driver_name="geckodriver-$driver_version-linux32.tar.gz";;
 	*)
 		echo "other : $(uname -m)"
