@@ -141,7 +141,7 @@ try:
 	if nb_form != 2 : raise Exception('wrong login number')
 
 	# Recherche et remplis les champs d'identification
-	idEmail = browser.find_element_by_id('input-3')
+	idEmail = browser.find_element_by_id('input-5')
 	idPassword = browser.find_element_by_css_selector('input[type="password"]')
 
 	idEmail.clear()
