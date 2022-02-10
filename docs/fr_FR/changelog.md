@@ -4,6 +4,9 @@
 >
 >Pour rappel s'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 10/02/2022
+- Suppression du spport des sites web Veolia autres que Veolia IDF suite à l'ajout d'un Captcha
+
 # 13/02/2021
 - Ajout sudo sur la commande de suppression du fichier de mesure
 - Gestion simple/double quote dans le mot de passe
