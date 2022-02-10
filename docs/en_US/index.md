@@ -21,7 +21,7 @@ The following types of consumption data are available:
 ### For the Veolia Ile de France script
 Python ***3.7.x version*** is required and ***Firefox 60 or higher*** (so use **buster distrib**)
 
-### For other Veolia sites
+### For other Veolia sites - UPDATE: no more supported by plugin
 Python ***3.x version*** is required
 
 > The software dependencies are installed automatically by Jeedom within 5 minutes. They will also be reinstalled when the plugin is updated if necessary.
