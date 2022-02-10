@@ -188,6 +188,13 @@ class teleo extends eqLogic {
 		  // Protect simple/double quotes in password
 		  $password = preg_replace('/\"/', '\\\"',$password, -1);
 
+        	  // Sorry, others Veolia Website than Velia IDF are no more supported
+	          if ($veoliaWebsite != 'IDF')
+		  {   
+			log::add(__CLASS__, 'error', $this->getHumanName() . ' Les sites autres que Veolia IdF ne sont plus supportés par le plugin dû à l\'ajout d\'un Capcha.');
+			return null;
+		  }
+		  
 		  //$cmdBash = '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' \'' . $password . '\' ' . $dataDirectory . ' ' . $logLevel;
 		  $cmdBash = system::getCmdSudo() . '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' "' . $password . '" ' . $dataDirectory . ' ' . $logLevel . ' ' . $contractID;
 		  
