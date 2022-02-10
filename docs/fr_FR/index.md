@@ -21,7 +21,7 @@ Les types de données de consommation suivants sont accessibles :
 ### Pour le script Veolia Ile de France
 La version de ***Python 3.7.x*** est indispensable et ***Firefox 60 ou supérieur*** (donc une **distrib buster** obligatoire)
 
-### Pour les autres sites Veolia
+### Pour les autres sites Veolia - MISE A JOUR : n'est plus supporté par le plugin
 La version de ***Python 3.x*** est indispensable
 
 > Les dépendances sont installées automatiquement par Jeedom dans les 5 min. Elles seront également réinstallées lors d’une mise à jour du plugin si besoin.
