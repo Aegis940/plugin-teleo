@@ -4,6 +4,9 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 10/02/2022
+- Removal of the report of Veolia websites other than Veolia IDF following the addition of a Captcha
+
 # 13/02/2021
 - Add sudo on the command to delete the measurement file
 - Single/double quote management in the password
