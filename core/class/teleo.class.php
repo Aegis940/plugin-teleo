@@ -272,7 +272,7 @@ class teleo extends eqLogic {
 			return $resultStatus;			
 		}
 		
-		$dateMesure = substr($mesure[0],0,10);
+		$dateMesure = str_replace('/','-',substr($mesure[0],0,10));
 		$valeurMesure = $mesure[1];
 		$type = rtrim ($mesure[3]);
 		
@@ -365,7 +365,7 @@ class teleo extends eqLogic {
 				continue;			
 			}
 		
-			$dateMesure = substr($mesure[0],0,10);
+			$dateMesure = str_replace('/','-',substr($mesure[0],0,10));
 			$valeurMesure = $mesure[1];
 			$type = rtrim($mesure[3]);
 			
