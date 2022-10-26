@@ -752,6 +752,7 @@ class teleo extends eqLogic {
 			$this->NormalizeData($logicalId);
 			$this->setCache($cmdToNormalize, 'done');
 		}
+      }
 
 	  $outDir = $this->getConfiguration('outputData');
 	  if(!is_dir($outDir)) {
