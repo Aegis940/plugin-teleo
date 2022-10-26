@@ -52,23 +52,23 @@ if [ $( uname -s ) == "Linux" ]; then
 	case $( uname -m ) in
 	armv7l)
 		echo "Machine Hardware name: armv7l"
-		url="https://eu.mirror.archlinuxarm.org/armv7h/community"
-		driver_version="0.30.0-1"
-		driver_name="geckodriver-$driver_version-armv7h.pkg.tar.xz";;
+		#url="https://eu.mirror.archlinuxarm.org/armv7h/community"
+		driver_version="v0.32.0"
+		driver_name="geckodriver-$driver_version-linux-armv7l.tar.gz";;
 	aarch64)
 		echo "Machine Hardware name: aarch64"
-		url="https://eu.mirror.archlinuxarm.org/aarch64/community"
-		driver_version="0.30.0-1"
-		driver_name="geckodriver-$driver_version-aarch64.pkg.tar.xz";;
+		url="https://github.com/mozilla/geckodriver/releases/download"
+		driver_version="v0.32.0"
+		driver_name="geckodriver-$driver_version-linux-aarch64.tar.gz";;
 	x86_64|amd64)
 		echo "Machine Hardware name:$(uname -m)"
 		url="https://github.com/mozilla/geckodriver/releases/download"
-		driver_version="v0.30.0"
+		driver_version="v0.32.0"
 		driver_name="geckodriver-$driver_version-linux64.tar.gz";;
 	x86|i386|i686)
 		echo "Machine Hardware name: $(uname -m)"
 		url="https://github.com/mozilla/geckodriver/releases/download"
-		driver_version="v0.30.0"
+		driver_version="v0.32.0"
 		driver_name="geckodriver-$driver_version-linux32.tar.gz";;
 	*)
 		echo "other : $(uname -m)"
@@ -80,24 +80,28 @@ fi
 
 if [ $driver_version != "" ]; then
 
-	if [ $(uname -m) == "armv7l" ] || [ $(uname -m) == "aarch64" ]; then
-		sudo wget $url/$driver_name
-		sudo tar xJf $driver_name usr/bin/geckodriver
-		sudo mv usr/bin/geckodriver /usr/local/bin
+	sudo cp /usr/local/bin/geckodriver $(echo "/usr/local/bin/$(uname -m)_$(geckodriver --version)" | grep "geckodriver" | sed s/' '/'_'/g | head -1 | cut -d '(' -f1)sav
+	
+	if [ $(uname -m) == "armv7l" ]; then
+		# sudo wget $url/$driver_name
+		# sudo tar xJf $driver_name usr/bin/geckodriver
+		# sudo mv usr/bin/geckodriver /usr/local/bin
+		sudo tar xzf /var/www/html/plugins/teleo/resources/geckodriver/$driver_name
+		sudo mv geckodriver /usr/local/bin
 		sudo chmod +x /usr/local/bin/geckodriver
 
 		# clean temp dir
-		if [ -z "$(ls -A usr/bin)" ]; then
-			sudo rmdir usr/bin
-		fi
-		if [ -z "$(ls -A usr)" ]; then
-			sudo rmdir usr
-		fi
+		# if [ -z "$(ls -A usr/bin)" ]; then
+			# sudo rmdir usr/bin
+		# fi
+		# if [ -z "$(ls -A usr)" ]; then
+			# sudo rmdir usr
+		# fi
 		
-		sudo rm $driver_name
+		# sudo rm $driver_name
 	else
 		sudo wget $url/$driver_version/$driver_name
-		sudo tar xzfz $driver_name
+		sudo tar xzf $driver_name
 		sudo mv geckodriver /usr/local/bin
 		sudo chmod +x /usr/local/bin/geckodriver
 		sudo rm $driver_name
