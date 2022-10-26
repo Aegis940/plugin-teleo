@@ -27,8 +27,8 @@ echo "********************************************************"
 sudo apt-get install -y firefox-esr
 
 # Check Firefox version
-if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -lt 60 ]; then
-	echo "Warning: Mozilla Firefox must be 60.x or higher for Veolia IDF WebSite"
+if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -lt 102 ]; then
+	echo "Warning: Mozilla Firefox must be 102.x or higher for Veolia IDF WebSite"
 	echo "Current version is: $(firefox --version)"
 fi
  
@@ -177,8 +177,8 @@ echo "Résumé installation :"
 echo
 
 echo "1. $(firefox --version)"
-if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -lt 60 ]; then
-	echo "Warning: Mozilla Firefox must be 60.x or higher for Veolia IDF WebSite. The Python script will not be able to be executed."
+if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -lt 102 ]; then
+	echo "Warning: Mozilla Firefox must be 102.x or higher for Veolia IDF WebSite. The Python script will not be able to be executed."
 fi
 
 echo "2. geckodriver :"

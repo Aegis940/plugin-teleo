@@ -19,7 +19,7 @@ The following types of consumption data are available:
 > Each script has some constraints
 
 ### For the Veolia Ile de France script
-Python ***3.7.x version*** is required and ***Firefox 60 or higher*** (so use **buster distrib**)
+Python ***3.7.x version*** is required and ***Firefox 102 or higher*** (so use **buster distrib**)
 
 ### For other Veolia sites - UPDATE: no more supported by plugin
 Python ***3.x version*** is required
