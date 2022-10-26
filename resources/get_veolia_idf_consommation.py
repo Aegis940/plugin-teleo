@@ -50,7 +50,7 @@ def setLogLevel(level):
 def initLogger(logFile, logLevel):
 	logger.setLevel(logLevel)
 	formatter = logging.Formatter('[%(asctime)s][%(levelname)s] : [Script Python] %(message)s')
-	file_handler = RotatingFileHandler(logFile, 'a', 1000000, 1)
+	file_handler = RotatingFileHandler(logFile, 'a', 10000, 1)
 	
 	file_handler.setLevel(logLevel)
 	file_handler.setFormatter(formatter)

@@ -7,24 +7,26 @@
 			</span>
 			<span>#name_display# <span class="object_name">#object_name#</span></span><br/>
 		</div>
-		<div class="teleo_template text-center" style="height:265px;">
-			<div data-cmd_id="#consoa_id#" title="#consoa_collect#" style="padding-top:19%;">
- 		    <div class="teleoCdc">ANNUEL</div>
- 		    <div class="teleoValueUnite"><span class="teleoValue">#consoa#</span><span class="teleoUnite"> L</span></div>
- 	   </div>
-		 <div class="history cursor" data-cmd_id="#consom_id#" title="#consom_collect#">
-		 		  <div class="teleoCdc">MENSUEL</div>
-		 		  <div class="teleoValueUnite"><span class="teleoValue">#consom#</span><span class="teleoUnite"> L</span></div>
-		 	  </div>
-		 	  <div class="history cursor" data-cmd_id="#consoh_id#" title="#consoh_collect#">
-		 		  <div class="teleoCdc">HEBDO</div>
-		 		  <div class="teleoValueUnite"><span class="teleoValue">#consoh#</span><span class="teleoUnite"> L</span></div>
-		 	  </div>
-		 	  <div class="history cursor" data-cmd_id="#consod_id#" title="#consod_collect#">
-		 	 	  <div class="teleoCdc">QUOTIDIEN</div>
-		 		  <div class="teleoValueUnite"><span class="teleoValue">#consod#</span><span class="teleoUnite"> L</span></div>
-		 	  </div>
-		</div>
+		<div class="teleo_template text-center" style="height:220px;">
+          <div id="consumption">  
+              <div data-cmd_id="#consoa_id#" title="#consoa_collect#">
+                  <div class="teleoCdc">#consoa_name#</div>
+                  <div class="teleoValueUnite"><span class="teleoValue">#consoa#</span><span class="teleoUnite"> L</span></div>
+              </div>
+              <div class="history cursor" data-cmd_id="#consom_id#" title="#consom_collect#">
+                  <div class="teleoCdc">#consom_name#</div>
+                  <div class="teleoValueUnite"><span class="teleoValue">#consom#</span><span class="teleoUnite"> L</span></div>
+              </div>
+              <div class="history cursor" data-cmd_id="#consoh_id#" title="#consoh_collect#">
+                  <div class="teleoCdc">#consoh_name#</div>
+                  <div class="teleoValueUnite"><span class="teleoValue">#consoh#</span><span class="teleoUnite"> L</span></div>
+              </div>
+              <div class="history cursor" data-cmd_id="#consod_id#" title="#consod_collect#">
+                  <div class="teleoCdc">#consod_name#</div>
+                  <div class="teleoValueUnite"><span class="teleoValue">#consod#</span><span class="teleoUnite"> L</span></div>
+              </div>
+          </div>
+        </div>
 		<script>
 			var eqLogic = $('.eqLogic[data-eqLogic_uid=#uid#]');
 			if ('#BGTeleo#' != 'transparent') {

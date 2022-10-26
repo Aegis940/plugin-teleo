@@ -116,7 +116,7 @@ class teleo extends eqLogic {
       foreach ($this->getCmd('info') as $eqLogicCmd)
       {
         $eqLogicCmd->execCmd();
-        if ($eqLogicCmd->getCollectDate() == date('Y-m-d 23:55:00', strtotime('-1 day')) && $this->getConfiguration('forceRefresh') != 1)
+        if ($eqLogicCmd->getCollectDate() == date('Y-m-d 00:00:00', strtotime('-1 day')) && $this->getConfiguration('forceRefresh') != 1)
         {
           log::add(__CLASS__, 'debug', $this->getHumanName() . ' le ' . date('d/m/Y', strtotime('-1 day')) . ' : données déjà présentes pour la commande ' . $eqLogicCmd->getName());
         }
@@ -188,14 +188,13 @@ class teleo extends eqLogic {
 		  // Protect simple/double quotes in password
 		  $password = preg_replace('/\"/', '\\\"',$password, -1);
 
-        	  // Sorry, others Veolia Website than Velia IDF are no more supported
-	          if ($veoliaWebsite != 'IDF')
+		  // Sorry, others Veolia Website than Velia IDF are no more supported
+	      if ($veoliaWebsite != 'IDF')
 		  {   
 			log::add(__CLASS__, 'error', $this->getHumanName() . ' Les sites autres que Veolia IdF ne sont plus supportés par le plugin dû à l\'ajout d\'un Capcha.');
 			return null;
 		  }
 		  
-		  //$cmdBash = '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' \'' . $password . '\' ' . $dataDirectory . ' ' . $logLevel;
 		  $cmdBash = system::getCmdSudo() . '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' "' . $password . '" ' . $dataDirectory . ' ' . $logLevel . ' ' . $contractID;
 		  
 		  log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande : ' . $cmdBash);
@@ -304,8 +303,8 @@ class teleo extends eqLogic {
 		}
 		
 		// Check si la date de la dernière mesure est bien celle d'hier
-		$dateLastMeasure = date('Y-m-d 23:55:00', strtotime($dateMesure));
-		$dateYesterday = date('Y-m-d 23:55:00', strtotime('-1 day'));
+		$dateLastMeasure = date('Y-m-d 00:00:00', strtotime($dateMesure));
+		$dateYesterday = date('Y-m-d 00:00:00', strtotime('-1 day'));
 		
         log::add(__CLASS__, 'debug', $this->getHumanName() . ' Vérification date dernière mesure : ' . $dateLastMeasure);
 		
@@ -381,9 +380,12 @@ class teleo extends eqLogic {
 
 			$cmd = $this->getCmd(null, 'index');
 			$cmdId = $cmd->getId();
-			$dateReal =  date('Y-m-d 23:55:00', strtotime($dateMesure));
+			$dateReal =  date('Y-m-d 00:00:00', strtotime($dateMesure));
+			$dateReal_oldformat =  date('Y-m-d 23:55:00', strtotime($dateMesure));
 			
 			$cmdHistory = history::byCmdIdDatetime($cmdId, $dateReal);
+			$cmdHistory_oldformat = history::byCmdIdDatetime($cmdId, $dateReal_oldformat);
+			
 			if (is_object($cmdHistory) && $cmdHistory->getValue() == $valeurMesure) {
 				log::add(__CLASS__, 'debug', $this->getHumanName() . ' Mesure en historique - Aucune action : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $valeurMesure);
 			}
@@ -393,7 +395,9 @@ class teleo extends eqLogic {
 				if (is_object($cmdHistory)) {
 					history::removes($cmdId, $dateReal, $dateReal);	
 				}
-				
+				if (is_object($cmdHistory_oldformat)) {
+					history::removes($cmdId, $dateReal_oldformat, $dateReal_oldformat);	
+				}				
 				$cmd->addHistoryValue( $valeurMesure, $dateReal);
 			}
 		}
@@ -424,14 +428,12 @@ class teleo extends eqLogic {
 	    $cmd = $this->getCmd(null, 'index');
 		$cmdId = $cmd->getId();
 		
-		$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -1 day'));
-		$dateEnd = date('Y-m-d 23:55:00', strtotime(date('Y-m-d 23:55:00', strtotime('now')) . ' -' . ($diffDay+1) . ' day'));		
-		//$dateEnd = date("Y-m-d 23:55:00", strtotime('-2 day'));
+		$dateBegin = date('Y-m-d 00:00:00', strtotime(date("Y") . '-01-01 -1 day'));
+		$dateEnd = date('Y-m-d 00:00:00', strtotime(date('Y-m-d 00:00:00', strtotime('now')) . ' -' . ($diffDay+1) . ' day'));		
 				
 		# Cas spécial dernière valeur de l'année 
 		if ($dateBegin > $dateEnd) {
-			$dateBegin = date('Y-m-d 23:55:00', strtotime((date("Y") . '-01-01') . ' -' . ($diffDay+1) . ' day'));	
-			//$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -2 day'));
+			$dateBegin = date('Y-m-d 00:00:00', strtotime((date("Y") . '-01-01') . ' -' . ($diffDay+1) . ' day'));	
 			$value = $cmd->execCmd();
 			$lastCollectDate = $cmd->getValueDate();
 			
@@ -481,8 +483,7 @@ class teleo extends eqLogic {
 		$cmdInfos = ['index','consod','consoh','consom','consoa'];
 		
 		$dateCollectPreviousIndex = $this->getDateCollectPreviousIndex($diffDay);
-		$dateReal = date('Y-m-d 23:55:00', strtotime(date('Y-m-d 23:55:00', strtotime('now')) . ' -' . $diffDay . ' day'));	
-		//$dateReal = date("Y-m-d 23:55:00", strtotime('-1 day'));
+		$dateReal = date('Y-m-d 00:00:00', strtotime(date('Y-m-d 00:00:00', strtotime('now')) . ' -' . $diffDay . ' day'));	
 		
 		foreach ($cmdInfos as $cmdName)
 		{
@@ -499,8 +500,7 @@ class teleo extends eqLogic {
 				case 'consod':
 					log::add(__CLASS__, 'debug', $this->getHumanName() . '--------------------------');
 
-					$dateBegin = date('Y-m-d 23:55:00', strtotime(date('Y-m-d 23:55:00', strtotime('now')) . ' -' . ($diffDay+1) . ' day'));	
-					//$dateBegin = date('Y-m-d 23:55:00', strtotime('-2 day'));
+					$dateBegin = date('Y-m-d 00:00:00', strtotime(date('Y-m-d 00:00:00', strtotime('now')) . ' -' . ($diffDay+1) . ' day'));	
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
 						
@@ -517,17 +517,17 @@ class teleo extends eqLogic {
 				case 'consoh':
 					log::add(__CLASS__, 'debug', $this->getHumanName() . '--------------------------');
 					
-					$dateBeginPeriod = date('Y-m-d 23:55:00', strtotime('monday this week'));
+					$dateBeginPeriod = date('Y-m-d 00:00:00', strtotime('monday this week'));
 					$dateBegin = $dateBeginPeriod;
 												
 					if ($dateLastMeasure < $dateBegin) {
 						# Last measure of previous week
-						$dateBegin = date('Y-m-d 23:55:00', strtotime('monday this week -1 week -1 day'));
-						$dateBeginPeriod = date('Y-m-d 23:55:00', strtotime('monday this week -1 week'));						
+						$dateBegin = date('Y-m-d 00:00:00', strtotime('monday this week -1 week -1 day'));
+						$dateBeginPeriod = date('Y-m-d 00:00:00', strtotime('monday this week -1 week'));						
 					}
 					else {
 						# New week
-						$dateBegin = date('Y-m-d 23:55:00', strtotime('monday this week -1 day'));
+						$dateBegin = date('Y-m-d 00:00:00', strtotime('monday this week -1 day'));
 					}
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
@@ -546,17 +546,17 @@ class teleo extends eqLogic {
 				case 'consom':
 					log::add(__CLASS__, 'debug', $this->getHumanName() . '--------------------------');
 					
-					$dateBeginPeriod = date('Y-m-d 23:55:00', strtotime('first day of this month'));
+					$dateBeginPeriod = date('Y-m-d 00:00:00', strtotime('first day of this month'));
 					$dateBegin = $dateBeginPeriod;
 					
 					if ($dateLastMeasure < $dateBegin) {
 						# Last measure of previous month
-						$dateBegin = date('Y-m-d 23:55:00', strtotime(date('Y-m-d 23:55:00', strtotime('first day of this month -1 month')) . ' -1 day'));
-						$dateBeginPeriod = date('Y-m-d 23:55:00', strtotime('first day of this month - 1 month'));						
+						$dateBegin = date('Y-m-d 00:00:00', strtotime(date('Y-m-d 00:00:00', strtotime('first day of this month -1 month')) . ' -1 day'));
+						$dateBeginPeriod = date('Y-m-d 00:00:00', strtotime('first day of this month - 1 month'));						
 					}
 					else {
 						# New month
-						$dateBegin = date('Y-m-d 23:55:00', strtotime(date('Y-m-d 23:55:00', strtotime('first day of this month')) . ' -1 day'));
+						$dateBegin = date('Y-m-d 00:00:00', strtotime(date('Y-m-d 00:00:00', strtotime('first day of this month')) . ' -1 day'));
 					}
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
@@ -575,17 +575,17 @@ class teleo extends eqLogic {
 				case 'consoa':
 					log::add(__CLASS__, 'debug', $this->getHumanName() . '--------------------------');
 
-					$dateBeginPeriod = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01'));
+					$dateBeginPeriod = date('Y-m-d 00:00:00', strtotime(date("Y") . '-01-01'));
 					$dateBegin = $dateBeginPeriod;
 					
 					if ($dateLastMeasure < $dateBegin) {
 						# Last measure of previous year
-						$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -1 year -1 day'));
-						$dateBeginPeriod = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -1 year'));
+						$dateBegin = date('Y-m-d 00:00:00', strtotime(date("Y") . '-01-01 -1 year -1 day'));
+						$dateBeginPeriod = date('Y-m-d 00:00:00', strtotime(date("Y") . '-01-01 -1 year'));
 					}
 					else {
 						# New year
-						$dateBegin = date('Y-m-d 23:55:00', strtotime(date("Y") . '-01-01 -1 day'));
+						$dateBegin = date('Y-m-d 00:00:00', strtotime(date("Y") . '-01-01 -1 day'));
 					}
 					
 					if ($dateCollectPreviousIndex < $dateBegin) {
@@ -631,6 +631,44 @@ class teleo extends eqLogic {
 					
    }
 
+ // Fonction exécutée automatiquement après la mise à jour de l'équipement : passage de 23:55:00 à 00:00:00 pour la date de l'enregistrement des valeurs
+   public function NormalizeData($cmdName) {
+		$cmd = $this->getCmd(null, $cmdName);
+		$cmdId = $cmd->getId();
+
+		$dateBegin = date('Y-m-d 23:55:00', strtotime('2020-01-01 -1 day'));
+		$dateEnd = date('Y-m-d 23:55:00', strtotime(date('Y-m-d 23:55:00', strtotime('now')) . ' -1 day'));	
+
+		$all = history::all($cmdId, $dateBegin, $dateEnd);
+		usort($all, array($this, "sortHisto"));   	
+
+		$dateVal = count($all) ? $all[0]->getDatetime() : null;
+		if (is_null($dateVal) || (date('G:i:s',strtotime($dateVal)) == date('00:00:00'))) {
+			return;
+		}
+
+        log::add(__CLASS__, 'debug', $this->getHumanName() . ' Cmd = ' . $cmdId . ' Analyse de ' . count($all) . ' historique(s)');
+     
+		for($i = 0; $i < count($all); $i++) {
+			$dateVal = $all[$i]->getDatetime();
+			$timemesure = date('G:i:s',strtotime($dateVal)); 
+			
+			if (!is_null($dateVal) && $timemesure == date('23:55:00')) {
+				$valeurMesure = $all[$i]->getValue();
+				$dateReal = $dateReal =  date('Y-m-d 00:00:00', strtotime($dateVal));
+				
+				log::add(__CLASS__, 'debug', $this->getHumanName() . ' Cmd = ' . $cmdId . ' Modification de l\'historique du ' . $dateVal . ' en ' . $dateReal . ' pour la valeur ' . $valeurMesure);
+				
+				history::removes($cmdId, $dateVal, $dateVal);
+				$cmd->addHistoryValue($valeurMesure, $dateReal);
+				
+			}
+			else {
+				break;
+			}
+		}	
+   }
+   
  // Fonction exécutée automatiquement avant la création de l'équipement
     public function preInsert() {
 		$this->setDisplay('height','332px');
@@ -643,7 +681,7 @@ class teleo extends eqLogic {
 		$this->setIsEnable(1);
 		$this->setIsVisible(1);
 		$this->setConfiguration('widgetTemplate', 1);
-		$this->setConfiguration('widgetBGColor', '#9fe7e7');	  
+		$this->setConfiguration('widgetBGColor', '#74b5e4');	  
     }
 
  // Fonction exécutée automatiquement avant la mise à jour de l'équipement
@@ -706,7 +744,14 @@ class teleo extends eqLogic {
 		$cmd->setType('info');
         $cmd->setSubType('numeric');
         $cmd->save();
-      }
+		
+		// Passage du time d'enregistrement de 23:55:00 à 00:00:00
+		$cmdToNormalize = 'normaliseTeleoData_' . $logicalId;
+		
+        if ($this->getCache($cmdToNormalize) != 'done') {
+			$this->NormalizeData($logicalId);
+			$this->setCache($cmdToNormalize, 'done');
+		}
 
 	  $outDir = $this->getConfiguration('outputData');
 	  if(!is_dir($outDir)) {
@@ -741,6 +786,30 @@ class teleo extends eqLogic {
 			$replace['#' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
 			$replace['#' . $cmd->getLogicalId() . '#'] = $cmd->execCmd();
 			$replace['#' . $cmd->getLogicalId() . '_collect#'] = $cmd->getCollectDate();
+			
+            if (substr($cmd->getLogicalId(), 0, 6) === "consoa") {
+                $year = date_fr(date('Y', strtotime($cmd->getCollectDate())));
+                $replace['#' . $cmd->getLogicalId() . '_name#'] = $year;
+            }           
+            if (substr($cmd->getLogicalId(), 0, 6) === "consom") {
+                $month = date_fr(date('F', strtotime($cmd->getCollectDate())));
+              	$year = date('y', strtotime($cmd->getCollectDate()));
+                $replace['#' . $cmd->getLogicalId() . '_name#'] = $month;
+            } 
+            if (substr($cmd->getLogicalId(), 0, 6) === "consoh") {
+                $monday = date('d/m', strtotime('monday this week',strtotime($cmd->getCollectDate())));
+                $sunday = date('d/m', strtotime('sunday this week',strtotime($cmd->getCollectDate())));
+                $week = date_fr(date('W', strtotime($cmd->getCollectDate())));  
+              	$replace['#' . $cmd->getLogicalId() . '_name#'] = $monday . '-' . $sunday . ' (' . $week . ')';
+            } 
+            if (substr($cmd->getLogicalId(), 0, 6) === "consod") {
+              $month = date_fr(date('F', strtotime($cmd->getCollectDate())));
+              $day = date('j', strtotime($cmd->getCollectDate()));
+              $year = date('y', strtotime($cmd->getCollectDate()));
+              //$replace['#' . $cmd->getLogicalId() . '_name#'] = $day . ' ' . $month . ' ' . $year;
+              $replace['#' . $cmd->getLogicalId() . '_name#'] = $day . ' ' . $month;
+            }           
+
 		}
 
 		$bgcolor = $this->getConfiguration('widgetBGColor');

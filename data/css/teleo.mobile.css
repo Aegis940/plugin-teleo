@@ -1,11 +1,6 @@
 @font-face {
 	font-family: "Digital-7";
-	src:  url("../fonts/digital-7.ttf") format("truetype");
-}
-.teleoEqlogicName {
-	font-family:"Comic Sans MS", "Comic Sans", cursive;
-	text-shadow: 1px -1px 1px rgba(0,0,0,0.4), -1px 1px 0 rgba(255,255,255,0.6);
-	color:#9fe7e7!important;
+	src:  url("../fonts/digital-7.ttf") format("opentype");
 }
 .teleo_template {
 	height:100%;
@@ -15,22 +10,28 @@
 	background-position: center 0%;
 	font-family: "Digital-7";
 	color: black!important;
-	letter-spacing: 1px;
 }
 .teleo_template div.teleoCdc{
-	color:#505050;
+	font-size:14px!important;
+	letter-spacing: 1px;
+  	color:#505050;
 	line-height:1;
-	margin-top:2%;
-	font-size:18px;
 }
 .teleo_template div.teleoUnite{
+    letter-spacing: 1px;
 	color:#505050;
-	font-size:14px;
 }
-.teleoValue {
+.teleo_template .teleoValue {
+  	font-size:16px!important;
 	font-weight:bold;
-	font-size:21px;
+	letter-spacing: 1px;
 }
-.teleoValueUnite {
+.teleo_template div.teleoValueUnite {
 	line-height:1;
+}
+.teleo_template #consumption {
+	padding-top: 45px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
 }
