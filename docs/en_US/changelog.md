@@ -4,6 +4,13 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 20/10/2022
+- Core 4.3 support
+- Upgrade to version 0.32.0 of geckodriver
+- Switch to recording commands at 00:00 instead of 23:55. Old values are updated by re-saving the equipment (display anomalies may appear on the day of the transition in the history and they will normally disappear the next day)
+- Display of the date of the periods in the widget instead of the generic labels
+
+
 # 10/02/2022
 - Removal of the report of Veolia websites other than Veolia IDF following the addition of a Captcha
 

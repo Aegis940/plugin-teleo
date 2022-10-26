@@ -4,8 +4,14 @@
 >
 >Pour rappel s'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 20/10/2022
+- Support core 4.3
+- Passage à la version 0.32.0 du geckodriver
+- Passage à un enregistrement des commandes à 00:00 au lieu de 23:55. Les anciens historiques sont remis à jour en sauvegardant à nouveau l'équipement (des anomalies d'affichage peuvent apparaitre le jour de la transition dans l'historique et ils disparaitront normalement le lendemain)
+- Affichage de la date des périodes dans le Widget au lieu des labels génériques
+
 # 10/02/2022
-- Suppression du spport des sites web Veolia autres que Veolia IDF suite à l'ajout d'un Captcha
+- Suppression du support des sites web Veolia autres que Veolia IDF suite à l'ajout d'un Captcha
 
 # 13/02/2021
 - Ajout sudo sur la commande de suppression du fichier de mesure
