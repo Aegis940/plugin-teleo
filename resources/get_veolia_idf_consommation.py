@@ -64,7 +64,7 @@ def initLogger(logFile, logLevel):
 		
 def waitData(exitCond, sleepTime, loopNb):
 
-	kpi_field = browser.find_elements_by_class_name("kpi-value")
+	kpi_field = browser.find_elements(By.CLASS_NAME,"kpi-value")
 
 	nb_kpi = len(kpi_field)
 	if nb_kpi != 3 : raise Exception('wrong KPI number')
@@ -137,12 +137,12 @@ try:
 	browser.get(urlHome)
 	WebDriverWait(browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR , 'input[inputmode="email"]')))
 
-	nb_form = len(browser.find_elements_by_css_selector('input[inputmode="email"]'))
+	nb_form = len(browser.find_elements(By.CSS_SELECTOR,'input[inputmode="email"]'))
 	if nb_form != 2 : raise Exception('wrong login number')
 
 	# Recherche et remplis les champs d'identification
-	idEmail = browser.find_element_by_id('input-5')
-	idPassword = browser.find_element_by_css_selector('input[type="password"]')
+	idEmail = browser.find_element(By.ID,'input-5')
+	idPassword = browser.find_element(By.CSS_SELECTOR,'input[type="password"]')
 
 	idEmail.clear()
 	idEmail.send_keys(veolia_login)
@@ -154,7 +154,7 @@ try:
 
 	take_screenshot("1_login_form",tempDir)
 	
-	loginButton = browser.find_element_by_class_name('submit-button')
+	loginButton = browser.find_element(By.CLASS_NAME,'submit-button')
 	loginButton.click()
 	time.sleep(5)
 
@@ -174,14 +174,14 @@ try:
 		# Page de consommation
 		logger.info('Page de consommation')
 
-		contract=browser.find_element_by_xpath("//a[contains(.," + contractID +")]")
+		contract=browser.find_element(By.XPATH,"//a[contains(.," + contractID +")]")
 		contract.click()
 
 		WebDriverWait(browser, 30).until(EC.presence_of_element_located((By.XPATH , "//span[contains(.,'Historique')]//parent::div//parent::a")))
 		
 		take_screenshot("2_contrat_selected",tempDir)
 		
-		histoTab = browser.find_element_by_xpath("//span[contains(.,'Historique')]//parent::div//parent::a")
+		histoTab = browser.find_element(By.XPATH,"//span[contains(.,'Historique')]//parent::div//parent::a")
 		histoTab.click()
 	
 		take_screenshot("3a_conso",tempDir)
@@ -200,11 +200,11 @@ try:
 	# Sélection boutons
 	logger.info('Sélection des données en Jours et Litres')
 	
-	dayButton = browser.find_element_by_xpath("//span[contains(.,'Jours')]//parent::button")
+	dayButton = browser.find_element(By.XPATH,"//span[contains(.,'Jours')]//parent::button")
 	dayButton.send_keys(Keys.RETURN)
 	waitData("jour",3,5)
 	
-	literButton = browser.find_element_by_xpath("//span[contains(.,'Litres')]//parent::button")
+	literButton = browser.find_element(By.XPATH,"//span[contains(.,'Litres')]//parent::button")
 	literButton.send_keys(Keys.RETURN)
 	waitData("Litres",2,5)
 	
@@ -212,7 +212,7 @@ try:
 	
 	# Téléchargement du fichier
 	logger.info('Téléchargement du fichier')
-	downloadFileButton = browser.find_element_by_class_name("slds-button.slds-text-title_caps")
+	downloadFileButton = browser.find_element(By.CLASS_NAME,"slds-button.slds-text-title_caps")
 	downloadFileButton.click()
 
 	logger.info('Fichier: ' + downloadFile)
