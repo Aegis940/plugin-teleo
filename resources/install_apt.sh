@@ -126,43 +126,43 @@ if [ $(python3 --version 2>&1 | grep -c 'Python 3.7.') == "0" ]; then
 	echo "Current version is: $(python3 --version)"
 fi
 
-echo 70 > "${PROGRESS_FILE}"
-echo "********************************************************"
-echo "               Python3 'requests' module                "
-echo "********************************************************"
-sudo pip3 install requests
+# echo 60 > "${PROGRESS_FILE}"
+# echo "********************************************************"
+# echo "               Python3 'requests' module                "
+# echo "********************************************************"
+# sudo pip3 install requests
 
-echo 75 > "${PROGRESS_FILE}"
-echo "********************************************************"
-echo "               Python3 'lxml' module                    "
-echo "********************************************************"
-sudo apt-get install -y python3-lxml
+# echo 70 > "${PROGRESS_FILE}"
+# echo "********************************************************"
+# echo "               Python3 'lxml' module                    "
+# echo "********************************************************"
+# sudo apt-get install -y python3-lxml
 
-if [ $(sudo pip3 list | grep -Ec "lxml") == "0" ]; then
-	echo "Need to install libxml2-dev libxslt-dev. Warning it could take a long time"
-	sudo apt-get install -y libxml2-dev libxslt-dev python-dev
-	sudo pip3 install lxml
-fi
+# if [ $(sudo pip3 list | grep -Ec "lxml") == "0" ]; then
+	# echo "Need to install libxml2-dev libxslt-dev. Warning it could take a long time"
+	# sudo apt-get install -y libxml2-dev libxslt-dev python-dev
+	# sudo pip3 install lxml
+# fi
 
-echo 80 > "${PROGRESS_FILE}"
-echo "********************************************************"
-echo "               Python3 'xlrd' module                    "
-echo "********************************************************"
-sudo pip3 install xlrd
+# echo 80 > "${PROGRESS_FILE}"
+# echo "********************************************************"
+# echo "               Python3 'xlrd' module                    "
+# echo "********************************************************"
+# sudo pip3 install xlrd
 
-echo 85 > "${PROGRESS_FILE}"
+echo 60 > "${PROGRESS_FILE}"
 echo "********************************************************"
 echo "               Python3 'selenium' module                "
 echo "********************************************************"
 sudo pip3 install selenium
 
-echo 90 > "${PROGRESS_FILE}"
+echo 70 > "${PROGRESS_FILE}"
 echo "********************************************************"
 echo "               Python3 'pyvirtualdisplay' module        "
 echo "********************************************************"
 sudo pip3 install pyvirtualdisplay
 
-echo 95 > "${PROGRESS_FILE}"
+echo 90 > "${PROGRESS_FILE}"
 echo "********************************************************"
 echo "               Python3 'urllib3' module                 "
 echo "********************************************************"
@@ -189,7 +189,8 @@ else
 fi
 
 echo "3. Packages:"
-echo "$(sudo  dpkg --get-selections | grep -v deinstall | grep -E "xvfb|firefox|iceweasel|python3\-pip|python3\-requests|python3\-urllib3")"
+# echo "$(sudo  dpkg --get-selections | grep -v deinstall | grep -E "xvfb|firefox|iceweasel|python3\-pip|python3\-requests|python3\-urllib3")"
+echo "$(sudo  dpkg --get-selections | grep -v deinstall | grep -E "xvfb|firefox|iceweasel|python3\-pip")"
 
 echo "4. $(python3 --version)"
 if [ $(python3 --version 2>&1 | grep -c 'Python 3.7.') == "0" ]; then
@@ -197,6 +198,7 @@ if [ $(python3 --version 2>&1 | grep -c 'Python 3.7.') == "0" ]; then
 fi
 
 echo "5. Python modules:"
-echo "$(sudo pip3 list | grep -E "requests|lxml|xlrd|selenium|PyVirtualDisplay|urllib3")"
+# echo "$(sudo pip3 list | grep -E "xlrd|selenium|PyVirtualDisplay|urllib3")"
+echo "$(sudo pip3 list | grep -E "selenium|PyVirtualDisplay|urllib3")"
 
 rm "${PROGRESS_FILE}"

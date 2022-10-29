@@ -106,7 +106,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								<div class="col-sm-7">
 									<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="type" id="item-25-1">
 										<option value="IDF">{{Veolia Ile de France}}</option>
-										<option value="Other">{{Autre site Veolia}}</option>
+										<!--<option value="Other">{{Autre site Veolia}}</option>-->
 									</select>
 								</div>
 							</div>

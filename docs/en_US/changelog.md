@@ -7,6 +7,7 @@
 # 29/10/2022
 - Removal of deprecated functions in the Python script
 - Add packages.json file for dependencies version tracking in Jeedom
+- Removal of the dependencies installation used by the script get_veolia_other_consumption.py because not supported by the plugin. You can use the Veolia Pro plugin from [thanaus]
 
 # 20/10/2022
 - Core 4.3 support
