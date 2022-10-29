@@ -11,7 +11,7 @@ Les types de données de consommation suivants sont accessibles :
 - la **consommation annuelle** *(en L)*.
 
 > **Important**      
-> Il est nécessaire d'être en possession d'un compteur connecté **Téléo** et d'un compte-client Veolia. Le plugin récupère les informations, en fonction de la configuration choisie dans le plugin, à partir de la partie *mon espace* <a href="https://www.vedif.eau.veolia.fr/" target="_blank">du site Veolia Ile de France</a> pour les clients d'Ile de France ou à partir de la partie *mon espace personnel* <a href="https://www.service.eau.veolia.fr/" target="_blank">du site Veolia</a> pour les autres, il faut donc vérifier que vous y avez bien accès avec vos identifiants habituels et que les données y sont visibles. **Dans le cas contraire, le plugin ne fonctionnera pas.**
+> Il est nécessaire d'être en possession d'un compteur connecté **Téléo** et d'un compte-client Veolia. Le plugin récupère les informations, en fonction de la configuration choisie dans le plugin, à partir de la partie *mon espace* <a href="https://www.vedif.eau.veolia.fr/" target="_blank">du site Veolia Ile de France</a> pour les clients d'Ile de France, il faut donc vérifier que vous y avez bien accès avec vos identifiants habituels et que les données y sont visibles. **Dans le cas contraire, le plugin ne fonctionnera pas.**
 
 # Installation des dépendances
 
@@ -20,9 +20,6 @@ Les types de données de consommation suivants sont accessibles :
 
 ### Pour le script Veolia Ile de France
 La version de ***Python 3.7.x*** est indispensable et ***Firefox 102 ou supérieur*** (donc une **distrib buster** obligatoire)
-
-### Pour les autres sites Veolia - MISE A JOUR : n'est plus supporté par le plugin
-La version de ***Python 3.x*** est indispensable
 
 > Les dépendances sont installées automatiquement par Jeedom dans les 5 min. Elles seront également réinstallées lors d’une mise à jour du plugin si besoin.
 
@@ -41,7 +38,7 @@ Pour accéder aux différents équipements **Veolia Téléo**, dirigez-vous vers
 
 Sur la page de l'équipement, renseignez :
 
-- le **Site Veolia** auquel se connecter (*Veolia Ile de France* ou *Autre site Veolia*)
+- le **Site Veolia** auquel se connecter (*Veolia Ile de France*)
 - l'**identifiant** ainsi que le **mot de passe** de votre compte-client *Veolia* 
 - Si plusieurs contrats sont rattachés au même compte **Veolia IDF**, indiquer le **numéro du contrat** où les données seront récupérées (laisser vide sinon)
 Puis cliquez sur le bouton **Sauvegarder**.
@@ -81,8 +78,6 @@ Ce plugin s'est inspiré des travaux suivants :
 - [Jeedom](https://github.com/jeedom) via leur plugin Enedis :  [plugin-enedis](https://github.com/jeedom/plugin-enedis)
 - [hugoKs3](https://github.com/hugoKs3/plugin-jazpar) pour son plugin jazpar
 - [Flobul](https://github.com/Flobul/conso_veolia) pour son script Python pour récupérer les données du site Veolia IdF
-- [doyenc](https://community.jeedom.com/t/plugin-veolia-eau-plugin-veolia-eau-narrive-pas-a-se-connecter/17839/38) pour son script Python pour récupérer les données du site Veolia
- 
 
 # Disclaimer
 -   Ce plugin ne prétend pas être exempt de bugs.

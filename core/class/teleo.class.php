@@ -39,7 +39,8 @@ class teleo extends eqLogic {
 			if (exec(system::getCmdSudo() . system::get('cmd_check') . '-Ec "xvfb|firefox|iceweasel|python3\-pip"') < 4) {
 				$return['state'] = 'nok';
 			}
-			elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ec "requests|lxml|xlrd|selenium|PyVirtualDisplay|urllib3"') < 6) {
+			//elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ec "requests|lxml|xlrd|selenium|PyVirtualDisplay|urllib3"') < 6) {
+			elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ec "selenium|PyVirtualDisplay|urllib3"') < 3) {
 				$return['state'] = 'nok';
 			}
 			elseif (!file_exists('/usr/local/bin/geckodriver')) {
