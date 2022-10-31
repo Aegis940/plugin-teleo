@@ -26,10 +26,9 @@ echo "                     Install Firefox                    "
 echo "********************************************************"
 sudo apt-get install -y firefox-esr
 
-# Check Firefox version
-if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -lt 102 ]; then
-	echo "Warning: Mozilla Firefox must be 102.x or higher for Veolia IDF WebSite"
-	echo "Current version is: $(firefox --version)"
+if [ "$(sudo dpkg --get-selections | grep -v deinstall | grep -E "firefox")" = "" ]; then
+	echo "No firefox installed"
+	exit 0
 fi
  
 echo 30 > "${PROGRESS_FILE}"
@@ -53,7 +52,13 @@ if [ $( uname -s ) == "Linux" ]; then
 	armv7l)
 		echo "Machine Hardware name: armv7l"
 		#url="https://eu.mirror.archlinuxarm.org/armv7h/community"
-		driver_version="v0.32.0"
+		if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -ge 102 ]; then
+			driver_version="v0.32.0"
+		elif [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -ge 91 ]; then
+			driver_version="v0.31.0"
+		else
+			echo "$(firefox --version) not supported by geckodriver"
+		fi
 		driver_name="geckodriver-$driver_version-linux-armv7l.tar.gz";;
 	aarch64)
 		echo "Machine Hardware name: aarch64"
@@ -78,7 +83,7 @@ else
 	echo "$(uname -s) not supported"
 fi
 
-if [ $driver_version != "" ]; then
+if [ "$driver_version" != "" ]; then
 
 	sudo cp /usr/local/bin/geckodriver $(echo "/usr/local/bin/$(uname -m)_$(geckodriver --version)" | grep "geckodriver" | sed s/' '/'_'/g | head -1 | cut -d '(' -f1)sav
 	
@@ -112,6 +117,9 @@ if [ $driver_version != "" ]; then
 	else
 		echo "Error in geckodriver driver installation"
 	fi	
+else
+	echo "Error: geckodriver missing, but its mandatory for Veolia IDF WebSite. The Python script will not be able to be executed."
+	exit 0
 fi
 
 echo 50 > "${PROGRESS_FILE}"
@@ -177,15 +185,25 @@ echo "Résumé installation :"
 echo
 
 echo "1. $(firefox --version)"
-if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -lt 102 ]; then
-	echo "Warning: Mozilla Firefox must be 102.x or higher for Veolia IDF WebSite. The Python script will not be able to be executed."
-fi
+# Check Firefox version
+case $( uname -m ) in
+	armv7l)
+			if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -lt 91 ]; then
+			echo "Error: Mozilla Firefox must be 91.x or higher for Veolia IDF WebSite. The Python script will not be able to be executed."
+			echo "Current version is: $(firefox --version)"
+		fi;;
+	*)
+		if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -lt 102 ]; then
+			echo "Error: Mozilla Firefox must be 102.x or higher for Veolia IDF WebSite. The Python script will not be able to be executed."
+			echo "Current version is: $(firefox --version)"
+		fi;;
+esac	
 
 echo "2. geckodriver :"
 if [ -f "/usr/local/bin/geckodriver" ]; then
 	echo "$(uname -m) $(geckodriver --version)"
 else
-	echo "Warning: geckodriver missing, but its mandatory for Veolia IDF WebSite. The Python script will not be able to be executed."
+	echo "Error: geckodriver missing, but its mandatory for Veolia IDF WebSite. The Python script will not be able to be executed."
 fi
 
 echo "3. Packages:"
@@ -194,7 +212,7 @@ echo "$(sudo  dpkg --get-selections | grep -v deinstall | grep -E "xvfb|firefox|
 
 echo "4. $(python3 --version)"
 if [ $(python3 --version 2>&1 | grep -c 'Python 3.7.') == "0" ]; then
-	echo "Warning: Python version must be 3.7.x for Veolia IDF WebSite. The Python script will not be able to be executed."
+	echo "Error: Python version must be 3.7.x for Veolia IDF WebSite. The Python script will not be able to be executed."
 fi
 
 echo "5. Python modules:"
