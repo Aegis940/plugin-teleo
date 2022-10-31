@@ -4,6 +4,9 @@
 >
 >Pour rappel s'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 31/10/2022
+- Ajout de la version 0.31.0 du geckodriver pour les architectures armv7l pour la compatibilité avec Firefox 91
+
 # 29/10/2022
 - Suppression des fonctions dépréciées dans le script Python
 - Ajout du fichier packages.json pour le suivi des version des dépendances dans Jeedom
