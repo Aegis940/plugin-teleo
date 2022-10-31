@@ -4,6 +4,9 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 31/10/2022
+- Add geckodriver version 0.31.0 for armv7l architectures for compatibility with Firefox 91
+
 # 29/10/2022
 - Removal of deprecated functions in the Python script
 - Add packages.json file for dependencies version tracking in Jeedom
