@@ -15,6 +15,11 @@
     "maxDependancyInstallTime": 30,
     "changelog": "https:\/\/Aegis940.github.io\/plugin-teleo\/#language#\/changelog",
     "documentation": "https:\/\/Aegis940.github.io\/plugin-teleo\/#language#\/",
+    "changelog_beta": "https:\/\/Aegis940.github.io\/plugin-teleo\/#language#\/changelog",
+    "documentation_beta": "https:\/\/Aegis940.github.io\/plugin-teleo\/#language#\/",
+	"link": {
+		"forum": "https://community.jeedom.com/tag/plugin-teleo"
+	},		
     "language": [
         "fr_FR",
         "en_US"
