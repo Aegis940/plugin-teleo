@@ -4,12 +4,19 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 31/10/2022
+- Add geckodriver version 0.31.0 for armv7l architectures for compatibility with Firefox 91
+
+# 29/10/2022
+- Removal of deprecated functions in the Python script
+- Add packages.json file for dependencies version tracking in Jeedom
+- Removal of the dependencies installation used by the script get_veolia_other_consumption.py because not supported by the plugin. You can use the Veolia Pro plugin from [thanaus]
+
 # 20/10/2022
 - Core 4.3 support
-- Upgrade to version 0.32.0 of geckodriver
+- Upgrade to version 0.32.0 of geckodriver. Requires iceweasel and firefox-esr version >= 102 (If the plugin does not work because of the driver restart the installation of the dependencies, otherwise do not do it)
 - Switch to recording commands at 00:00 instead of 23:55. Old values are updated by re-saving the equipment (display anomalies may appear on the day of the transition in the history and they will normally disappear the next day)
 - Display of the date of the periods in the widget instead of the generic labels
-
 
 # 10/02/2022
 - Removal of the report of Veolia websites other than Veolia IDF following the addition of a Captcha

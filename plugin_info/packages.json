@@ -1,0 +1,14 @@
+{
+  "apt" : {
+	"firefox-esr" : {},
+	"xvfb" : {},
+	"iceweasel" : {},	
+    "python3" : {},
+    "python3-pip" : {}
+  },
+  "pip3" : {
+	"selenium" : {},
+	"pyvirtualdisplay" : {},
+	"urllib3" : {}
+  }
+}

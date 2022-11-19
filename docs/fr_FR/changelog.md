@@ -4,9 +4,17 @@
 >
 >Pour rappel s'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 31/10/2022
+- Ajout de la version 0.31.0 du geckodriver pour les architectures armv7l pour la compatibilité avec Firefox 91
+
+# 29/10/2022
+- Suppression des fonctions dépréciées dans le script Python
+- Ajout du fichier packages.json pour le suivi des version des dépendances dans Jeedom
+- Suppression de l'installation des dépendances utilisé par le script get_veolia_other_consommation.py car non supporté par le plugin. Vous pouvez vous tourner vers le plugin Veolia Pro de [thanaus]
+
 # 20/10/2022
 - Support core 4.3
-- Passage à la version 0.32.0 du geckodriver
+- Passage à la version 0.32.0 du geckodriver. Nécessite iceweasel et firefox-esr en version >= 102 (Si le plugin ne fonctionne pas à cause du driver relancer l'installation des dépendances, sinon ne le faite pas)
 - Passage à un enregistrement des commandes à 00:00 au lieu de 23:55. Les anciens historiques sont remis à jour en sauvegardant à nouveau l'équipement (des anomalies d'affichage peuvent apparaitre le jour de la transition dans l'historique et ils disparaitront normalement le lendemain)
 - Affichage de la date des périodes dans le Widget au lieu des labels génériques
 

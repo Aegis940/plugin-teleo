@@ -8,7 +8,6 @@ This plugin has been inspired by the work done by:
 - [Jeedom](https://github.com/jeedom) through their Enedis plugin: [plugin-enedis](https://github.com/jeedom/plugin-enedis)
 - [hugoKs3](https://github.com/hugoKs3/plugin-jazpar) through his Jazpar plugin
 - [Flobul](https://github.com/Flobul/conso_veolia) for his Python script to retrieve data from Veolia IdF site
-- [doyenc](https://community.jeedom.com/t/plugin-veolia-eau-plugin-veolia-eau-narrive-pas-a-se-connecter/17839/38) for his Python script to retrieve data from Veolia site
 
 # Disclaimer
 - This code does not pretend to be bug-free
