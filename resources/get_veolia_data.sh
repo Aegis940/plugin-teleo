@@ -37,10 +37,20 @@ fi
  
 # Check Firefox version
 if [ "$1" = "IDF" ]; then
-	if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -lt 102 ]; then
-		echo "Mozilla Firefox must be 102.x or higher"
-		exit 0
-	fi
+	case $( uname -m ) in
+		armv7l)
+				if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -lt 91 ]; then
+				echo "Error: Mozilla Firefox must be 91.x or higher for Veolia IDF WebSite. The Python script will not be able to be executed."
+				echo "Current version is: $(firefox --version)"
+				exit 0
+			fi;;
+		*)
+			if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -lt 102 ]; then
+				echo "Error: Mozilla Firefox must be 102.x or higher for Veolia IDF WebSite. The Python script will not be able to be executed."
+				echo "Current version is: $(firefox --version)"
+				exit 0
+			fi;;
+	esac
 fi
 
 # Launch python script
