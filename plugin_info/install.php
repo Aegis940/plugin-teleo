@@ -51,7 +51,7 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 	chmod("/var/www/html/plugins/teleo/resources/get_veolia_data.sh", 0755);
 	
-	$file = '/var/www/html/plugins/teleo/plugin_info/packages.json'
+	$file = '/var/www/html/plugins/teleo/plugin_info/packages.json';
 	if (file_exists($file)) {
 		$cmdCleanBash = system::getCmdSudo() . "rm " . file;
 		shell_exec($cmdCleanBash);		
