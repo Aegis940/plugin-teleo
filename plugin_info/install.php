@@ -53,7 +53,7 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 	
 	$file = '/var/www/html/plugins/teleo/plugin_info/packages.json';
 	if (file_exists($file)) {
-		$cmdCleanBash = system::getCmdSudo() . "rm " . file;
+		$cmdCleanBash = system::getCmdSudo() . "rm " . $file;
 		shell_exec($cmdCleanBash);		
 	}
    }
