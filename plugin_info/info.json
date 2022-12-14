@@ -30,6 +30,7 @@
         "rpi",
         "docker",
         "diy",
-        "v4"
+        "v4",
+	"atlas"
     ]
 }
