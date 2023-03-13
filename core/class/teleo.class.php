@@ -196,8 +196,8 @@ class teleo extends eqLogic {
 			return null;
 		  }
 		  
-		  $cmdBash = system::getCmdSudo() . '/var/www/html/plugins/teleo/resources/get_veolia_data.sh ' . $veoliaWebsite . ' \'' . $login . '\' "' . $password . '" ' . $dataDirectory . ' ' . $logLevel . ' ' . $contractID;
-		  
+		  $cmdBash = system::getCmdSudo() . ' ' . realpath(dirname(__FILE__) . '/../../resources/get_veolia_data.sh') . ' ' . $veoliaWebsite . ' \'' . $login . '\' "' . $password . '" ' . $dataDirectory . ' ' . $logLevel . ' ' . $contractID;
+
 		  log::add(__CLASS__, 'debug', $this->getHumanName() . ' Commande : ' . $cmdBash);
 		  $output = shell_exec($cmdBash);
 

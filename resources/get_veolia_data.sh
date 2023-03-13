@@ -17,14 +17,14 @@ else
 fi
 
 # Setup
-root='/var/www/html/plugins/teleo/resources'
+root=$(dirname -- "${BASH_SOURCE}")
 python="python3"
 timeout=180
 
 # Check Python version
 if [ "$1" = "IDF" ]; then
-	if [ $($python --version 2>&1 | grep -c 'Python 3.7.') == "0" ]; then
-		echo "Python version must be 3.7.x"
+	if [ $($python --version 2>&1 | grep -Ec 3\.(7|9)\.) == "0" ]; then
+		echo "Python version must be 3.7.x or 3.9.x"
 		exit 0
 	fi
 elif [ "$1" = "Other" ]; then
