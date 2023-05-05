@@ -33,9 +33,9 @@ fi
  
 echo 30 > "${PROGRESS_FILE}"
 echo "********************************************************"
-echo "              Install iceweasel and xvfb                "
+echo "              Install xvfb                              "
 echo "********************************************************"
-sudo apt-get install -y xvfb iceweasel
+sudo apt-get install -y xvfb
 
 echo 40 > "${PROGRESS_FILE}"
 echo "********************************************************"
@@ -129,10 +129,10 @@ echo "********************************************************"
 sudo apt-get install -y python3 python3-pip
 
 # Check Python version
-if [ $(python3 --version 2>&1 | grep -c 'Python 3.7.') == "0" ]; then
-	echo "Warning: Python version must be 3.7.x for Veolia IDF WebSite"
-	echo "Current version is: $(python3 --version)"
-fi
+# if [ $(python3 --version 2>&1 | grep -c 'Python 3.7.') == "0" ]; then
+	# echo "Warning: Python version must be 3.7.x for Veolia IDF WebSite"
+	# echo "Current version is: $(python3 --version)"
+# fi
 
 # echo 60 > "${PROGRESS_FILE}"
 # echo "********************************************************"
@@ -207,13 +207,13 @@ else
 fi
 
 echo "3. Packages:"
-# echo "$(sudo  dpkg --get-selections | grep -v deinstall | grep -E "xvfb|firefox|iceweasel|python3\-pip|python3\-requests|python3\-urllib3")"
-echo "$(sudo  dpkg --get-selections | grep -v deinstall | grep -E "xvfb|firefox|iceweasel|python3\-pip")"
+# echo "$(sudo  dpkg --get-selections | grep -v deinstall | grep -E "xvfb|firefox|python3\-pip|python3\-requests|python3\-urllib3")"
+echo "$(sudo  dpkg --get-selections | grep -v deinstall | grep -E "xvfb|firefox|python3\-pip")"
 
 echo "4. $(python3 --version)"
-if [ $(python3 --version 2>&1 | grep -c 'Python 3.7.') == "0" ]; then
-	echo "Error: Python version must be 3.7.x for Veolia IDF WebSite. The Python script will not be able to be executed."
-fi
+# if [ $(python3 --version 2>&1 | grep -c 'Python 3.7.') == "0" ]; then
+	# echo "Error: Python version must be 3.7.x for Veolia IDF WebSite. The Python script will not be able to be executed."
+# fi
 
 echo "5. Python modules:"
 # echo "$(sudo pip3 list | grep -E "xlrd|selenium|PyVirtualDisplay|urllib3")"

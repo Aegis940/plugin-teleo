@@ -4,6 +4,10 @@
 >
 >Pour rappel s'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 05/05/2023
+- Suppression de la vérification de la version de python à l'installation des dépendances
+- Suppression de l'installation de iceweasel
+
 # 31/10/2022
 - Ajout de la version 0.31.0 du geckodriver pour les architectures armv7l pour la compatibilité avec Firefox 91
 
