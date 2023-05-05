@@ -4,6 +4,10 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 05/05/2023
+- Removed python version check at dependencies installation
+- Removal of iceweasel installation
+
 # 31/10/2022
 - Add geckodriver version 0.31.0 for armv7l architectures for compatibility with Firefox 91
 
