@@ -36,7 +36,7 @@ class teleo extends eqLogic {
 		if (file_exists(jeedom::getTmpFolder(__CLASS__) . '/dependencies')) {
             $return['state'] = 'in_progress';
         } else {
-			if (exec(system::getCmdSudo() . system::get('cmd_check') . '-Ec "xvfb|firefox|iceweasel|python3\-pip"') < 4) {
+			if (exec(system::getCmdSudo() . system::get('cmd_check') . '-Ec "xvfb|firefox|python3\-pip"') < 3) {
 				$return['state'] = 'nok';
 			}
 			//elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ec "requests|lxml|xlrd|selenium|PyVirtualDisplay|urllib3"') < 6) {
