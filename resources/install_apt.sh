@@ -85,7 +85,9 @@ fi
 
 if [ "$driver_version" != "" ]; then
 
-	sudo cp /usr/local/bin/geckodriver $(echo "/usr/local/bin/$(uname -m)_$(geckodriver --version)" | grep "geckodriver" | sed s/' '/'_'/g | head -1 | cut -d '(' -f1)sav
+	if [ -f "/usr/local/bin/geckodriver" ]; then
+		sudo cp /usr/local/bin/geckodriver $(echo "/usr/local/bin/$(uname -m)_$(geckodriver --version)" | grep "geckodriver" | sed s/' '/'_'/g | head -1 | cut -d '(' -f1)sav
+	fi
 	
 	if [ $(uname -m) == "armv7l" ]; then
 		# sudo wget $url/$driver_name

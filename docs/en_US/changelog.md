@@ -4,6 +4,11 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 08/10/2023
+- Correction test python version
+- Correction following renaming of login field on veolia site page
+- Attempt to make Selenium 4 (Beta) compatible
+
 # 05/05/2023
 - Removed python version check at dependencies installation
 - Removal of iceweasel installation

@@ -1,14 +1,17 @@
 # Auteur : [Flobul](https://github.com/Flobul/conso_veolia) and some modif from [JohanSweck] (https://github.com/JohanSweck/conso_veolia)
 #
 # Modif : [Aegis](https://github.com/Aegis940/plugin-teleo) pour intégration au plugin teleo
+import selenium
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.common.exceptions import TimeoutException
-
 from pyvirtualdisplay import Display
 
 import os
@@ -46,11 +49,11 @@ def setLogLevel(level):
 	if (level == '1000') : return logging.CRITICAL
 	
 	return logging.INFO
-	
+
 def initLogger(logFile, logLevel):
 	logger.setLevel(logLevel)
 	formatter = logging.Formatter('[%(asctime)s][%(levelname)s] : [Script Python] %(message)s')
-	file_handler = RotatingFileHandler(logFile, 'a', 10000, 1)
+	file_handler = RotatingFileHandler(logFile, 'a', 5000, 1)
 	
 	file_handler.setLevel(logLevel)
 	file_handler.setFormatter(formatter)
@@ -79,7 +82,43 @@ def waitData(exitCond, sleepTime, loopNb):
 		loop = loop + 1
 	
 	logger.debug(kpi_field[2].text + ' waitTime = ' + str(loop*sleepTime) + ' sec')	
+
+def initWebBrowser_selenium3():
+	options = webdriver.FirefoxOptions()
+	options.add_argument('-headless')
+	options.add_argument("--no-sandbox")
+	options.headless = True
+
+	profile = webdriver.FirefoxProfile()
+	profile.set_preference('browser.download.folderList', 2)
+	profile.set_preference('browser.download.manager.showWhenStarting', False)
+	profile.set_preference('browser.download.dir', downloadPath)
+	profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'text/csv')
+
+	# Bien indiquer l'emplacement de geckodriver
+	logger.info('Initialisation browser s3')
+	browser = webdriver.Firefox(firefox_profile=profile, options=options, executable_path=r'/usr/local/bin/geckodriver', service_log_path=geckodriverLog)
+	return browser
+
+
+def initWebBrowser_selenium4():
+	service = Service(executable_path=r'/usr/local/bin/geckodriver', log_output = geckodriverLog)
+	options = Options()
+	options.add_argument('-headless')
+	options.add_argument("--no-sandbox")
 	
+	firefox_profile = FirefoxProfile()
+	firefox_profile.set_preference('browser.download.folderList', 2)
+	firefox_profile.set_preference('browser.download.manager.showWhenStarting', False)
+	firefox_profile.set_preference('browser.download.dir', downloadPath)
+	firefox_profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'text/csv')
+	options.profile = firefox_profile
+
+	logger.info('Initialisation browser s4')
+	browser = webdriver.Firefox(options=options, service=service)
+	return browser
+
+
 try:
 	returnStatus = 0
 
@@ -117,21 +156,11 @@ try:
 	display = Display(visible=0, size=(800, 600))
 	display.start()
 
-	options = webdriver.FirefoxOptions()
-	options.add_argument('-headless')
-	options.add_argument("--no-sandbox")
-	options.headless = True
-
-	profile = webdriver.FirefoxProfile()
-	profile.set_preference('browser.download.folderList', 2)
-	profile.set_preference('browser.download.manager.showWhenStarting', False)
-	profile.set_preference('browser.download.dir', downloadPath)
-	profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'text/csv')
-
-	# Bien indiquer l'emplacement de geckodriver
-	logger.info('Initialisation browser')
-	browser = webdriver.Firefox(firefox_profile=profile, options=options, executable_path=r'/usr/local/bin/geckodriver', service_log_path=geckodriverLog)
-
+    #Init webdriver
+	#print("Selenium Version: " +selenium.__version__)
+	if (selenium.__version__[:1] == '4'): browser = initWebBrowser_selenium4()
+	else: browser = initWebBrowser_selenium3()
+    
 	# Page de login
 	logger.info('Page de login')
 	browser.get(urlHome)
@@ -141,7 +170,7 @@ try:
 	if nb_form != 2 : raise Exception('wrong login number')
 
 	# Recherche et remplis les champs d'identification
-	idEmail = browser.find_element(By.ID,'input-5')
+	idEmail = browser.find_element(By.ID,'input-9')
 	idPassword = browser.find_element(By.CSS_SELECTOR,'input[type="password"]')
 
 	idEmail.clear()
@@ -159,6 +188,7 @@ try:
 	time.sleep(5)
 
 	take_screenshot("2_login_form",tempDir)
+
 	
 	# Manage Multi-Contract
 	if len( sys.argv ) == 6 :
@@ -220,6 +250,7 @@ try:
 	# Resultat
 	returnStatus = 1
 
+
 except Exception as e: 
 	if (str(e.__class__).find('TimeoutException') != -1) : 
 		logger.error('La page met trop de temps a s\'afficher')
@@ -243,4 +274,3 @@ finally:
 	
 	# print (returnStatus)
 	sys.exit(returnStatus)
-

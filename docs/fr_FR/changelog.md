@@ -4,6 +4,11 @@
 >
 >Pour rappel s'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 08/10/2023
+- Correction test version python
+- Correction suite au renommage champ login dans la page du site veolia
+- Tentative de mise en compatibilité Selenium 4 (Beta)
+
 # 05/05/2023
 - Suppression de la vérification de la version de python à l'installation des dépendances
 - Suppression de l'installation de iceweasel
