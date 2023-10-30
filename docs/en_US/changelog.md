@@ -4,6 +4,10 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 22/10/2023
+- Selenium 4 version check added when installing dependencies. If the version is less than 4.11 then version 3.141 is installed.
+- Update to geckodriver version 0.33.0
+
 # 08/10/2023
 - Correction test python version
 - Correction following renaming of login field on veolia site page

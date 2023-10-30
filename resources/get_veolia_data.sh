@@ -9,8 +9,6 @@ fi
 # Select script according to site type
 if [ "$1" = "IDF" ]; then
 	scriptname="get_veolia_idf_consommation.py"
-elif [ "$1" = "Other" ]; then
-	scriptname="get_veolia_other_consommation.py"
 else
 	echo "Unknown site type"
 	exit 0
@@ -25,11 +23,6 @@ timeout=180
 if [ "$1" = "IDF" ]; then
 	if [ $($python --version 2>&1 | grep -Ec '3\.(7|9)\.') == "0" ]; then
 		echo "Python version must be 3.7.x or 3.9.x"
-		exit 0
-	fi
-elif [ "$1" = "Other" ]; then
-	if [ $($python --version 2>&1 | grep -c 'Python 3.') == "0" ]; then
-		echo "Python version must be 3.x"
 		exit 0
 	fi
 fi

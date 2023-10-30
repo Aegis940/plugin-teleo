@@ -4,6 +4,10 @@
 >
 >Pour rappel s'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 22/10/2023
+- Ajout d'une vérification de la version de Selenium 4 lors de l'installation des dépendances. Si la version est inférieur à 4.11 alors installation de la version 3.141
+- Mise à jour vers la version 0.33.0 du geckodriver
+
 # 08/10/2023
 - Correction test version python
 - Correction suite au renommage champ login dans la page du site veolia

@@ -53,7 +53,7 @@ if [ $( uname -s ) == "Linux" ]; then
 		echo "Machine Hardware name: armv7l"
 		#url="https://eu.mirror.archlinuxarm.org/armv7h/community"
 		if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -ge 102 ]; then
-			driver_version="v0.32.0"
+			driver_version="v0.33.0"
 		elif [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -ge 91 ]; then
 			driver_version="v0.31.0"
 		else
@@ -63,17 +63,17 @@ if [ $( uname -s ) == "Linux" ]; then
 	aarch64)
 		echo "Machine Hardware name: aarch64"
 		url="https://github.com/mozilla/geckodriver/releases/download"
-		driver_version="v0.32.0"
+		driver_version="v0.33.0"
 		driver_name="geckodriver-$driver_version-linux-aarch64.tar.gz";;
 	x86_64|amd64)
 		echo "Machine Hardware name:$(uname -m)"
 		url="https://github.com/mozilla/geckodriver/releases/download"
-		driver_version="v0.32.0"
+		driver_version="v0.33.0"
 		driver_name="geckodriver-$driver_version-linux64.tar.gz";;
 	x86|i386|i686)
 		echo "Machine Hardware name: $(uname -m)"
 		url="https://github.com/mozilla/geckodriver/releases/download"
-		driver_version="v0.32.0"
+		driver_version="v0.33.0"
 		driver_name="geckodriver-$driver_version-linux32.tar.gz";;
 	*)
 		echo "other : $(uname -m)"
@@ -164,7 +164,16 @@ echo 60 > "${PROGRESS_FILE}"
 echo "********************************************************"
 echo "               Python3 'selenium' module                "
 echo "********************************************************"
-sudo pip3 install selenium
+sudo pip3 install selenium -U
+
+if [ $(sudo pip3 list 2>&1 | grep -E "selenium" | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -eq 4 ]; then
+
+	if [ $(sudo pip3 list 2>&1 | grep -E "selenium" | sed -e "s/.*\.\([0-9][0-9]*\)\..*/\1/") -lt 11 ]; then
+		echo "$(sudo pip3 list 2>&1 | grep -E "selenium")"
+		echo "La version de selenium 4 'disponible est inférieur à la version 4.11.0, installation de la version 3.141.0"
+		sudo pip3 install selenium==3.141.0
+	fi
+fi
 
 echo 70 > "${PROGRESS_FILE}"
 echo "********************************************************"
@@ -213,12 +222,9 @@ echo "3. Packages:"
 echo "$(sudo  dpkg --get-selections | grep -v deinstall | grep -E "xvfb|firefox|python3\-pip")"
 
 echo "4. $(python3 --version)"
-# if [ $(python3 --version 2>&1 | grep -c 'Python 3.7.') == "0" ]; then
-	# echo "Error: Python version must be 3.7.x for Veolia IDF WebSite. The Python script will not be able to be executed."
-# fi
 
 echo "5. Python modules:"
-# echo "$(sudo pip3 list | grep -E "xlrd|selenium|PyVirtualDisplay|urllib3")"
-echo "$(sudo pip3 list | grep -E "selenium|PyVirtualDisplay|urllib3")"
+# echo "$(sudo pip3 list 2>&1 | grep -E "xlrd|selenium|PyVirtualDisplay|urllib3")"
+echo "$(sudo pip3 list 2>&1 | grep -E "selenium|PyVirtualDisplay|urllib3")"
 
 rm "${PROGRESS_FILE}"

@@ -158,8 +158,8 @@ try:
 
     #Init webdriver
 	#print("Selenium Version: " +selenium.__version__)
-	if (selenium.__version__[:1] == '4'): browser = initWebBrowser_selenium4()
-	else: browser = initWebBrowser_selenium3()
+	if (selenium.__version__[:1] == '3'): browser = initWebBrowser_selenium3()
+	else: browser = initWebBrowser_selenium4()
     
 	# Page de login
 	logger.info('Page de login')
