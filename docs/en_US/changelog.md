@@ -4,6 +4,9 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 31/10/2023
+- Compatibility issue between Selenium and Urllib3
+
 # 22/10/2023
 - Selenium 4 version check added when installing dependencies. If the version is less than 4.11 then version 3.141 is installed.
 - Update to geckodriver version 0.33.0

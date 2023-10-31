@@ -166,12 +166,15 @@ echo "               Python3 'selenium' module                "
 echo "********************************************************"
 sudo pip3 install selenium -U
 
+urllib3_version=""
+
 if [ $(sudo pip3 list 2>&1 | grep -E "selenium" | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -eq 4 ]; then
 
 	if [ $(sudo pip3 list 2>&1 | grep -E "selenium" | sed -e "s/.*\.\([0-9][0-9]*\)\..*/\1/") -lt 11 ]; then
 		echo "$(sudo pip3 list 2>&1 | grep -E "selenium")"
 		echo "La version de selenium 4 'disponible est inférieur à la version 4.11.0, installation de la version 3.141.0"
 		sudo pip3 install selenium==3.141.0
+		urllib3_version="1.26.16"
 	fi
 fi
 
@@ -185,7 +188,12 @@ echo 90 > "${PROGRESS_FILE}"
 echo "********************************************************"
 echo "               Python3 'urllib3' module                 "
 echo "********************************************************"
-sudo pip3 install urllib3
+# compatibility issue beetween selenium and urllib3
+if [ "$urllib3_version" != "" ]; then
+	sudo pip3 install urllib3==$urllib3_version
+else
+	sudo pip3 install urllib3 -U
+fi
 
 echo 100 > "${PROGRESS_FILE}"
 echo "********************************************************"
