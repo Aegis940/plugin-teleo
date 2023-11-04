@@ -111,13 +111,13 @@ class teleo extends eqLogic {
 
     /*     * *********************Méthodes d'instance************************* */
 
-    public function pullTeleo() {
+    public function pullTeleo($callRefreshByUser=false) {
       $need_refresh = false;
 
       foreach ($this->getCmd('info') as $eqLogicCmd)
       {
         $eqLogicCmd->execCmd();
-        if ($eqLogicCmd->getCollectDate() == date('Y-m-d 00:00:00', strtotime('-1 day')) && $this->getConfiguration('forceRefresh') != 1)
+        if ($eqLogicCmd->getCollectDate() == date('Y-m-d 00:00:00', strtotime('-1 day')) && $this->getConfiguration('forceRefresh') != 1 && $callRefreshByUser==false) 
         {
           log::add(__CLASS__, 'debug', $this->getHumanName() . ' le ' . date('d/m/Y', strtotime('-1 day')) . ' : données déjà présentes pour la commande ' . $eqLogicCmd->getName());
         }
@@ -697,78 +697,98 @@ class teleo extends eqLogic {
 
  // Fonction exécutée automatiquement après la mise à jour de l'équipement
     public function postUpdate() {
-		
-      $cmdInfos = [
-			'index' => 'Index',
-    		'consoa' => 'Conso Annuelle',
-    		'consom' => 'Conso Mensuelle',
-            'consoh' => 'Conso Hebdo',
-            'consod' => 'Conso Jour'
-    	];
 
-      foreach ($cmdInfos as $logicalId => $name)
-      {
-        $cmd = $this->getCmd(null, $logicalId);
-        if (!is_object($cmd))
-        {
-          log::add(__CLASS__, 'debug', $this->getHumanName() . ' Création commande :'.$logicalId.'/'.$name);
-  		  $cmd = new TeleoCmd();
-		  $cmd->setLogicalId($logicalId);
-          $cmd->setEqLogic_id($this->getId());
-          $cmd->setGeneric_type('CONSUMPTION');
-          $cmd->setIsHistorized(1);
-          $cmd->setDisplay('showStatsOndashboard', 0);
-          $cmd->setDisplay('showStatsOnmobile', 0);
-          $cmd->setTemplate('dashboard','tile');
-          $cmd->setTemplate('mobile','tile');
+		if ($this->getIsEnable() == 1) {
 
-		  if ($logicalId == 'index') {
-				$cmd->setIsVisible(0);
-		  }
+			$cmdInfos = [
+					'index' => 'Index',
+					'consoa' => 'Conso Annuelle',
+					'consom' => 'Conso Mensuelle',
+					'consoh' => 'Conso Hebdo',
+					'consod' => 'Conso Jour'
+				];
+
+			foreach ($cmdInfos as $logicalId => $name)
+			{
+				$cmd = $this->getCmd(null, $logicalId);
+				if (!is_object($cmd))
+				{
+				log::add(__CLASS__, 'debug', $this->getHumanName() . ' Création commande :'.$logicalId.'/'.$name);
+				$cmd = new TeleoCmd();
+				$cmd->setLogicalId($logicalId);
+				$cmd->setEqLogic_id($this->getId());
+				$cmd->setGeneric_type('CONSUMPTION');
+				$cmd->setIsHistorized(1);
+				$cmd->setDisplay('showStatsOndashboard', 0);
+				$cmd->setDisplay('showStatsOnmobile', 0);
+				$cmd->setTemplate('dashboard','tile');
+				$cmd->setTemplate('mobile','tile');
+
+				if ($logicalId == 'index') {
+						$cmd->setIsVisible(0);
+				}
+					
+				$version = explode(".",jeedom::version()); 
+				$major = (int)$version[0];
+				$minor = (int)$version[1];
+				
+				// Use dynamic unit for jeedom version >= 4.1
+				if ($major <4 || ($major >= 4 && $minor < 1) ) {
+					$unit = 'L';
+				}
+				else  {
+					$unit = '*l';
+				}
+				
+				$cmd->setUnite($unit);
+				}
+
+				$cmd->setName($name);
+				$cmd->setType('info');
+				$cmd->setSubType('numeric');
+				$cmd->save();
+				
+				$refreshCmd = $this->getCmd(null, 'refresh');
+				if (!is_object($refreshCmd)) {
+				
+				$refreshCmd = (new TeleoCmd)
+					->setLogicalId('refresh')
+					->setEqLogic_id($this->getId())
+					->setName(__('Rafraîchir', __FILE__))
+					->setType('action')
+					->setSubType('other')
+					->setOrder(0)
+					->save();
+				}
+
+				// Passage du time d'enregistrement de 23:55:00 à 00:00:00
+				// $cmdToNormalize = 'normaliseTeleoData_' . $logicalId;
+				
+				// if ($this->getCache($cmdToNormalize) != 'done') {
+				// 	$this->NormalizeData($logicalId);
+				// 	$this->setCache($cmdToNormalize, 'done');
+				// }
+			}
+
+			$outDir = $this->getConfiguration('outputData');
+			if(!is_dir($outDir)) {
+				if(!mkdir($outDir, 0777, true))  
+				{
+					throw new Exception(__('Impossible de créer le répertoire destination',__FILE__));
+				}    
+			}
+			else {
+				chmod($outDir, 0777);  
+			}		  
 			
-		  $version = explode(".",jeedom::version()); 
-		  $major = (int)$version[0];
-		  $minor = (int)$version[1];
-		  
-		  // Use dynamic unit for jeedom version >= 4.1
-		  if ($major <4 || ($major >= 4 && $minor < 1) ) {
-			  $unit = 'L';
-		  }
-		  else  {
-			  $unit = '*l';
-		  }
-		  
-		  $cmd->setUnite($unit);
-        }
-
-        $cmd->setName($name);
-		$cmd->setType('info');
-        $cmd->setSubType('numeric');
-        $cmd->save();
-		
-		// Passage du time d'enregistrement de 23:55:00 à 00:00:00
-		$cmdToNormalize = 'normaliseTeleoData_' . $logicalId;
-		
-        if ($this->getCache($cmdToNormalize) != 'done') {
-			$this->NormalizeData($logicalId);
-			$this->setCache($cmdToNormalize, 'done');
-		}
-      }
-
-	  $outDir = $this->getConfiguration('outputData');
-	  if(!is_dir($outDir)) {
-		if(!mkdir($outDir, 0777, true))  
-		{
-			throw new Exception(__('Impossible de créer le répertoire destination',__FILE__));
-		}    
-      }
-	  else {
-		chmod($outDir, 0777);  
-	  }		  
-	  
-	  if ($this->getIsEnable() == 1) {
+			
 			$this->pullTeleo();
-      }
+			
+		}
+		else {
+			self::cleanCrons(intval($this->getId()));
+		}
+
 
     }
     
@@ -814,6 +834,8 @@ class teleo extends eqLogic {
 
 		}
 
+		$replace['#refresh_id#'] = $this->getCmd('action', 'refresh')->getId();
+		
 		$bgcolor = $this->getConfiguration('widgetBGColor');
 		if (empty($bgcolor)) {
 			$bgcolor = '#9fe7e7';
@@ -843,6 +865,9 @@ class teleoCmd extends cmd {
 
   // Exécution d'une commande
      public function execute($_options = array()) {
+		if ($this->getLogicalId() == 'refresh') {
+			return $this->getEqLogic()->pullTeleo(true);
+		  }
      }
 
     /*     * **********************Getteur Setteur*************************** */

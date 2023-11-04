@@ -4,6 +4,9 @@
 >
 >Pour rappel s'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 01/11/2023
+- Ajout d'une commande "rafraîchir" et de l'icone d'appel dans le widget (sauver l'équipement après la mise à jour pour ajout la commande)
+
 # 31/10/2023
 - Pb de compatibilité entre Selenium et Urllib3
 

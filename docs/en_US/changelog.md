@@ -4,6 +4,9 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 01/11/2023
+- Add "refresh" command and associate icon in the widget (save the equipment after update to get the new command)
+
 # 31/10/2023
 - Compatibility issue between Selenium and Urllib3
 
