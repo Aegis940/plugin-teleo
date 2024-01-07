@@ -4,6 +4,9 @@
 >
 >Pour rappel s'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 07/01/2024
+- Utililisation de Selenium 3 sous Debian 10 dû à la necessité pour Selenium 4 d'avoir python 3.8+. Attention ceci peut rentre incompatible d'autres plugin utilisant Selenium
+
 # 01/11/2023
 - Ajout d'une commande "rafraîchir" et de l'icone d'appel dans le widget (sauver l'équipement après la mise à jour pour ajout la commande)
 

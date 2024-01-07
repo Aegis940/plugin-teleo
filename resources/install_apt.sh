@@ -175,6 +175,11 @@ if [ $(sudo pip3 list 2>&1 | grep -E "selenium" | sed -e "s/.* \([0-9][0-9]*\)\.
 		echo "La version de selenium 4 'disponible est inférieur à la version 4.11.0, installation de la version 3.141.0"
 		sudo pip3 install selenium==3.141.0
 		urllib3_version="1.26.16"
+	elif [ $(lsb_release -r | sed -e "s/Release:\t\([0-9][0-9]*\)/\1/") -eq 10 ]; then
+		echo "$(sudo pip3 list 2>&1 | grep -E "selenium")"
+		echo "La version de selenium 4 'disponible est nécessite python 3.8+ indisponible sous Debian 10, installation de la version 3.141.0"
+		sudo pip3 install selenium==3.141.0
+		urllib3_version="1.26.16"
 	fi
 fi
 
