@@ -47,33 +47,36 @@ driver_name=""
 url=""
 
 if [ $( uname -s ) == "Linux" ]; then
-  
+
+    if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -ge 115 ]; then
+  	  	driver_version="v0.35.0"
+    elif [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -ge 102 ]; then
+ 	   	driver_version="v0.33.0"            
+    elif [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -ge 91 ]; then
+  	  	driver_version="v0.31.0"
+    else
+  	  	echo "$(firefox --version) not supported by geckodriver"
+    fi
+        
 	case $( uname -m ) in
 	armv7l)
 		echo "Machine Hardware name: armv7l"
 		#url="https://eu.mirror.archlinuxarm.org/armv7h/community"
-		if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -ge 102 ]; then
-			driver_version="v0.33.0"
-		elif [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -ge 91 ]; then
-			driver_version="v0.31.0"
-		else
-			echo "$(firefox --version) not supported by geckodriver"
-		fi
 		driver_name="geckodriver-$driver_version-linux-armv7l.tar.gz";;
 	aarch64)
 		echo "Machine Hardware name: aarch64"
 		url="https://github.com/mozilla/geckodriver/releases/download"
-		driver_version="v0.33.0"
+		#driver_version="v0.33.0"
 		driver_name="geckodriver-$driver_version-linux-aarch64.tar.gz";;
 	x86_64|amd64)
 		echo "Machine Hardware name:$(uname -m)"
 		url="https://github.com/mozilla/geckodriver/releases/download"
-		driver_version="v0.33.0"
+		#driver_version="v0.33.0"
 		driver_name="geckodriver-$driver_version-linux64.tar.gz";;
 	x86|i386|i686)
 		echo "Machine Hardware name: $(uname -m)"
 		url="https://github.com/mozilla/geckodriver/releases/download"
-		driver_version="v0.33.0"
+		#driver_version="v0.33.0"
 		driver_name="geckodriver-$driver_version-linux32.tar.gz";;
 	*)
 		echo "other : $(uname -m)"

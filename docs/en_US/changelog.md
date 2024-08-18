@@ -4,6 +4,9 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 17/08/2024
+- Add geckodriver version 0.35.0 for compatibility with Firefox 115
+
 # 07/01/2024
 - Using Selenium 3 on Debian 10 due to the need for Selenium 4 to have python 3.8+. Be careful, this may be incompatible with other plugins using Selenium.
 
