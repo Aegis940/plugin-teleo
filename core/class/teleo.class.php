@@ -30,6 +30,12 @@ class teleo extends eqLogic {
 	const PYTHON_PATH = __DIR__ . '/../../resources/venv/bin/python3';
 	
     /*     * ***********************Methode static*************************** */
+	public static function backupExclude() {
+		return [
+			'resources/venv',
+          		'resources/geckodriver'
+		];
+	}
 	
 	public static function dependancy_info() {
 		
