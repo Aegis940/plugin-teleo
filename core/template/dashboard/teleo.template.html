@@ -4,6 +4,9 @@
 	   <span class="warning" title="#alert_name#"><i class='#alert_icon#'></i></span>
 	   <span class="reportModeVisible">#name_display# <span class="object_name">#object_name#</span></span>
 	   <a href="#eqLink#" class="reportModeHidden">#name_display# <span class="object_name">#object_name#</span></a>
+	   <span class="cmd refresh pull-right cursor" data-cmd_id="#refresh_id#">
+		<i class="fas fa-sync" style="color:var(--eqTitle-color)!important;"></i>
+	  </span>
   </div>
   <div class="teleo_template text-center">
 	   <div class="history cursor" data-cmd_id="#consoa_id#" title="#consoa_collect#" style="padding-top:25%;">
@@ -34,5 +37,15 @@
     eqLogic.find('.teleoCdc').css('font-size', (TeleoScreen_width*0.10)+'px');
     eqLogic.find('.teleoValue').css('font-size', (TeleoScreen_width*0.12)+'px');
     eqLogic.find('.teleoUnite').css('font-size', (TeleoScreen_width*0.08)+'px');
+
+    if ('#refresh_id#' != '') {
+      $('.eqLogic[data-eqLogic_uid=#uid#] .refresh').on('click', function() {
+        jeedom.cmd.execute({ id: '#refresh_id#' })
+      })
+    }
+    else {
+      $('.eqLogic[data-eqLogic_uid=#uid#] .refresh').remove()
+    }
+	
  </script>
 </div>

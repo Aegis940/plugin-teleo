@@ -19,7 +19,7 @@ Les types de données de consommation suivants sont accessibles :
 > Chaque script a quelques contraintes :
 
 ### Pour le script Veolia Ile de France
-La version de ***Python 3.7.x*** est indispensable et ***Firefox 102 ou supérieur*** (donc une **distrib buster** obligatoire)
+La version de ***Python 3.7.x*** est indispensable et ***Firefox 102 ou supérieur*** (donc une **distrib buster** obligatoire). Cependant la version conseillée pour le plugin est ***Python 3.9.x*** et donc une migration vers une **distrib bullseye** est plus que recommendée
 
 > Les dépendances sont installées automatiquement par Jeedom dans les 5 min. Elles seront également réinstallées lors d’une mise à jour du plugin si besoin.
 

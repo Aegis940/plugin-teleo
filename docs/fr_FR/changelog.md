@@ -4,6 +4,18 @@
 >
 >Pour rappel s'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 17/08/2024
+- Ajout de la version 0.35.0 de geckodriver pour la compatibilité avec Firefox 115
+
+# 07/01/2024
+- Utililisation de Selenium 3 sous Debian 10 dû à la necessité pour Selenium 4 d'avoir python 3.8+. Attention ceci peut rentre incompatible d'autres plugin utilisant Selenium
+
+# 01/11/2023
+- Ajout d'une commande "rafraîchir" et de l'icone d'appel dans le widget (sauver l'équipement après la mise à jour pour ajout la commande)
+
+# 31/10/2023
+- Pb de compatibilité entre Selenium et Urllib3
+
 # 22/10/2023
 - Ajout d'une vérification de la version de Selenium 4 lors de l'installation des dépendances. Si la version est inférieur à 4.11 alors installation de la version 3.141
 - Mise à jour vers la version 0.33.0 du geckodriver
