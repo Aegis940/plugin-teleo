@@ -27,31 +27,95 @@ class teleo extends eqLogic {
    * Tableau multidimensionnel - exemple: array('custom' => true, 'custom::layout' => false)
 	public static $_widgetPossibility = array();
    */
-
+	const PYTHON_PATH = __DIR__ . '/../../resources/venv/bin/python3';
+	
     /*     * ***********************Methode static*************************** */
-  public static function dependancy_info() {
-        $return = array();
+	public static function backupExclude() {
+		return [
+			'resources/venv',
+          		'resources/geckodriver'
+		];
+	}
+	
+	public static function dependancy_info() {
+		
+		// check OS version
+		$lsb_release = self::os_version();
+		
+		if ($lsb_release <= 10) {
+			return self::dependancy_info_v1();
+		}
+	
+		$return = array();
+		$return['log'] = log::getPathToLog(__CLASS__ . '_update');
+		$return['progress_file'] = jeedom::getTmpFolder(__CLASS__) . '/dependance';
+		$return['state'] = 'ok';
+		if (file_exists(jeedom::getTmpFolder(__CLASS__) . '/dependance')) {
+			$return['state'] = 'in_progress';
+		} elseif (!self::pythonRequirementsInstalled(self::PYTHON_PATH, __DIR__ . '/../../resources/requirements.txt')) {
+			$return['state'] = 'nok';
+		} elseif (!file_exists('/usr/local/bin/geckodriver')) {
+			$return['state'] = 'nok';
+		} elseif (exec(system::getCmdSudo() . system::get('cmd_check') . '-Ec "xvfb|firefox"') < 2) {
+			$return['state'] = 'nok';
+		}
+	
+		return $return;
+	}
+
+   	private static function os_version() {
+		$linux_distro = null;
+		$os_info = file_exists("/etc/os-release") ? explode("\n", shell_exec("cat /etc/os-release")) : [];
+		foreach ($os_info as $line) {
+			if (preg_match('/^VERSION_ID=(")?[0-9][1-9]+(")?/i', trim($line))) {
+				$linux_distro = strtolower(preg_replace('/(^VERSION_ID=(")?|")/i', "", trim($line)));         	
+				break;
+			}
+		}
+		
+		return $linux_distro;
+	}
+	
+	private static function dependancy_info_v1() {
+		$return = array();
 		$return['log'] = log::getPathToLog(__CLASS__.'_update');
 		$return['progress_file'] = jeedom::getTmpFolder(__CLASS__) . '/dependency';
+		$return['state'] = 'ok';
 		if (file_exists(jeedom::getTmpFolder(__CLASS__) . '/dependencies')) {
-            $return['state'] = 'in_progress';
-        } else {
-			if (exec(system::getCmdSudo() . system::get('cmd_check') . '-Ec "xvfb|firefox|python3\-pip"') < 3) {
-				$return['state'] = 'nok';
-			}
-			//elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ec "requests|lxml|xlrd|selenium|PyVirtualDisplay|urllib3"') < 6) {
-			elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ec "selenium|PyVirtualDisplay|urllib3"') < 3) {
-				$return['state'] = 'nok';
-			}
-			elseif (!file_exists('/usr/local/bin/geckodriver')) {
-				$return['state'] = 'nok';
-			}			
-			else {
-				$return['state'] = 'ok';
-			}
-		}		
+			$return['state'] = 'in_progress';
+		} else if (exec(system::getCmdSudo() . system::get('cmd_check') . '-Ec "xvfb|firefox|python3\-pip"') < 3) {
+			$return['state'] = 'nok';
+		} elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ec "selenium|PyVirtualDisplay|urllib3"') < 3) {
+			$return['state'] = 'nok';
+		} elseif (!file_exists('/usr/local/bin/geckodriver')) {
+			$return['state'] = 'nok';
+		}			
+				
 		return $return;
-  }
+	}
+	
+	private static function pythonRequirementsInstalled(string $pythonPath, string $requirementsPath) {
+		if (!file_exists($pythonPath) || !file_exists($requirementsPath)) {
+			return false;
+		}
+		exec("{$pythonPath} -m pip freeze", $packages_installed);
+		$packages = join("||", $packages_installed);
+		exec("cat {$requirementsPath}", $packages_needed);
+		foreach ($packages_needed as $line) {
+			if (preg_match('/([^\s]+)[\s]*([>=~]=)[\s]*([\d+\.?]+)$/', $line, $need) === 1) {
+				if (preg_match('/' . $need[1] . '==([\d+\.?]+)/', $packages, $install) === 1) {
+					if ($need[2] == '==' && $need[3] != $install[1]) {
+						return false;
+					} elseif (version_compare($need[3], $install[1], '>')) {
+						return false;
+					}
+				} else {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
   public static function dependancy_install() {
 		log::remove(__CLASS__ . '_update');

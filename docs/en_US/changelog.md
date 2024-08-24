@@ -4,6 +4,10 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 23/08/2024
+- Compatibility with Debian 12 (bookworm) and python 3.11 (using venv) using dependance.lib and pyenv.lib [NebzHB]  [Mips2648] (https://github.com/Mips2648/dependance.lib/tree/master)
+
+
 # 17/08/2024
 - Add geckodriver version 0.35.0 for compatibility with Firefox 115
 
