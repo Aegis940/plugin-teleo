@@ -26,7 +26,7 @@
     ],
     "os": {
 	"min": 10,
-	"max": 12
+	"max": 12.99
     },	
     "compatibility": [
         "smart",
