@@ -8,7 +8,7 @@
     "utilization": "Sur la page de l'équipement renseignez l'identifiant ainsi que le mot de passe de votre compte-client Veolia puis cliquez sur le bouton Sauvegarder.",
     "licence": "AGPL",
     "author": "Aegis",
-    "require": "4.0.61",
+    "require": "4.3.23",
     "category": "energy",
     "hasDependency": true,
     "hasOwnDeamon": false,
@@ -17,13 +17,17 @@
     "documentation": "https:\/\/Aegis940.github.io\/plugin-teleo\/#language#\/",
     "changelog_beta": "https:\/\/Aegis940.github.io\/plugin-teleo\/#language#\/changelog",
     "documentation_beta": "https:\/\/Aegis940.github.io\/plugin-teleo\/#language#\/",
-	"link": {
-		"forum": "https://community.jeedom.com/tag/plugin-teleo"
-	},		
+    "link": {
+	"forum": "https://community.jeedom.com/tag/plugin-teleo"
+     },		
     "language": [
         "fr_FR",
         "en_US"
     ],
+    "os": {
+	"min": 10,
+	"max": 12
+    },	
     "compatibility": [
         "miniplus",
         "smart",
