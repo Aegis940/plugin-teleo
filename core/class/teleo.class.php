@@ -33,7 +33,8 @@ class teleo extends eqLogic {
 	public static function backupExclude() {
 		return [
 			'resources/venv',
-          		'resources/geckodriver'
+          		'resources/geckodriver',
+			'resources/data'
 		];
 	}
 	
