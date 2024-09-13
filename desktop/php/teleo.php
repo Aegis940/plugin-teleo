@@ -21,6 +21,11 @@ $eqLogics = eqLogic::byType($plugin->getId());
 				<br>
 				<span>{{Configuration}}</span>
 			</div>
+            <div class="cursor pluginAction logoSecondary" data-action="openLocation" data-location="https://community.jeedom.com/tag/plugin-<?= $plugin->getId() ?>">
+            <i class="fas fa-thumbs-up icon_green"></i>
+            <br>
+            <span style="color:var(--txt-color)">{{Community}}</span>
+            </div>
 		</div>
 		<legend><i class="fas fa-table"></i> {{Mes comptes Veolia}}</legend>
 		<input class="form-control" placeholder="{{Rechercher}}" id="in_searchEqlogic" />
