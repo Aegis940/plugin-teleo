@@ -11,6 +11,8 @@ updates:
     target-branch: "beta"
     schedule:
       interval: weekly
+    labels:
+      - "pip dependencies"
 
   # Maintain any github-actions workflow
   # https://docs.github.com/en/code-security/dependabot/working-with-dependabot/keeping-your-actions-up-to-date-with-dependabot    
