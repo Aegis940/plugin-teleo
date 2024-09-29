@@ -124,7 +124,10 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							<div class="form-group">
 								<label class="col-sm-3 control-label">{{Mot de passe Veolia}}</label>
 								<div class="col-sm-7">
-									<input type="password" autocomplete="new-password" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="password" placeholder="Mot de passe du compte Veolia IDF"/>
+                            			<div class="input-group">
+											<input type="text" autocomplete="new-password" class="inputPassword eqLogicAttr form-control" data-l1key="configuration" data-l2key="password" placeholder="Mot de passe du compte Veolia IDF"/>
+        		                            <span class="input-group-btn"><a class="btn btn-default form-control bt_showPass roundedRight"><i class="fas fa-eye"></i></a></span>
+                                   		</div>
 								</div>
 							</div>
 							<div class="form-group">
@@ -134,7 +137,15 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								<div class="col-sm-7">
 									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="contract_id" placeholder="N° de contrat">
 								</div>
-							</div>							
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{Cout unitaire du m3}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{Prix unitaire TTC du m3}}"></i></sup>
+								</label>
+								<div class="col-sm-7">
+									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="unit_Cost" placeholder="Prix unitaire">
+								</div>
+							</div>                            
 							<br>
 							
 							<legend><i class="fas fa-cogs"></i> {{Paramètres}}</legend>
@@ -197,25 +208,25 @@ $eqLogics = eqLogic::byType($plugin->getId());
 				</form>
 
 			</div>
-				<div role="tabpanel" class="tab-pane" id="commandtab">
-				<!--<a class="btn btn-success btn-sm cmdAction pull-right" data-action="add" style="margin-top:5px;">
-				<i class="fa fa-plus-circle"></i> {{Commandes}}</a><br/> -->
-				<br/>
-				<table id="table_cmd" class="table table-bordered table-condensed">
-					<thead>
-						<tr>
-							<th>{{Id}}</th>
-							<th>{{Nom}}</th>
-							<th>{{Type}}</th>
-							<th>{{Options}}</th>
-							<th>{{Paramètres}}</th>
-							<th>{{Action}}</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
+			<div role="tabpanel" class="tab-pane" id="commandtab">
+				<br>
+				<div class="table-responsive">
+					<table id="table_cmd" class="table table-bordered table-condensed">
+						<thead>
+							<tr>
+								<th class="hidden-xs" style="min-width:50px;width:70px;">ID</th>
+								<th style="min-width:200px;width:300px;">{{Nom}}</th>
+								<th>{{Etat}}</th>
+								<th style="min-width:200px;width:250px;">{{Options}}</th>
+								<th style="min-width:100px;width:250px;">{{Actions}}</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
 			</div>
+
 		</div>
 	</div>
 </div>

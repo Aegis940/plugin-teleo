@@ -33,11 +33,11 @@ class teleo extends eqLogic {
 	public static function backupExclude() {
 		return [
 			'resources/venv',
-          		'resources/geckodriver',
-			'resources/data'
+          	'resources/geckodriver',
+          	'resources/data'
 		];
 	}
-	
+  
 	public static function dependancy_info() {
 		
 		// check OS version
@@ -179,8 +179,11 @@ class teleo extends eqLogic {
     public function pullTeleo($callRefreshByUser=false) {
       $need_refresh = false;
 
-      foreach ($this->getCmd('info') as $eqLogicCmd)
-      {
+	  $cmdInfos = ['index','consod','consoh','consom','consoa'];
+	  
+	  foreach ($cmdInfos as $logicalId)
+	  {
+		$eqLogicCmd = $this->getCmd(null, $logicalId);      
         $eqLogicCmd->execCmd();
         if ($eqLogicCmd->getCollectDate() == date('Y-m-d 00:00:00', strtotime('-1 day')) && $this->getConfiguration('forceRefresh') != 1 && $callRefreshByUser==false) 
         {
@@ -226,7 +229,7 @@ class teleo extends eqLogic {
       }
     }
 
-    public function connectTeleo() {
+    private function connectTeleo() {
 	  log::add(__CLASS__, 'info', $this->getHumanName() . ' Récupération des données ' . " - 1ère étape"); 
 	  
 	  $dataDirectory = $this->getConfiguration('outputData');
@@ -294,7 +297,7 @@ class teleo extends eqLogic {
 	  }
    }
 
-   public function getTeleoData() {
+   private function getTeleoData() {
 	   
 	 $resultStatus = null;
 	 
@@ -407,7 +410,7 @@ class teleo extends eqLogic {
 	 return $resultStatus;			
    }
 	
-   public function fillMissingIndexes() {
+   private function fillMissingIndexes() {
 
 		$dataDirectory = $this->getConfiguration('outputData');
 		if (empty($dataDirectory)) {
@@ -465,6 +468,35 @@ class teleo extends eqLogic {
 					history::removes($cmdId, $dateReal_oldformat, $dateReal_oldformat);	
 				}				
 				$cmd->addHistoryValue( $valeurMesure, $dateReal);
+              
+				$dateYesterday = date('Y-m-d 00:00:00', strtotime(date('Y-m-d 00:00:00', strtotime($dateReal)) . ' -1 day'));
+				if ($dateReal > $dateYesterday)
+					$lastIndex = history::getStatistique($cmdId, $dateYesterday, $dateYesterday)["last"];
+				else
+					$lastIndex = history::getStatistique($cmdId, $dateReal, $dateYesterday)["last"];
+				
+				$consoDay = $valeurMesure - $lastIndex;
+				$cmdConsoDay = $this->getCmd(null, 'consod');
+				$cmdId = $cmdConsoDay->getId();
+				$cmdHistory = history::byCmdIdDatetime($cmdId, $dateReal);
+
+				log::add(__CLASS__, 'info', $this->getHumanName() . ' Calcul conso day : ' . ' last Index = ' . sprintf('%0.0f', $lastIndex) . ' Date = ' . $dateReal . ' => Mesure = ' . $consoDay);
+					
+				if (is_object($cmdHistory) && $cmdHistory->getValue() == $cmdConsoDay) {
+					log::add(__CLASS__, 'debug', $this->getHumanName() . ' Mesure en historique - Aucune action : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $valeurMesure);
+				}
+				else {					
+					log::add(__CLASS__, 'info', $this->getHumanName() . ' Enregistrement mesure manquante : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => Mesure = ' . $consoDay);
+
+					if (is_object($cmdHistory)) {
+						history::removes($cmdId, $dateReal, $dateReal);
+					}
+					
+					$cmdConsoDay->addHistoryValue( $consoDay, $dateReal);
+                  
+                  	$this->computePrice ($consoDay, $dateReal, false);
+				}
+				
 			}
 		}
    }
@@ -488,8 +520,83 @@ class teleo extends eqLogic {
             return 1;
         }
    }
+
+   private function recomputeQuarterPrices($dateBegin) {
+ 
+        log::add(__CLASS__, 'info', $this->getHumanName() .' Prix recalculés pour le trimestre commençant le ' . $dateBegin);
+     
+        $dateEnd = date('Y-m-d 23:59:59', strtotime(date('Y-m-d 00:00:00', strtotime('now')) . ' -1 day'));
+
+        $valueUniteconso = $this->getCmd(null, 'histo_cost');
+        $coutEnergie = $valueUniteconso->execCmd();
+
+        $cmd = $this->getCmd(null, 'consod');
+        $cmdId = $cmd->getId();
+        $all = history::all($cmdId, $dateBegin, $dateEnd);
+
+        $cmdToUpdate = $this->getCmd(null, 'cost_day');
+        $cmdIdToUpdate = $cmdToUpdate->getId();
+
+     	log::add(__CLASS__, 'debug', $this->getHumanName() .' Date Begin = ' . $dateBegin . ' Date End = ' . $dateEnd . ' count = ' . count($all));
+     
+        for($i = 0; $i < count($all); $i++) {
+
+          $dateVal = $all[$i]->getDatetime();
+          if (!is_null($dateVal)) {
+            $valeurMesure = $all[$i]->getValue();
+            $price = history::getStatistique($valueUniteconso->getId(), date('Y-m-d 00:00:00', strtotime('2020-01-01')), $dateVal)["last"];
+            if (is_null($price)) {
+              $price = $coutEnergie;
+            }          
+            $cout = $valeurMesure * $price / 1000;
+
+            $dateNorm = date('Y-m-d 00:00:00', strtotime($dateVal));
+            log::add(__CLASS__, 'debug', $this->getHumanName() .'Date val = ' . $dateVal . ' mesure = ' . $valeurMesure . ' cout = ' . $cout . ' cout unitaire par m3 = ' . $price);
+            
+            history::removes($cmdIdToUpdate, $dateNorm, $dateNorm);
+            $cmdToUpdate->addHistoryValue($cout, $dateNorm);
+          }
+        }
+
+   }
+  
+  
+   private function computePrice($measure, $dateReal,$lastValue=true) {
+
+		$dateBegin = date('Y-m-d 00:00:00', strtotime('2020-01-01'));
+		$unit_Cost = 0;
+     
+		if (!is_null($dateReal)) {
+    		$dateEnd = date('Y-m-d 23:59:59', strtotime($dateReal));
+  			$unit_Cost = history::getStatistique($this->getCmd(null, 'histo_cost')->getId(), $dateBegin, $dateEnd)["last"];
+    		if (is_null($price)) {
+     			$unit_Cost = floatval($this->getConfiguration('unit_Cost', 5.27));
+   			}
+        }
+     
+     	$cost_day = $measure * $unit_Cost / 1000;
 	
-   public function getDateCollectPreviousIndex($diffDay=1) {
+		$cmd = $this->getCmd(null, 'cost_day');
+		$cmdId = $cmd->getId();
+			
+		$cmdHistory = history::byCmdIdDatetime($cmdId, $dateReal);
+		if (is_object($cmdHistory) && $cmdHistory->getValue() == $cost_day) {
+			log::add(__CLASS__, 'debug', $this->getHumanName() . ' Mesure en historique - Aucune action : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => price = ' . $cost_day);
+		}
+		else {
+			history::removes($cmdId, $dateReal, $dateReal);
+			log::add(__CLASS__, 'info', $this->getHumanName() . ' Enregistrement prix : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => cout = ' . $cost_day . ' (cout unitaire par m3 = ' . $unit_Cost . ')');
+			if ($lastValue == true) {
+              	$cmd->event($cost_day, $dateReal);
+            }
+          	else {
+                $cmdId->addHistoryValue($cost_day, $dateReal);
+            }
+		}		
+		
+   }
+  
+   private function getDateCollectPreviousIndex($diffDay=1) {
 	   
 	    $cmd = $this->getCmd(null, 'index');
 		$cmdId = $cmd->getId();
@@ -526,7 +633,7 @@ class teleo extends eqLogic {
 		return $dateCollectPreviousIndex;			
    }
    
-   public function computeMeasure($cmdName, $dateBegin, $dateEnd) {
+   private function computeMeasure($cmdName, $dateBegin, $dateEnd) {
 		$cmdId = $this->getCmd(null, 'index')->getId();
 	   
 		$valueMin = history::getStatistique($cmdId, $dateBegin, $dateEnd)["min"];
@@ -544,7 +651,7 @@ class teleo extends eqLogic {
 		return $measure;			
    }
     
-   public function recordData($index, $dateLastMeasure, $diffDay=1) {
+   private function recordData($index, $dateLastMeasure, $diffDay=1) {
 	  
 		$cmdInfos = ['index','consod','consoh','consom','consoa'];
 		
@@ -577,7 +684,9 @@ class teleo extends eqLogic {
 					}
 				
 					$measure = $this->computeMeasure($cmdName,$dateBegin,$dateReal);	
-
+					
+                	$this->computePrice ($measure,$dateReal);
+                
 					break;				
 
 				case 'consoh':
@@ -698,7 +807,7 @@ class teleo extends eqLogic {
    }
 
  // Fonction exécutée automatiquement après la mise à jour de l'équipement : passage de 23:55:00 à 00:00:00 pour la date de l'enregistrement des valeurs
-   public function NormalizeData($cmdName) {
+   private function NormalizeData($cmdName) {
 		$cmd = $this->getCmd(null, $cmdName);
 		$cmdId = $cmd->getId();
 
@@ -734,7 +843,29 @@ class teleo extends eqLogic {
 			}
 		}	
    }
-   
+
+	private function str_to_noaccent($str)
+    {
+        $url = $str;
+        $url = preg_replace('#Ç#', 'C', $url);
+        $url = preg_replace('#ç#', 'c', $url);
+        $url = preg_replace('#è|é|ê|ë#', 'e', $url);
+        $url = preg_replace('#È|É|Ê|Ë#', 'E', $url);
+        $url = preg_replace('#à|á|â|ã|ä|å#', 'a', $url);
+        $url = preg_replace('#@|À|Á|Â|Ã|Ä|Å#', 'A', $url);
+        $url = preg_replace('#ì|í|î|ï#', 'i', $url);
+        $url = preg_replace('#Ì|Í|Î|Ï#', 'I', $url);
+        $url = preg_replace('#ð|ò|ó|ô|õ|ö#', 'o', $url);
+        $url = preg_replace('#Ò|Ó|Ô|Õ|Ö#', 'O', $url);
+        $url = preg_replace('#ù|ú|û|ü#', 'u', $url);
+        $url = preg_replace('#Ù|Ú|Û|Ü#', 'U', $url);
+        $url = preg_replace('#ý|ÿ#', 'y', $url);
+        $url = preg_replace('#Ý#', 'Y', $url);
+
+        return ($url);
+    }  
+  
+  
  // Fonction exécutée automatiquement avant la création de l'équipement
     public function preInsert() {
 		$this->setDisplay('height','332px');
@@ -758,6 +889,7 @@ class teleo extends eqLogic {
       if (empty($this->getConfiguration('password'))) {
         throw new Exception(__('Le mot de passe du compte Véolia doit être renseigné',__FILE__));
       }
+      
     }
 
  // Fonction exécutée automatiquement après la mise à jour de l'équipement
@@ -770,7 +902,9 @@ class teleo extends eqLogic {
 					'consoa' => 'Conso Annuelle',
 					'consom' => 'Conso Mensuelle',
 					'consoh' => 'Conso Hebdo',
-					'consod' => 'Conso Jour'
+					'consod' => 'Conso Jour',
+					'cost_day' => 'Coût jour',
+              		'histo_cost' => 'Coût unitaire'
 				];
 
 			foreach ($cmdInfos as $logicalId => $name)
@@ -778,77 +912,109 @@ class teleo extends eqLogic {
 				$cmd = $this->getCmd(null, $logicalId);
 				if (!is_object($cmd))
 				{
-				log::add(__CLASS__, 'debug', $this->getHumanName() . ' Création commande :'.$logicalId.'/'.$name);
-				$cmd = new TeleoCmd();
-				$cmd->setLogicalId($logicalId);
-				$cmd->setEqLogic_id($this->getId());
-				$cmd->setGeneric_type('CONSUMPTION');
-				$cmd->setIsHistorized(1);
-				$cmd->setDisplay('showStatsOndashboard', 0);
-				$cmd->setDisplay('showStatsOnmobile', 0);
-				$cmd->setTemplate('dashboard','tile');
-				$cmd->setTemplate('mobile','tile');
+                  log::add(__CLASS__, 'debug', $this->getHumanName() . ' Création commande :'.$logicalId.'/'.$name);
+                  $cmd = new TeleoCmd();
+                  $cmd->setLogicalId($logicalId);
+                  $cmd->setEqLogic_id($this->getId());
+                  $cmd->setGeneric_type('CONSUMPTION');
+                  $cmd->setIsHistorized(1);
+                  $cmd->setDisplay('showStatsOndashboard', 0);
+                  $cmd->setDisplay('showStatsOnmobile', 0);
+                  $cmd->setTemplate('dashboard','tile');
+                  $cmd->setTemplate('mobile','tile');
 
-				if ($logicalId == 'index') {
-						$cmd->setIsVisible(0);
-				}
-					
-				$version = explode(".",jeedom::version()); 
-				$major = (int)$version[0];
-				$minor = (int)$version[1];
-				
-				// Use dynamic unit for jeedom version >= 4.1
-				if ($major <4 || ($major >= 4 && $minor < 1) ) {
-					$unit = 'L';
-				}
-				else  {
-					$unit = '*l';
-				}
-				
-				$cmd->setUnite($unit);
-				}
+                  if ($logicalId == 'index') {
+                          $cmd->setIsVisible(0);
+                  }
+	
+                  if ($logicalId == 'cost_day') {
+                    $unit = '€';
+                    $cmd->setConfiguration('historizeMode','none');
+                    $cmd->setConfiguration('historizeRound',2);
+                    $cmd->setConfiguration('periodicity','day');
+                    $cmd->setDisplay('graphType','bar');
+                    $cmd->setDisplay('graphStep','1');
+                  }
+                  else if ($logicalId == 'histo_cost') {
+                    $unit = '€/m3';
+                    $cmd->setConfiguration('historizeMode','none');
+                    $cmd->setIsVisible(0);
+                  	}
+                  else {
+                    	$unit = 'L';
+                  }
+                  
+                  
+                  $cmd->setUnite($unit);
+                }
 
-				$cmd->setName($name);
-				$cmd->setType('info');
-				$cmd->setSubType('numeric');
-				$cmd->save();
-				
-				$refreshCmd = $this->getCmd(null, 'refresh');
-				if (!is_object($refreshCmd)) {
-				
-				$refreshCmd = (new TeleoCmd)
-					->setLogicalId('refresh')
-					->setEqLogic_id($this->getId())
-					->setName(__('Rafraîchir', __FILE__))
-					->setType('action')
-					->setSubType('other')
-					->setOrder(0)
-					->save();
-				}
+                $cmd->setName($name);
+                $cmd->setType('info');
+                $cmd->setSubType('numeric');
+                $cmd->save();
+                              
+            }
 
-				// Passage du time d'enregistrement de 23:55:00 à 00:00:00
-				// $cmdToNormalize = 'normaliseTeleoData_' . $logicalId;
-				
-				// if ($this->getCache($cmdToNormalize) != 'done') {
-				// 	$this->NormalizeData($logicalId);
-				// 	$this->setCache($cmdToNormalize, 'done');
-				// }
-			}
+          $cmd = $this->getCmd(null, 'histo_cost');
+          if (is_object($cmd)) {
+            
+            
+        	$coutEnergie = $cmd->execCmd();	         
+            $dateCollect = $cmd->getCollectDate();
+            
+            $unit_Cost = floatval($this->getConfiguration('unit_Cost', 5.27));
+            $mois_en_cours=date('n');
+            $date_mois1_tri = ($mois_en_cours<=3?'january':($mois_en_cours<=6?'april':($mois_en_cours<=9?'july':'october')));
+            $trimestre = 'first day of ' . $date_mois1_tri . ' this year';
+            $dateBeginPeriod = date('Y-m-d 00:00:00', strtotime($trimestre));
+            
+            
+            if (($coutEnergie != $unit_Cost) || ($dateCollect < $dateBeginPeriod)) {
 
-			$outDir = $this->getConfiguration('outputData');
-			if(!is_dir($outDir)) {
-				if(!mkdir($outDir, 0777, true))  
-				{
-					throw new Exception(__('Impossible de créer le répertoire destination',__FILE__));
-				}    
-			}
-			else {
-				chmod($outDir, 0777);  
-			}		  
+                $dateNow = date('Y-m-d 00:00:00', strtotime('now'));
+                $cmdId = $cmd->getId();
+                history::removes($cmdId, $dateBeginPeriod, $dateNow);
+                $cmd->event($unit_Cost, $dateBeginPeriod);
+                $cmd->addHistoryValue($unit_Cost, $dateBeginPeriod);
+
+                log::add(__CLASS__, 'info', $this->getHumanName() . ' Enregistrement/Mise à jour : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateBeginPeriod . ' => Unit price = ' . $unit_Cost);
+
+                $this->recomputeQuarterPrices($dateBeginPeriod);
+              }
+          }
+          
+          $refreshCmd = $this->getCmd(null, 'refresh');
+          if (!is_object($refreshCmd)) {
+
+            $refreshCmd = (new TeleoCmd)
+              ->setLogicalId('refresh')
+              ->setEqLogic_id($this->getId())
+              ->setName(__('Rafraîchir', __FILE__))
+              ->setType('action')
+              ->setSubType('other')
+              ->setOrder(0)
+              ->save();          
+          }			
+
+          
+          //$outDir = $this->getConfiguration('outputData') . '/eq_' . $this->str_to_noaccent($this->getName());          
+          $outDir = $this->getConfiguration('outputData');
+          if(!is_dir($outDir)) {
+            if(!mkdir($outDir, 0777, true))  
+            {
+              throw new Exception(__('Impossible de créer le répertoire destination',__FILE__));
+            }    
+          }
+          else {
+            chmod($outDir, 0777);  
+          }		  
 			
-			
-			$this->pullTeleo();
-			
+		
+          if ($this->getConfiguration('forceRefresh', 0) == 1) {
+          	$this->pullTeleo();
+          }
+          
+		
 		}
 		else {
 			self::cleanCrons(intval($this->getId()));

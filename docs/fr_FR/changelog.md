@@ -4,6 +4,9 @@
 >
 >Pour rappel s'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 25/09/2024
+- Ajout du calcul du coût journalier (sauver à nouveau l'équipement après avoir saisie le coût unitaire)
+
 # 23/08/2024
 - Compatibilité avec Debian 12 (bookworm) et python 3.11 (utilisation de venv) utilisant dependance.lib et pyenv.lib [NebzHB] [Mips2648] (https://github.com/Mips2648/dependance.lib/tree/master)
 
