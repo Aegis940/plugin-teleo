@@ -569,7 +569,7 @@ class teleo extends eqLogic {
 		if (!is_null($dateReal)) {
     		$dateEnd = date('Y-m-d 23:59:59', strtotime($dateReal));
   			$unit_Cost = history::getStatistique($this->getCmd(null, 'histo_cost')->getId(), $dateBegin, $dateEnd)["last"];
-    		if (is_null($price)) {
+    		if (is_null($unit_Cost)) {
      			$unit_Cost = floatval($this->getConfiguration('unit_Cost', 5.27));
    			}
         }
@@ -581,7 +581,7 @@ class teleo extends eqLogic {
 			
 		$cmdHistory = history::byCmdIdDatetime($cmdId, $dateReal);
 		if (is_object($cmdHistory) && $cmdHistory->getValue() == $cost_day) {
-			log::add(__CLASS__, 'debug', $this->getHumanName() . ' Mesure en historique - Aucune action : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => price = ' . $cost_day);
+			log::add(__CLASS__, 'debug', $this->getHumanName() . ' Prix en historique - Aucune action : ' . ' Cmd = ' . $cmdId . ' Date = ' . $dateReal . ' => price = ' . $cost_day);
 		}
 		else {
 			history::removes($cmdId, $dateReal, $dateReal);
