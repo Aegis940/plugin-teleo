@@ -590,7 +590,7 @@ class teleo extends eqLogic {
               	$cmd->event($cost_day, $dateReal);
             }
           	else {
-                $cmdId->addHistoryValue($cost_day, $dateReal);
+                $cmd->addHistoryValue($cost_day, $dateReal);
             }
 		}		
 		
