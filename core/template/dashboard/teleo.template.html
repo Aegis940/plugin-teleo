@@ -9,7 +9,7 @@
 	  </span>
   </div>
   <div class="teleo_template text-center">
-	   <div class="history cursor" data-cmd_id="#consoa_id#" title="#consoa_collect#" style="padding-top:25%;">
+	   <div class="history cursor" data-cmd_id="#consoa_id#" title="#consoa_collect#" style="padding-top:0%;">
 		    <div class="teleoCdc">#consoa_name#</div>
 		    <div class="teleoValueUnite"><span class="teleoValue">#consoa#</span><span class="teleoUnite"> L</span></div>
 	   </div>
@@ -34,10 +34,13 @@
       eqLogic.find('.widget-name').attr('style', 'background-color:#BGTeleo#!important');
     }	
     //eqLogic.find('.reportModeHidden').attr('style', 'font-size :' + (eqlogic_width*0.13)+'px !important');
-    eqLogic.find('.teleoCdc').css('font-size', (TeleoScreen_width*0.10)+'px');
-    eqLogic.find('.teleoValue').css('font-size', (TeleoScreen_width*0.12)+'px');
-    eqLogic.find('.teleoUnite').css('font-size', (TeleoScreen_width*0.08)+'px');
-
+    //eqLogic.find('.teleoCdc').css('font-size', (TeleoScreen_width*0.09)+'px');
+    //eqLogic.find('.teleoValue').css('font-size', (TeleoScreen_width*0.12)+'px');
+    //eqLogic.find('.teleoUnite').css('font-size', (TeleoScreen_width*0.08)+'px');
+    var eqlogic_height = eqLogic.height()
+    eqLogic.find('.teleoCdc').css('font-size', (eqlogic_height * 0.06) + 'px')
+    eqLogic.find('.teleoValue').css('font-size', (eqlogic_height * 0.07) + 'px')
+    eqLogic.find('.teleoUnite').css('font-size', (eqlogic_height * 0.05) + 'px')
     if ('#refresh_id#' != '') {
       $('.eqLogic[data-eqLogic_uid=#uid#] .refresh').on('click', function() {
         jeedom.cmd.execute({ id: '#refresh_id#' })

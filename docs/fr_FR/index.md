@@ -11,15 +11,13 @@ Les types de données de consommation suivants sont accessibles :
 - la **consommation annuelle** *(en L)*.
 
 > **Important**      
-> Il est nécessaire d'être en possession d'un compteur connecté **Téléo** et d'un compte-client Veolia. Le plugin récupère les informations, en fonction de la configuration choisie dans le plugin, à partir de la partie *mon espace* <a href="https://www.vedif.eau.veolia.fr/" target="_blank">du site Veolia Ile de France</a> pour les clients d'Ile de France, il faut donc vérifier que vous y avez bien accès avec vos identifiants habituels et que les données y sont visibles. **Dans le cas contraire, le plugin ne fonctionnera pas.**
+> Il est nécessaire d'être en possession d'un compteur connecté **Téléo** et d'un compte-client Veolia. Le plugin récupère les informations, en fonction de la configuration choisie dans le plugin, à partir de la partie *mon espace* <a href="https://connexion.leaudiledefrance.fr" target="_blank">du site Veolia Ile de France</a> pour les clients d'Ile de France, il faut donc vérifier que vous y avez bien accès avec vos identifiants habituels et que les données y sont visibles. **Dans le cas contraire, le plugin ne fonctionnera pas.**
 
 # Installation des dépendances
 
-> Le plugin **Veolia Téléo** récupère les informations en utilisant un script Python (un pour le site Veolia Ile de France et un pour les autres sites).      
-> Chaque script a quelques contraintes :
+> Le plugin **Veolia Téléo** récupère les informations en utilisant un script Python.      
 
-### Pour le script Veolia Ile de France
-La version de ***Python 3.7.x*** est indispensable et ***Firefox 102 ou supérieur*** (donc une **distrib buster** obligatoire). Cependant la version conseillée pour le plugin est ***Python 3.9.x*** et donc une migration vers une **distrib bullseye** est plus que recommendée
+La version de ***Python 3.7.x*** est indispensable et ***Firefox 115 ou supérieur*** (donc une **distrib buster** obligatoire). Cependant la version conseillée pour le plugin est ***Python 3.9.x*** minium et donc une migration vers une **distrib bullseye** est plus que recommendée
 
 > Les dépendances sont installées automatiquement par Jeedom dans les 5 min. Elles seront également réinstallées lors d’une mise à jour du plugin si besoin.
 

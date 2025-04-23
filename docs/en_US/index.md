@@ -11,15 +11,13 @@ The following types of consumption data are available:
 - The **annual consumption** *(in L)*.
 
 >**Important**      
-> It is necessary to have a communicating water meter **Téléo** and a Veolia customer account. The plugin retrieves the information, according to the configuration chosen in the plugin, from the *my space* <a href="https://www.vedif.eau.veolia.fr/" target="_blank">part of the Veolia Ile de France website</a> for Ile de France customers. You must therefore check that you have access to it with your usual identifiers and that the data is visible. **If not, the plugin will not work.**
+> It is necessary to have a communicating water meter **Téléo** and a Veolia customer account. The plugin retrieves the information, according to the configuration chosen in the plugin, from the *my space* <a href="https://connexion.leaudiledefrance.fr" target="_blank">part of the Veolia Ile de France website</a> for Ile de France customers. You must therefore check that you have access to it with your usual identifiers and that the data is visible. **If not, the plugin will not work.**
 
 # Installation of software dependencies
 
-> The **Veolia Téléo** plugin retrieves the information using a Python script (one for the Veolia Ile de France site and one for the other sites).
-> Each script has some constraints
+> The **Veolia Téléo** plugin retrieves the information using a Python script.
 
-### For the Veolia Ile de France script
-Python ***3.7.x version*** is required and ***Firefox 102 or higher*** (so use **buster distrib**). However, the recommended version of the plugin is ***Python 3.9.x*** and so a migration to a **bullseye distrib** is more than recommended.
+Python ***3.7.x version*** is required and ***Firefox 115 or higher*** (so use **buster distrib**). However, the recommended version of the plugin is ***Python 3.9.x*** or higher and so a migration to a **bullseye distrib** is more than recommended.
 
 
 > The software dependencies are installed automatically by Jeedom within 5 minutes. They will also be reinstalled when the plugin is updated if necessary.

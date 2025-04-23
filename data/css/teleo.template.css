@@ -4,14 +4,17 @@
 }
 
 .teleo_template {
-	height:100%;
-	background-image:url("../images/TeleoScreen.png");
-	background-size: 90%;
+	height:90%;
+	background-image:url("../images/Screen.png");
+	background-size: 90% 95%;
 	background-repeat: no-repeat;
-	background-position: center 0%;
+	background-position: center 80%;
 	font-family: "Digital-7";
 	color: black!important;
 	letter-spacing: 1px;
+	display: flex;
+	flex-direction: column;
+  	justify-content: center;
 }
 .teleo_template div.teleoCdc{
   	color:#505050;
