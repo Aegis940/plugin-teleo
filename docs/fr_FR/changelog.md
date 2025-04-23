@@ -4,6 +4,9 @@
 >
 >Pour rappel s'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 23/04/205
+- Intégration de la gestion du nouveau site web https://connexion.leaudiledefrance.fr réalisé par [SHOULDER]. Important, renseignez votre nouveau numéro de contrat et sauvegarder de nouveau l'équipement.
+
 # 25/09/2024
 - Ajout du calcul du coût journalier (sauver à nouveau l'équipement après avoir saisie le coût unitaire)
 

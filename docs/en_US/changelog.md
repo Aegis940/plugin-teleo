@@ -4,6 +4,9 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 23/04/205
+- Integration of the management of the new website https://connexion.leaudiledefrance.fr created by [SHOULDER]. Important: enter your new contract number and save the equipment again.
+
 # 25/09/2024
 - Daily cost calculation added (save the equipment again after entering the unit cost)
 

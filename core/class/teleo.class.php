@@ -282,13 +282,21 @@ class teleo extends eqLogic {
 		  
 		  if ($output != 1)
 		  {   
-			log::add(__CLASS__, 'warning', $this->getHumanName() . ' Erreur de lancement du script : [ ' . $output . ' ] consulter le log <teleo_python> pour plus d\'info - Abandon');
+			log::add(__CLASS__, 'error', $this->getHumanName() . ' Erreur de lancement du script : [ ' . $output . ' ] consulter le log <teleo_python> pour plus d\'info - Abandon');
 			return null;
 		  }
 	  }  
 	
-	  if (!file_exists($dataFile)) {   
-		log::add(__CLASS__, 'warning', $this->getHumanName() . ' Fichier <' . $dataFile . '> non trouvé - Abandon');
+	  if (!file_exists($dataFile)) {  
+
+		if ($this->getConfiguration('connectToVeoliaWebsiteFromThisMachine') == 1) {
+			$loglevel = 'error';
+		}
+		else {
+			$loglevel = 'warning';
+		}
+		
+		log::add(__CLASS__, $loglevel, $this->getHumanName() . ' Fichier <' . $dataFile . '> non trouvé - Abandon');
 		return null;
 	  }
 	  else 
@@ -1008,7 +1016,17 @@ class teleo extends eqLogic {
           else {
             chmod($outDir, 0777);  
           }		  
-			
+
+          $traceDir = $outDir . '/trace';
+          if(!is_dir($traceDir)) {
+            if(!mkdir($traceDir, 0777, true))  
+            {
+              throw new Exception(__('Impossible de créer le répertoire de trace',__FILE__));
+            }    
+          }
+          else {
+            chmod($traceDir, 0777);  
+          }				
 		
           if ($this->getConfiguration('forceRefresh', 0) == 1) {
           	$this->pullTeleo();
