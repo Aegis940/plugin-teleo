@@ -18,7 +18,7 @@ pre
 
 if [ $(lsb_release -r | sed -e "s/Release:\t\([0-9][0-9]*\)/\1/") -lt $MININUM_OS_VERSION ]; then
 	#echo "Required Debian $MININUM_OS_VERSION or higher"
-	./install_apt_deb10.sh
+	${BASE_DIR}/install_apt_deb10.sh
 	exit $?
 fi
 
