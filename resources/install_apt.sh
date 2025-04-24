@@ -43,8 +43,8 @@ url=""
 
 if [ $( uname -s ) == "Linux" ]; then
 
-    if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -ge 115 ]; then
-  	  	driver_version="v0.35.0"      
+    if [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -ge 128 ]; then
+  	  	driver_version="v0.36.0"      
     elif [ $(firefox --version 2>&1 | sed -e "s/.* \([0-9][0-9]*\)\..*/\1/") -ge 91 ]; then
   	  	driver_version="v0.31.0"
     else
