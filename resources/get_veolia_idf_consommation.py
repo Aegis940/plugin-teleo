@@ -37,7 +37,7 @@ from pathlib import Path
 URL = 'https://connexion.leaudiledefrance.fr'
 urlHome = URL + '/s/login/'
 urlAccueil = URL + '/espace-particuliers/s/'
-urlConso = URL + '/s/historique'
+urlConso = URL + '/espace-particuliers/s/historique'
 urlConsoMultiContrat = URL + '/espace-particuliers/s/contrats'
 
 Firefox = None
@@ -228,11 +228,11 @@ try:
 	WebDriverWait(Firefox, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'submit-button'))).click()
 	WebDriverWait(Firefox, 15).until(EC.element_to_be_clickable((By.CLASS_NAME, 'submit-button'))).click()
 
-	# Vérification du lien actuel si page d'Acceuil
+	# Vérification du lien actuel si page d'Accueil
 	Urlactuel = Firefox.current_url
-	logger.info("==================> Page d\'Acceuil: " + Urlactuel)
+	logger.info("==================> Page d\'Accueil: " + Urlactuel)
 	if debog:
-	    take_screenshot("URL_Acceuil",traceDir)
+	    take_screenshot("URL_Accueil",traceDir)
 
 	# Manage Multi-Contract
 	if len( sys.argv ) == 6 :
@@ -280,17 +280,23 @@ try:
 	# Cas d'un seul contrat
 
 	    # Page de consommation
-	    logger.info('==================> Page de consommation')
+		Firefox.get(urlConso)
+		
+		#Urlactuel = Firefox.current_url
 
-	    Firefox.get(urlConso)
-	    WebDriverWait(Firefox, 20).until(EC.element_to_be_clickable((By.CLASS_NAME, 'fra-tab'))).click()
+		logger.info("==================> Page de consommation: " + urlConso)
+ 		
+		if debog:
+			take_screenshot("Click_Historique",traceDir)       
+
+	    #WebDriverWait(Firefox, 20).until(EC.element_to_be_clickable((By.CLASS_NAME, 'fra-tab'))).click()
 
 
 	# Partie de gestion des consommations
-	WebDriverWait(Firefox, 60).until(EC.presence_of_element_located((By.NAME, 'from')))				# CA CORRESPOND A QUOI ?
+	WebDriverWait(Firefox, 20).until(EC.presence_of_element_located((By.NAME, 'from')))				# CA CORRESPOND A QUOI ?
 
 	# On attend que les premières données soient chargées
-#=>	waitData("mois",5,4)												# CA PLANTE
+	waitData("jour",5,4)												# CA PLANTE
 
 	# Sélection boutons
 	logger.info('==================> Sélection des données en Jours et Litres')

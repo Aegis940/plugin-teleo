@@ -254,9 +254,11 @@ class teleo extends eqLogic {
 		  $logLevel = log::getLogLevel(__CLASS__);
 		  $contractID = $this->getConfiguration('contract_id');
 		  
-		  // Protect simple/double quotes in password
+		  // Protect simple/double quotes and $ in password
+          $password = preg_replace('/\'/', '\\\'',$password, -1);
 		  $password = preg_replace('/\"/', '\\\"',$password, -1);
-
+		  $password = preg_replace('/\$/', '\\\$',$password, -1);
+        
 		  // Sorry, others Veolia Website than Velia IDF are no more supported
 	      if ($veoliaWebsite != 'IDF')
 		  {   
@@ -483,6 +485,10 @@ class teleo extends eqLogic {
 				else
 					$lastIndex = history::getStatistique($cmdId, $dateReal, $dateYesterday)["last"];
 				
+              	if ($lastIndex == 0) {
+                  	$lastIndex = $valeurMesure;
+                }
+              
 				$consoDay = $valeurMesure - $lastIndex;
 				$cmdConsoDay = $this->getCmd(null, 'consod');
 				$cmdId = $cmdConsoDay->getId();
