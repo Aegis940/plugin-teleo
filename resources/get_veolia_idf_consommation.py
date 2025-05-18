@@ -237,9 +237,12 @@ try:
 	# Manage Multi-Contract
 	if len( sys.argv ) == 6 :
 	    contractID = sys.argv[contractParam]
-
+        
+        # Page de consommation
+	    Firefox.get(urlConsoMultiContrat)
+        
 	    # Page des contrats
-	    WebDriverWait(Firefox, 15).until(EC.presence_of_element_located((By.LINK_TEXT, 'Voir mes contrats'))).click()
+	    #WebDriverWait(Firefox, 15).until(EC.presence_of_element_located((By.LINK_TEXT, 'Voir mes contrats'))).click()
 	    Urlactuel = Firefox.current_url
 	    logger.info("==================> Page de(s) contrat(s): " + Urlactuel)
 	    if debog:
@@ -287,16 +290,14 @@ try:
 		logger.info("==================> Page de consommation: " + urlConso)
  		
 		if debog:
-			take_screenshot("Click_Historique",traceDir)       
-
-	    #WebDriverWait(Firefox, 20).until(EC.element_to_be_clickable((By.CLASS_NAME, 'fra-tab'))).click()
+			take_screenshot("Click_Historique",traceDir)
 
 
 	# Partie de gestion des consommations
-	WebDriverWait(Firefox, 20).until(EC.presence_of_element_located((By.NAME, 'from')))				# CA CORRESPOND A QUOI ?
+	WebDriverWait(Firefox, 20).until(EC.presence_of_element_located((By.NAME, 'from')))
 
 	# On attend que les premières données soient chargées
-	waitData("jour",5,4)												# CA PLANTE
+	waitData("jour",5,4)
 
 	# Sélection boutons
 	logger.info('==================> Sélection des données en Jours et Litres')
