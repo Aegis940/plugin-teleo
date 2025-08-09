@@ -4,10 +4,13 @@
 >
 >Pour rappel s'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 09/08/2025
+- Ajout de la suppression des fichiers temporaires rust_mozprofile 
+
 # 10/05/2025
 - Correction modification new website https://connexion.leaudiledefrance.fr. If you have only one contract do not fill in the number in the plugin!
 
-# 23/04/205
+# 23/04/2025
 - Intégration de la gestion du nouveau site web https://connexion.leaudiledefrance.fr réalisé par [SHOULDER]. Important, renseignez votre nouveau numéro de contrat et sauvegarder de nouveau l'équipement.
 
 # 25/09/2024
