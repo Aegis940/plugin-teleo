@@ -4,10 +4,13 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 09/08/2025
+- Adding the removal of temporary files rust_mozprofile
+
 # 10/05/2025
 - Fix modification nouveau site https://connexion.leaudiledefrance.fr. If you have only one contract do not fill the number in the plugin!
 
-# 23/04/205
+# 23/04/2025
 - Integration of the management of the new website https://connexion.leaudiledefrance.fr created by [SHOULDER]. Important: enter your new contract number and save the equipment again.
 
 # 25/09/2024

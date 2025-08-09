@@ -11,6 +11,8 @@ import os
 import sys
 import time
 import logging
+import shutil
+import re
 
 #=>import pdb    						# DEBOGUEUR PYTHON
 
@@ -376,5 +378,15 @@ finally:
 	if (display is not None):
 	    display.stop()
 
-	# print (f"\t==============> ETAT du RETOUR: {returnStatus}")
+    # Suppression manuelle du dossier rust_mozprofile si détecté
+	if Firefox is not None and hasattr(Firefox, 'profile') and Firefox.profile:
+		profile_path = Firefox.profile.path
+		if re.search(r'/rust_mozprofile', profile_path):
+			try:
+				shutil.rmtree(profile_path)
+				logger.debug(f"Suppression du profil temporaire : {profile_path}")
+			except Exception as e:
+				logger.warning(f"Impossible de supprimer le profil temporaire {profile_path} : {e}")
+        
+    # print (f"\t==============> ETAT du RETOUR: {returnStatus}")   
 	sys.exit(returnStatus)
